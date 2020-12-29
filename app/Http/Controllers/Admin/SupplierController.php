@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 use App\Models\Route;
 use App\Models\Supplier;
 
@@ -22,6 +23,25 @@ class SupplierController extends Controller
 
         // dd($data);
         return view('Admin.suppliers')->with('data',$data);
+    }
+
+    public function supplierDatatable(Request $request ) {
+
+        if ($request->ajax()) {
+            $data = Supplier::select('sup_name','sup_address','sup_contact');
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+     
+                           $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+    
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+        
+        return view('Admin.suppliers');
     }
 
     public function supplierInsert(Request $request ) {
