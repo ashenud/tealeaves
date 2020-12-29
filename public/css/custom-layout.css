@@ -73,6 +73,7 @@ body {
 
 .dropdown-item {
     color: #212529;
+    cursor: pointer;
 }
 
 .dropdown-menu .dropdown-item i {
