@@ -21,6 +21,8 @@
         .view,body,html{height:100vh;font-family:Nunito}@media (max-width:740px){,body,html{height:815px}}@media (min-width:800px) and (max-width:850px){,body,html{height:650px}}.form-section{background-image:linear-gradient(to bottom,rgb(78 78 81 / 52%),rgb(0 0 0 / 73%)),url("{{asset('img/login-background.jpg')}}");background-size:cover}.card{background-color:rgb(255 255 255 / 35%);margin-top:30px}input::placeholder{color:red}a{color:#fff}:-webkit-autofill,:-webkit-autofill:active,:-webkit-autofill:focus,:-webkit-autofill:hover{transition:all 5000s ease-in-out 0s;transition-property:background-color,color;-webkit-box-shadow:0 0 0 1000px #fff inset;-webkit-text-fill-color:#fff;font-weight:300!important}
     </style>
 
+    <title>TEALEAVES COLLECT MANAGEMENT SYSTEM</title>
+
 </head>
 <body>
    
