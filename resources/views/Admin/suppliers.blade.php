@@ -24,18 +24,6 @@
             margin: -18px 0 0 10px;
         }
 
-        /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Firefox */
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
     </style>
 @endsection
 
@@ -49,7 +37,7 @@
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-md-6">
-                <div class="card insert-card border border-dark">
+                <div class="card insert-card">
                     <div class="insert-card-header-sm card-header">
                         <h4>INSERT SUPPLIER DETAILS</h4>
                     </div>
@@ -81,7 +69,7 @@
                                 </select>
                             </div>
 
-                            <button type="button" id="submit-data" onclick="insertSupplier()" class="btn btn-success float-right">INSERT</button>
+                            <button type="button" id="submit-data" onclick="insertSupplier()" class="btn btn-custom float-right">INSERT</button>
                         </div>
                     </div>
                 </div>  
@@ -96,11 +84,15 @@
 @include('layouts.footer')
 @endsection
 
+@section('sidebar')
+@include('layouts.sidebars.admin')
+@endsection
+
 @section('script')
 
 <script>
     $(function() {
-        $('.navbar-nav .nav-link.li-sup').addClass('active');
+        $('.side-link.li-supp').addClass('active');
     }); 
 
     $(document).ready(function() {
@@ -133,7 +125,7 @@
                 }
             });
             $.ajax({
-                url: '{{url("/admin/supplier-insert-action")}}',
+                url: '{{url("/admin/supplier-insert")}}',
                 type: 'POST',
                 data: {
                     supplier_name:supplier_name,

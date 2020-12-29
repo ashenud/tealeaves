@@ -22,5 +22,5 @@ Route::post('/logout', 'App\Http\Controllers\LoginController@logout');
 
 /* @@ admin controllers @@ */
 Route::get('/admin/dashboard', 'App\Http\Controllers\Admin\AdminController@index')->name('admin')->middleware('admin');
-Route::get('/admin/supplier-insert', 'App\Http\Controllers\Admin\SupplierController@supplierInsert')->name('supplier-add')->middleware('admin');
-Route::post('/admin/supplier-insert-action', 'App\Http\Controllers\Admin\SupplierController@supplierInsertAction')->middleware('admin');
+Route::get('/admin/suppliers', 'App\Http\Controllers\Admin\SupplierController@suppliers')->name('suppliers')->middleware('admin');
+Route::post('/admin/supplier-insert', 'App\Http\Controllers\Admin\SupplierController@supplierInsert')->middleware('admin');

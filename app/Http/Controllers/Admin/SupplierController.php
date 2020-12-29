@@ -11,7 +11,7 @@ use App\Models\Supplier;
 
 class SupplierController extends Controller
 {
-    public function supplierInsert() {
+    public function suppliers() {
 
         $user_id = Auth::user()->user_id;
         $route = Route::get();
@@ -20,10 +20,10 @@ class SupplierController extends Controller
         $data['route'] = $route;
 
         // dd($data);
-        return view('Admin.supplier-add')->with('data',$data);
+        return view('Admin.suppliers')->with('data',$data);
     }
 
-    public function supplierInsertAction(Request $request ) {
+    public function supplierInsert(Request $request ) {
 
         try {
 
