@@ -3,7 +3,7 @@
         <button class="hamburger hamburger-btn" id="hamburger" type="button">
             <i class="fas fa-bars"></i>
         </button>
-        <span class="nav-title-custom navbar-brand mb-0 h1">TEALEAVES |</span> <span class="current-page"> Dashboard</span>
+        <span class="nav-title-custom navbar-brand mb-0 h1">TEALEAVES |</span> <span class="current-page"> @if (isset($data['page_title'])) {{ $data['page_title'] }} @endif</span>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <!-- Avatar -->
             <li class="nav-item dropdown">

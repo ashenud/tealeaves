@@ -14,9 +14,10 @@ class SupplierController extends Controller
     public function suppliers() {
 
         $user_id = Auth::user()->user_id;
-        $route = Route::get();
         $data = array();
+        $data['page_title'] = 'Suppliers';
 
+        $route = Route::get();
         $data['route'] = $route;
 
         // dd($data);

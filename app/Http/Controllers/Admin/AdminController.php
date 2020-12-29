@@ -12,6 +12,7 @@ class AdminController extends Controller
 
         $user_id = Auth::user()->user_id;
         $data = array();
+        $data['page_title'] = 'Dashboard';
 
         // dd($data);
         return view('Admin.dashboard')->with('data',$data);
