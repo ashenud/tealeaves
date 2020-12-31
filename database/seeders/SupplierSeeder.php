@@ -15,7 +15,7 @@ class SupplierSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('item_types')->insert([
+        DB::table('suppliers')->insert([
             ['sup_name' => 'Akash Tharaka', 'sup_address' => '26/B, Teppanawa, Awissawella', 'sup_contact' => '0712547823', 'route_id' => '1', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['sup_name' => 'Ashan Weerawardhana', 'sup_address' => '11/L, Teppanawa, Awissawella', 'sup_contact' => '0712482201', 'route_id' => '1', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['sup_name' => 'Ashen Udithamal', 'sup_address' => '66/A, Teppanawa, Awissawella', 'sup_contact' => '0712782201', 'route_id' => '1', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
