@@ -258,10 +258,10 @@
                     if(data.result == true) {
                         console.log(data);
                         swal("Good Job !", data.message, "success");
-                        $("#supplier_name1").val('');
-                        $("#supplier_address1").val('');
-                        $("#supplier_contact1").val('');
-                        $("#supplier_contact1").val('');
+                        $("#supplier_name").val('');
+                        $("#supplier_address").val('');
+                        $("#supplier_contact").val('');
+                        $("#supplier_contact").val('');
                         $('#insert_model').modal('toggle');
                         supplierTable.ajax.reload();
                     }
