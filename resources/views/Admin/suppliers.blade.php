@@ -25,10 +25,10 @@
             <table class="table data-table table-hover table-responsive">
                 <thead>
                     <tr>
-                        <th width="30%" scope="col">Supplier Name</th>
+                        <th width="25%" scope="col">Supplier Name</th>
                         <th width="30%" scope="col">Supplier Address</th>
-                        <th width="25%"scope="col">Supplier Contact</th>
-                        <th width="15%"scope="col">Actions</th>
+                        <th width="20%"scope="col">Supplier Contact</th>
+                        <th width="25%"scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,16 +36,16 @@
             </table>
         </div>
 
-        <a class="btn btn-add-floating btn-primary btn-lg btn-floating" data-mdb-toggle="modal" data-mdb-target="#exampleModal" type="button">
+        <a class="btn btn-add-floating btn-primary btn-lg btn-floating" data-mdb-toggle="modal" data-mdb-target="#insert_model" type="button">
             <i class="fas fa-plus"></i>
         </a>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+        <!-- Insert Modal -->
+        <div class="modal fade" id="insert_model" tabindex="-1" aria-labelledby="insert_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
             <div class="modal-dialog .modal-side .modal-top-right">
                 <div class="modal-content custom-modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">INSERT SUPPLIER DETAILS</h5>
+                        <h5 class="modal-title" id="insert_model_Label">INSERT SUPPLIER DETAILS</h5>
                         <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -87,6 +87,95 @@
             </div>
         </div>
 
+        <!-- View Modal -->
+        <div class="modal fade" id="view_model" tabindex="-1" aria-labelledby="view_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+            <div class="modal-dialog .modal-side .modal-top-right">
+                <div class="modal-content custom-modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="view_model_Label">VIEW SUPPLIER DETAILS</h5>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-area">
+                            <div class="form-outline mb-4">
+                                <input type="text" id="supplier_name1" name="supplier_name1" class="form-control" disabled/>
+                                <label class="form-label" for="supplier_name1">Supplier Name</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input type="text" id="supplier_address1" name="supplier_address1" class="form-control" disabled/>
+                                <label class="form-label" for="supplier_address1">Supplier Address</label>
+                            </div>
+
+                            <div class="form-outline mb-3">
+                                <input type="number" id="supplier_contact1" name="supplier_contact1" min="0" class="form-control" disabled/>
+                                <label class="form-label" for="supplier_contact1">Supplier Contact</label>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="select2-label" for="supplier_route1">Select Route</label> 
+                                <select class="form-control" id="supplier_route1" name="supplier_route1" disabled>
+                                    @if (isset($data['route']))
+                                        @foreach ($data['route'] as $route)
+                                            <option value="{{ $route->id }}">{{ $route->route_name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="edit_model" tabindex="-1" aria-labelledby="edit_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+            <div class="modal-dialog .modal-side .modal-top-right">
+                <div class="modal-content custom-modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit_model_Label">EDIT SUPPLIER DETAILS</h5>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-area">
+                            <div class="form-outline mb-4">
+                                <input type="text" id="supplier_name2" name="supplier_name2" class="form-control" required/>
+                                <label class="form-label" for="supplier_name2">Supplier Name</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input type="text" id="supplier_address2" name="supplier_address2" class="form-control" required/>
+                                <label class="form-label" for="supplier_address2">Supplier Address</label>
+                            </div>
+
+                            <div class="form-outline mb-3">
+                                <input type="number" id="supplier_contact2" name="supplier_contact2" min="0" class="form-control" required/>
+                                <label class="form-label" for="supplier_contact2">Supplier Contact</label>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="select2-label" for="supplier_route2">Select Route</label> 
+                                <select class="form-control" id="supplier_route2" name="supplier_route2">
+                                    @if (isset($data['route']))
+                                        @foreach ($data['route'] as $route)
+                                            <option value="{{ $route->id }}">{{ $route->route_name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="supplier_id2" name="supplier_id2"/>
+                        <button type="button" class="btn btn-secondary btn-secondory-custom" data-mdb-dismiss="modal">
+                            CANCEL
+                        </button>
+                        <button type="button" id="submit-data" onclick="editSupplier()" class="btn btn-primary-custom float-right">EDIT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -105,18 +194,19 @@
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 
 <script>
-    $(function() {
-        $('.side-link.li-supp').addClass('active');
-        supplierDatatable();
-    }); 
+
+    var supplierTable;
 
     $(document).ready(function() {
         $('#supplier_route').select2();
+        $('#supplier_route2').select2();
+        $('.side-link.li-supp').addClass('active');
+        supplierDatatable();
     });
 
     function supplierDatatable() {
     
-        var table = $('.data-table').DataTable({
+        supplierTable = $('.data-table').DataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ url('admin/suppliers-datatable') }}",
@@ -168,10 +258,12 @@
                     if(data.result == true) {
                         console.log(data);
                         swal("Good Job !", data.message, "success");
-                        $("#supplier_name").val('');
-                        $("#supplier_address").val('');
-                        $("#supplier_contact").val('');
-                        // supplierDatatable();
+                        $("#supplier_name1").val('');
+                        $("#supplier_address1").val('');
+                        $("#supplier_contact1").val('');
+                        $("#supplier_contact1").val('');
+                        $('#insert_model').modal('toggle');
+                        supplierTable.ajax.reload();
                     }
                     else {
                         swal("Opps !", data.message, "error");
@@ -180,6 +272,151 @@
             });
 
         }
+    }
+
+    function sendDataToViewModel(id){
+        // console.log(id);
+        $.ajax({
+                url: '{{url("/admin/supplier-get-data")}}',
+                type: 'GET',
+                data: {id:id},
+                dataType: 'JSON',
+                success: function (data) { 
+                    if(data.result == true) {
+                        // console.log(data);
+                        $("#supplier_name1").val(data.data.sup_name);
+                        $("#supplier_address1").val(data.data.sup_address);
+                        $("#supplier_contact1").val(data.data.sup_contact);
+                        $("#supplier_route1").val(data.data.route_id).trigger('change');
+                        $('#view_model').modal('toggle');
+                    }
+                    else {
+                        swal("Opps !", data.message, "error");
+                    }                      
+                }
+            });
+    }
+
+    function sendDataToEditModel(id){
+        // console.log(id);
+        $.ajax({
+                url: '{{url("/admin/supplier-get-data")}}',
+                type: 'GET',
+                data: {id:id},
+                dataType: 'JSON',
+                success: function (data) { 
+                    if(data.result == true) {
+                        // console.log(data);
+                        $("#supplier_name2").val(data.data.sup_name);
+                        $("#supplier_address2").val(data.data.sup_address);
+                        $("#supplier_contact2").val(data.data.sup_contact);
+                        $("#supplier_route2").val(data.data.route_id).trigger('change');
+                        $("#supplier_id2").val(data.data.id);
+                        $('#edit_model').modal('toggle');
+                    }
+                    else {
+                        swal("Opps !", data.message, "error");
+                    }                      
+                }
+            });
+    }
+
+    function editSupplier() {
+        if ( $("#supplier_name2").val().length === 0 ){
+            swal("Opps !", "Please enter supplier name", "error");
+        }
+        else if ($("#supplier_address2").val().length === 0) {
+            swal("Opps !", "Please enter supplier address", "error");
+        }
+        else if($("#supplier_contact2").val().length === 0) {
+            swal("Opps !", "Please enter supplier contact", "error");
+        }
+        else if($("#supplier_route2").val().length === 0) {
+            swal("Opps !", "Please enter supplier route", "error");
+        }
+        else {
+
+            var supplier_id = $("#supplier_id2").val();
+            var supplier_name = $("#supplier_name2").val();
+            var supplier_address = $("#supplier_address2").val();
+            var supplier_contact = $("#supplier_contact2").val();
+            var supplier_route = $("#supplier_route2").val();
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: '{{url("/admin/supplier-edit")}}',
+                type: 'POST',
+                data: {
+                    supplier_id:supplier_id,
+                    supplier_name:supplier_name,
+                    supplier_address:supplier_address,
+                    supplier_contact:supplier_contact,
+                    supplier_route:supplier_route
+                },
+                dataType: 'JSON',
+                success: function (data) { 
+                    if(data.result == true) {
+                        console.log(data);
+                        supplierTable.ajax.reload();
+                        $('#edit_model').modal('toggle');
+                        swal("Good Job !", data.message, "success");
+                    }
+                    else {
+                        swal("Opps !", data.message, "error");
+                    }                      
+                }
+            });
+                    
+
+        }
+    }
+
+    function deleteSupplier(id) {
+
+        swal({
+            title: "Are yoy sure ?",
+            text: "You are going to delete this supplier !",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{url("/admin/supplier-delete")}}',
+                    type: 'POST',
+                    data: {supplier_id:id},
+                    dataType: 'JSON',
+                    success: function (data) { 
+                        if(data.result == true) {
+                            console.log(data);
+                            supplierTable.ajax.reload();
+                            swal(data.message, {
+                                icon: "success",
+                            });
+                        }
+                        else {
+                            swal(data.message, {
+                                icon: "error",
+                            });
+                        }                      
+                    }
+                });
+                
+            } else {
+                swal("Your supplier data is safe!");
+            }
+        });
     }
 
 </script>

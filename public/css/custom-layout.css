@@ -184,6 +184,11 @@ footer .footer-area {
     height: 45px;
 }
 
+.btn-sheding {
+    color: #454545;
+    background-color: #9db48d !important;
+}
+
 .btn-primary-custom,
 .btn-primary-custom:hover {
     color: #fff;
@@ -202,6 +207,7 @@ footer .footer-area {
     bottom: 65px;
     right: 30px;
     z-index: 101;
+    font-size: 22px;
 }
 
 .btn-add-floating.focus, 

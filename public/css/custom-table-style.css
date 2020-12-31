@@ -86,17 +86,35 @@
 }
 
 #DataTables_Table_0_wrapper .paginate_button:hover {
-    background-color: rgb(158 158 158 / 75%);
+    background-color: rgb(81 99 69 / 48%);
 }
 
 #DataTables_Table_0_wrapper .paginate_button.current {
-    background: #3f51b5;
+    background:#4d7f2bc2;
     color: #fff;
 }
 
-#DataTables_Table_0_wrapper .paginate_button.current {
-    background: #3f51b5;
-    color: #fff;
+table.dataTable thead .sorting_asc {
+    background-image: url(../img/datatables/sort_asc.png);
+}
+
+table.dataTable thead .sorting_desc {
+    background-image: url(../img/datatables/sort_desc.png);
+}
+
+table.dataTable thead .sorting_both {
+    background-image: url(../img/datatables/sort_both.png);
+}
+
+table.dataTable thead .sorting, 
+table.dataTable thead .sorting_asc, 
+table.dataTable thead .sorting_desc, 
+table.dataTable thead .sorting_asc_disabled, 
+table.dataTable thead .sorting_desc_disabled {
+    cursor: pointer;
+    *cursor: hand;
+    background-repeat: no-repeat;
+    background-position: center right;
 }
 
 

@@ -24,4 +24,7 @@ Route::post('/logout', 'App\Http\Controllers\LoginController@logout');
 Route::get('/admin/dashboard', 'App\Http\Controllers\Admin\AdminController@index')->name('admin')->middleware('admin');
 Route::get('/admin/suppliers', 'App\Http\Controllers\Admin\SupplierController@suppliers')->name('suppliers')->middleware('admin');
 Route::get('/admin/suppliers-datatable', 'App\Http\Controllers\Admin\SupplierController@supplierDatatable')->name('suppliers--datatable')->middleware('admin');
+Route::get('/admin/supplier-get-data', 'App\Http\Controllers\Admin\SupplierController@supplierGetData')->name('supplier-get-data')->middleware('admin');
 Route::post('/admin/supplier-insert', 'App\Http\Controllers\Admin\SupplierController@supplierInsert')->middleware('admin');
+Route::post('/admin/supplier-edit', 'App\Http\Controllers\Admin\SupplierController@supplierEdit')->middleware('admin');
+Route::post('/admin/supplier-delete', 'App\Http\Controllers\Admin\SupplierController@supplierDelete')->middleware('admin');
