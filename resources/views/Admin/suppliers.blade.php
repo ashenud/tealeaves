@@ -27,8 +27,8 @@
                     <tr>
                         <th width="25%" scope="col">Supplier Name</th>
                         <th width="30%" scope="col">Supplier Address</th>
-                        <th width="20%"scope="col">Supplier Contact</th>
-                        <th width="25%"scope="col">Actions</th>
+                        <th width="25%"scope="col">Supplier Contact</th>
+                        <th width="20%"scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
