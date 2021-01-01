@@ -22,7 +22,7 @@
     <div class="container">
 
         <div class="data-table-area">
-            <table class="table data-table table-hover table-responsive">
+            <table class="table data-table table-hover">
                 <thead>
                     <tr>
                         <th width="25%" scope="col">Supplier Name</th>

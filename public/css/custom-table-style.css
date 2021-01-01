@@ -139,6 +139,20 @@ table.dataTable thead .sorting_desc_disabled {
     } */
 }
 
+@media screen and (max-width:576px) {
+    #DataTables_Table_0_wrapper .dataTables_filter {
+        text-align: start !important;
+    }
+    /* #DataTables_Table_0_wrapper .dataTables_length {
+        display: grid;
+        justify-items: start;
+    } */
+    .data-table-area {
+        min-width: 600px;
+        margin-right: 20px;
+    }    
+}
+
 @media screen and (max-width:420px) {
     #DataTables_Table_0_wrapper .dataTables_length  label,
     #DataTables_Table_0_wrapper .dataTables_filter label,
@@ -151,6 +165,9 @@ table.dataTable thead .sorting_desc_disabled {
         min-width: 35px;
         height: 20px;
         line-height: 26px;
+    }
+    #DataTables_Table_0_wrapper .dataTables_paginate {
+        margin-bottom: 145px;
     }
 }
 
