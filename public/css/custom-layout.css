@@ -189,6 +189,11 @@ footer .footer-area {
     background-color: #9db48d !important;
 }
 
+.btn-disabled {
+    background-color: #959893 !important;
+    cursor: not-allowed !important;
+}
+
 .btn-primary-custom,
 .btn-primary-custom:hover {
     color: #fff;
