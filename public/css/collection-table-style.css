@@ -60,6 +60,16 @@
     text-align: right;
     background-color: #f0ffe6 !important;
 }
+
+.submit-button-row {
+    border: 0px solid #ffffff;
+}
+
+.submit-btn {
+    margin-top: 15px;
+    margin-bottom: 45px;
+}
+
 /* Hide Input Number Arrows */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

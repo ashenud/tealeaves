@@ -93,6 +93,8 @@
                     </tbody>                                       
                     
                     <tbody>
+                        <input id="count" type="hidden" value="1">  
+                        
                         <!--Display Daily Total-->
                         <tr>
                             <td colspan="6" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
@@ -102,17 +104,13 @@
                                 </div> 
                             </td>
                         </tr>
-                        <input id="count" type="hidden" value="1">                                          
+                        <tr class="submit-button-row">
+                            <td colspan="7" align="right">
+                                <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="SUBMIT COLLECTION DATA"  id="dd" onclick="submit_data_to_db()" />
+                            </td>
+                        </tr>
+
                     </tbody>
-                </table>
-            </div>
-            <div style="padding-top:10px; padding-bottom: 25px;">
-                <table width="100%">
-                    <tr align="right">
-                        <td>
-                            <input class="btn btn-primary-custom" type="button" class="btn" value="FINISH RETURN NOTE"  id="dd" onclick="submit_data_to_db()" />
-                        </td>
-                    </tr>                            
                 </table>
             </div>
         </div>        
