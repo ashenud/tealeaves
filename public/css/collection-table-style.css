@@ -1,0 +1,74 @@
+.table td {
+    padding: 6px 2px;
+    line-height: 0;
+    vertical-align: middle;
+}
+
+.minus_icon i,
+.plus_icon i {
+    line-height: 0.5 !important;
+    width: 16px !important;
+}
+
+.minus_icon,
+.plus_icon {
+    background-color: #4d7f2b;
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    padding: 0;
+    font-weight: bold;
+}
+
+.minus_icon:hover,
+.plus_icon:hover {
+    color: #ffffff;
+}
+
+.select2-container .select2-selection--single {
+    height: 35px;
+    padding-top: 2px;
+    outline: none;
+}
+
+.select2-container .select2-selection--single.is-invalid  {
+    border-color: #f93154;
+    padding-right: calc(1.6em + .75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5' /%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z' /%3e%3ccircle cx='6' cy='8.2' r='.6' stroke='none' fill='%23dc3545' /%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.4em + .1875rem) center;
+    background-size: calc(.8em + .375rem) calc(.8em + .375rem);
+}
+
+.is-invalid  {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5' /%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z' /%3e%3ccircle cx='6' cy='8.2' r='.6' stroke='none' fill='%23dc3545' /%3e%3c/svg%3e") !important;
+    margin-bottom: 0 !important;
+}
+
+.select2.select2-container{
+    width: 100% !important;
+}
+
+.form-control:disabled, 
+.form-control[readonly] {
+    background-color: #f5ffef;
+    cursor: not-allowed !important;
+}
+
+.daily-total {
+    text-align: right;
+    background-color: #f0ffe6 !important;
+}
+/* Hide Input Number Arrows */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}  

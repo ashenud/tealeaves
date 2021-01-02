@@ -259,6 +259,14 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+
+/* @@ deafult css @@ */
+.text-right {
+    text-align: right;
+}
+
+
+
 @media screen and (max-width: 992px) {  
     .user-anchor {
         margin-bottom: -10px;

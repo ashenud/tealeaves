@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Item extends Model
+class DailyCollection extends Model
 {
     use HasFactory, RevisionableTrait, SoftDeletes;
 

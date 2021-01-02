@@ -16,7 +16,7 @@
             </a>
         </li>
         <li class="side-item">
-            <a class="side-link li-collect" href="{{ url('admin/daily-colletc') }}">
+            <a class="side-link li-collect" href="{{ url('admin/daily-collect') }}">
                 <i class="now-ui-icons shopping_cart-simple"></i> Daily Collect
             </a>
         </li>

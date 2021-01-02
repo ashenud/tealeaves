@@ -8,7 +8,6 @@
 
 <!-- for datatable -->
 <link rel="stylesheet" href="{{asset('css/custom-table-style.css')}}">
-{{-- <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
 
 @endsection
 
