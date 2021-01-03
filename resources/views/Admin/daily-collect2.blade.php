@@ -22,12 +22,97 @@
 
         <div class="row common-area">
             <div class="col-md-3">
-            <input class="form-control" type="date" max="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" id="collection_date" onchange="loadCollection()">
+            <input class="form-control" type="date" max="{{ date('Y-m-d') }}" id="collection_date">
             </div>
         </div> 
 
         <div class="row supplier-area" id="supplier-area">
-            
+            <div class="supplier-list col-md-12">
+                <table width="100%" class="table" align="center">
+                    <thead>
+                        <tr>
+                            <th width="5%" height="25"></th>
+                            <th width="35%">Supplier</th>
+                            <th width="20%">Item Name</th>
+                            <th width="10%">C.Price(Rs.)</th>
+                            <th width="10%">D.Cost(Rs.)</th>
+                            <th width="10%">No. of Units</th>
+                            <th width="15%">Amount(Rs.)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="item_tbl">
+                        <tr id="tr_1" style="height: 30px">
+                            <td>
+                                <div class="form-group">
+                                    <button type="button" onclick="add_item(1)" class="plus_icon btn btn-floating" id="plus_icon_1"><i class="fas fa-plus"></i></button>
+                                    <button type="button" onclick="remove_item(1)" class="minus_icon btn btn-floating" id="minus_icon_1" style="display: none"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <select class="form-control supplier-name" id="supplier_1" onchange="getSupplierValues(1)">
+                                        <option value=""></option>
+                                        @if (isset($data['suppliers']))
+                                            @foreach ($data['suppliers'] as $supplier)
+                                                <option value="{{ $supplier->value }}">{{ $supplier->sup_name }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>                                    
+                                    <input type="hidden" id="supplier_id_1">                                             
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" id="item_1" class="form-control" value="{{ $data['item_name'] }}" readonly>    
+                                    <input type="hidden" id="item_id_1" value="{{ $data['item_id'] }}"> 
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" id="current_price_1" class="form-control text-right" value="{{ $data['item_price'] }}" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="hidden" id="delivery_cost_per_unit_1">
+                                    <input type="text" id="delivery_cost_1" class="form-control text-right" value="0.00" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" id="no_units_1" class="form-control text-right" min="1" autocomplete="off" onkeypress="return event.charCode >= 48" onkeyup="cal_total(1)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="hidden" id="daily_amount_1">
+                                    <input type="text" id="daily_value_1" class="form-control text-right" value="0.00" readonly>
+                                </div>
+                            </td>
+                        </tr>                                         
+                    </tbody>                                       
+                    
+                    <tbody>
+                        <input id="count" type="hidden" value="1">  
+                        
+                        <!--Display Daily Total-->
+                        <tr>
+                            <td colspan="6" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                            <td>
+                                <div class="form-group">
+                                    <b> <input id="daily_total_value" class="form-control daily-total" value="0.00" readonly> </b>
+                                </div> 
+                            </td>
+                        </tr>
+                        <tr class="submit-button-row">
+                            <td colspan="7" align="right">
+                                <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="SUBMIT COLLECTION DATA"  id="dd" onclick="submit_data_to_db()" />
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
         </div>        
 
     </div>
@@ -50,34 +135,9 @@
     var count = 1;
 
     $(document).ready(function() {
-        $('#collection_date').trigger("change");
+        $('#supplier_1').select2();
         $('.side-link.li-collect').addClass('active');
     });
-    $(document).ajaxComplete(function ( event, xhr, settings ) {      
-        if (typeof xhr.responseJSON === 'undefined')   {
-            $('#supplier_1').select2();
-        }
-        else {
-            // console.log(xhr.responseJSON.result);
-        }        
-    });
-
-    function loadCollection() {
-
-        var collection_date = $('#collection_date').val();
-        var regEx = /^\d{4}-\d{2}-\d{2}$/;
-        if(collection_date.match(regEx)) {
-            var apiURL = baseURL+'admin/load-insert-collection/'+collection_date;
-            // console.log(URL);
-            $('#supplier-area').html('<p style="display: flex; justify-content: center; margin-top: 75px;"><img src="{{asset("img/loading.gif")}}" /></p>');        
-            $('#supplier-area').load(apiURL);
-        }
-        else {
-            swal("Retry!", "Please select a valid date", "error");
-        }
-        
-
-    }
 
     function getSupplierValues(row) {
 
@@ -261,15 +321,6 @@
                     var daily_amount = $("#daily_amount_" + i).val();
                     $("#supplier_" + i).removeClass('is-invalid');
 
-                    if( ($("#current_price_" + i).val() != null) && ($("#current_price_" + i).val() > 0 ) ) {
-                        var current_price = $("#current_price_" + i).val();
-                        $("#current_price_" + i).removeClass('is-invalid');
-                    }
-                    else {
-                        valid = false;
-                        $("#current_price_" + i).addClass('is-invalid');
-                    }
-
                     if( $("#no_units_" + i).val() > 0 ) {
                         var no_of_units = $("#no_units_" + i).val();
                         $("#no_units_" + i).removeClass('is-invalid');
@@ -281,11 +332,20 @@
 
                     if( $("#daily_value_" + i).val() > 0 ) {
                         var daily_value = $("#daily_value_" + i).val();
-                        // $("#daily_value_" + i).removeClass('is-invalid');
+                        $("#daily_value_" + i).removeClass('is-invalid');
                     }
                     else {
                         valid = false;
-                        // $("#daily_value_" + i).addClass('is-invalid');
+                        $("#daily_value_" + i).addClass('is-invalid');
+                    }
+
+                    if( ($("#current_price_" + i).val() != null) && ($("#current_price_" + i).val() > 0 ) ) {
+                        var current_price = $("#current_price_" + i).val();
+                        $("#current_price_" + i).removeClass('is-invalid');
+                    }
+                    else {
+                        valid = false;
+                        $("#current_price_" + i).addClass('is-invalid');
                     }
 
                     if (valid === true) {
@@ -351,18 +411,17 @@
                                     // var data = JSON.parse(data);
                                     console.log(data);
                                     if(data.result===true){
-                                        swal("Done!", data.message, "success")
-                                        .then((value) => {
-                                            $('#collection_date').val(collection_date).trigger("change");;
-                                            // location.reload();
-                                        });
+                                        swal("Done!", data.message, "success");
                                     }
                                     else{
                                         sweetAlert({
                                             title: "Opps!",
                                             text: data.message,
-                                            icon: "error"
-                                        });
+                                            type: "error"
+                                        }/* ,
+                                        function () {
+                                            // location.reload();
+                                        } */);
                                     }
                                 },
                                 error: function (xhr, ajaxOptions, thrownError) {

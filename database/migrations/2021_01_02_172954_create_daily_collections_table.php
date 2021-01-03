@@ -17,7 +17,8 @@ class CreateDailyCollectionsTable extends Migration
             $table->id();
             $table->date('date');
             $table->string('collection_no')->nullable();
-            $table->decimal('daily_total_amount',14,2);
+            $table->decimal('daily_total_value',14,2);
+            $table->unsignedBigInteger('user_id');
             $table->tinyInteger('edited_status')->default(0)->comment('0-not edited, 1-edited');
             $table->tinyInteger('confirm_status')->default(0)->comment('0-not confirmed, 1-confirmed');
             $table->softDeletes();

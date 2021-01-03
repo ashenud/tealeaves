@@ -38,3 +38,10 @@ Route::post('/admin/item-edit', 'App\Http\Controllers\Admin\ItemController@itemE
 Route::post('/admin/item-delete', 'App\Http\Controllers\Admin\ItemController@itemDelete')->middleware('admin');
 
 Route::get('/admin/daily-collect', 'App\Http\Controllers\Admin\DailyCollectController@index')->name('daily-collect')->middleware('admin');
+Route::get('/admin/load-insert-collection/{day}', 'App\Http\Controllers\Admin\DailyCollectController@loadInsertCollection')->name('load-insert-collection')->middleware('admin');
+
+// Route::get('/admin/load-insert-collection/{date}', function() {
+//     return view('Admin.Loadings.collection-insert');
+// });
+
+Route::post('/admin/insert-collection', 'App\Http\Controllers\Admin\DailyCollectController@insertCollection')->middleware('admin');
