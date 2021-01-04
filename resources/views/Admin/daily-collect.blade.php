@@ -22,7 +22,7 @@
 
         <div class="row common-area">
             <div class="col-md-3">
-            <input class="form-control" type="date" max="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" id="collection_date" onchange="loadCollection()">
+            <input class="form-control collection-date" type="date" max="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" id="collection_date" onchange="loadCollection()">
             </div>
         </div> 
 
@@ -48,6 +48,7 @@
 <script>
 
     var count = 1;
+    var remove_suppliers = [];
 
     $(document).ready(function() {
         $('#collection_date').trigger("change");
@@ -56,6 +57,8 @@
     $(document).ajaxComplete(function ( event, xhr, settings ) {      
         if (typeof xhr.responseJSON === 'undefined')   {
             $('#supplier_1').select2();
+            count = $('#count').val();
+            // console.log(count);
         }
         else {
             // console.log(xhr.responseJSON.result);
@@ -76,6 +79,17 @@
             swal("Retry!", "Please select a valid date", "error");
         }
         
+
+    }
+
+    function loadEditCollection(collection_id) {
+        
+        remove_suppliers = [];
+
+        var apiURL = baseURL+'admin/load-edit-collection/'+collection_id;
+        // console.log(apiURL);
+        $('#supplier-area').html('<p style="display: flex; justify-content: center; margin-top: 75px;"><img src="{{asset("img/loading.gif")}}" /></p>');        
+        $('#supplier-area').load(apiURL);        
 
     }
 
@@ -185,6 +199,18 @@
     function remove_item(row) {
 
         var sum = 0;
+
+        if( ($("#actual_supplier_count").val() != "") && (typeof $("#actual_supplier_count").val() !== 'undefined') ) {
+            var actual_count = $("#actual_supplier_count").val();
+            if(row <= actual_count) {
+                var sup_collection_id = $('#sup_collection_id_' + row).val();
+                remove_suppliers.push(sup_collection_id);
+            }
+        }
+        else {
+            remove_suppliers = [];
+        }
+
         $('#tr_' + row).remove();
 
         for (var i = 1; i <= count; i++) {
@@ -194,6 +220,8 @@
             }
             $("#daily_total_value").val(sum);
         }
+
+        // console.log(remove_suppliers);
 
     }
 
@@ -212,7 +240,7 @@
 
         if( ($("#supplier_id_" + row).val() != "") && (typeof $("#supplier_id_" + row).val() !== 'undefined') ) {
 
-            $("#prodcut_" + row).removeClass('is-invalid');
+            $("#supplier_" + row).next().find('.select2-selection').removeClass('is-invalid');
             var no_of_units = $("#no_units_" + row).val();        
             var unit_price = $("#current_price_" + row).val();
             var delivery_cost_per_unit = $("#delivery_cost_per_unit_" + row).val();
@@ -353,15 +381,13 @@
                                     if(data.result===true){
                                         swal("Done!", data.message, "success")
                                         .then((value) => {
-                                            $('#collection_date').val(collection_date).trigger("change");;
-                                            // location.reload();
+                                            $('#collection_date').val(collection_date).trigger("change");
                                         });
                                     }
                                     else{
-                                        sweetAlert({
-                                            title: "Opps!",
-                                            text: data.message,
-                                            icon: "error"
+                                        swal("Opps!", data.message, "error")
+                                        .then((value) => {
+                                            location.reload();
                                         });
                                     }
                                 },
@@ -370,9 +396,7 @@
                                 }
                             });
 
-                        } /* else {
-                            swal("Your imaginary file is safe!");
-                        } */
+                        }
                     });
                 }
 
@@ -381,9 +405,215 @@
                 swal("Retry!", "Please fill all the blanks", "error");
             }
         }
-        /* 
-            
-        */
+
+    }
+
+    function submit_edited_data_to_db() {
+        if ($('#collection_date').val() === "") {
+            $("#collection_date").addClass('is-invalid');
+            swal("Retry!", "Please select the collection date", "error");
+            $('#s_id').focus();
+        }
+        else  {
+            $("#collection_date").removeClass('is-invalid');
+            valid = true;
+            var arr = [];
+            for (var i = 1; i <= count; i++) {
+
+                // validate if current row actualy has a product
+                if( ($("#supplier_id_" + i).val() != "") && (typeof $("#supplier_id_" + i).val() !== 'undefined') ) {
+
+                    if( ($("#sup_collection_id_" + i).val() != "") && (typeof $("#sup_collection_id_" + i).val() !== 'undefined') ) {
+                        var sup_col_id = $("#sup_collection_id_" + i).val();
+                    }
+                    else {
+                        var sup_col_id = 0; 
+                    }
+
+                    var supplier_id = $("#supplier_id_" + i).val();
+                    var item_id = $("#item_id_" + i).val();
+                    var delivery_cost_per_unit = $("#delivery_cost_per_unit_" + i).val();
+                    var delivery_cost = $("#delivery_cost_" + i).val();
+                    var daily_amount = $("#daily_amount_" + i).val();
+                    $("#supplier_" + i).removeClass('is-invalid');
+
+                    if( ($("#current_price_" + i).val() != null) && ($("#current_price_" + i).val() > 0 ) ) {
+                        var current_price = $("#current_price_" + i).val();
+                        $("#current_price_" + i).removeClass('is-invalid');
+                    }
+                    else {
+                        valid = false;
+                        $("#current_price_" + i).addClass('is-invalid');
+                    }
+
+                    if( $("#no_units_" + i).val() > 0 ) {
+                        var no_of_units = $("#no_units_" + i).val();
+                        $("#no_units_" + i).removeClass('is-invalid');
+                    }
+                    else {
+                        valid = false;
+                        $("#no_units_" + i).addClass('is-invalid');
+                    }
+
+                    if( $("#daily_value_" + i).val() > 0 ) {
+                        var daily_value = $("#daily_value_" + i).val();
+                        // $("#daily_value_" + i).removeClass('is-invalid');
+                    }
+                    else {
+                        valid = false;
+                        // $("#daily_value_" + i).addClass('is-invalid');
+                    }
+
+                    if (valid === true) {
+
+                        var obj = {
+                            'sup_col_id': sup_col_id,
+                            'supplier_id': supplier_id,
+                            'item_id': item_id,
+                            'current_price': current_price,
+                            'delivery_cost_per_unit': delivery_cost_per_unit,
+                            'no_of_units': no_of_units,
+                            'delivery_cost': delivery_cost,
+                            'daily_amount': daily_amount,
+                            'daily_value': daily_value,                                
+                        };
+
+                        arr.push(obj);
+
+                    }
+                }
+                else {
+                    $("#supplier_" + i).addClass('is-invalid');
+                }
+
+            }
+
+            if (valid === true) {
+                // when the first line is empty
+                if(arr.length === 0) {
+                    swal("Retry!", "Please add at least one supplier line", "error");
+                }
+                else {
+
+                    var collection_array = JSON.stringify(arr);
+                    var removed_suppliers = JSON.stringify(remove_suppliers);
+                    // console.log(JSON.parse(collection_array));
+                    var collection_id = $('#collection_id').val();
+                    var collection_date = $('#collection_date').val();
+                    var daily_total_value = $('#daily_total_value').val();
+
+                    swal({
+                        title: "Are you sure?",
+                        text: "Do you want to add these edited records !",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {                            
+
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                            $.ajax({
+                                url: '{{url("/admin/edit-collection")}}',
+                                type: "POST",
+                                data: {
+
+                                    collection_id: collection_id,
+                                    collection_date: collection_date,
+                                    collection_array: collection_array,
+                                    removed_suppliers: removed_suppliers,
+                                    daily_total_value: daily_total_value,
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    if(data.result===true){
+                                        swal("Done!", data.message, "success")
+                                        .then((value) => {
+                                            $('#collection_date').val(collection_date).trigger("change");
+                                        });
+                                    }
+                                    else{
+                                        swal("Opps!", data.message, "error")
+                                        .then((value) => {
+                                            location.reload();
+                                        });
+                                    }
+                                },
+                                error: function (xhr, ajaxOptions, thrownError) {
+                                    swal("Opps!", "Please try again", "error")
+                                    .then((value) => {
+                                        location.reload();
+                                    });
+                                }
+                            });
+
+                        }
+
+                    });
+                }
+
+            }
+            else {
+                swal("Retry!", "Please fill all the blanks", "error");
+            }
+        }
+        
+    }
+
+    function confirmCollection(collection_id) {
+
+        swal({
+            title: "Are you sure?",
+            text: "Once you confirmed you can not edit these records !",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {                            
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{url("/admin/confirm-collection")}}',
+                    type: "POST",
+                    data: {
+                        collection_id: collection_id,
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if(data.result===true){
+                            swal("Done!", data.message, "success")
+                            .then((value) => {
+                                $('#collection_date').trigger("change");
+                            });
+                        }
+                        else{
+                            sweetAlert({
+                                title: "Opps!",
+                                text: data.message,
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        swal("Opps!", "Please try again", "error");
+                    }
+                });
+
+            }
+
+        });
+
+    }
+
+    function cancelSubmition() {
+        $('#collection_date').trigger("change");
     }
 
 </script>

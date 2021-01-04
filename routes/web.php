@@ -38,10 +38,8 @@ Route::post('/admin/item-edit', 'App\Http\Controllers\Admin\ItemController@itemE
 Route::post('/admin/item-delete', 'App\Http\Controllers\Admin\ItemController@itemDelete')->middleware('admin');
 
 Route::get('/admin/daily-collect', 'App\Http\Controllers\Admin\DailyCollectController@index')->name('daily-collect')->middleware('admin');
-Route::get('/admin/load-insert-collection/{day}', 'App\Http\Controllers\Admin\DailyCollectController@loadInsertCollection')->name('load-insert-collection')->middleware('admin');
-
-// Route::get('/admin/load-insert-collection/{date}', function() {
-//     return view('Admin.Loadings.collection-insert');
-// });
-
-Route::post('/admin/insert-collection', 'App\Http\Controllers\Admin\DailyCollectController@insertCollection')->middleware('admin');
+Route::get('/admin/load-insert-collection/{day}', 'App\Http\Controllers\Admin\DailyCollectController@loadInsertCollection')->name('load-insert-collection')->middleware('admin'); // insert and view collection
+Route::get('/admin/load-edit-collection/{id}', 'App\Http\Controllers\Admin\DailyCollectController@loadEditCollection')->name('load-edit-collection')->middleware('admin'); // edit collection
+Route::post('/admin/insert-collection', 'App\Http\Controllers\Admin\DailyCollectController@insertCollection')->middleware('admin'); // insert collection action
+Route::post('/admin/edit-collection', 'App\Http\Controllers\Admin\DailyCollectController@editCollection')->middleware('admin'); // edit collection action
+Route::post('/admin/confirm-collection', 'App\Http\Controllers\Admin\DailyCollectController@confirmCollection')->middleware('admin'); // confirm collection action

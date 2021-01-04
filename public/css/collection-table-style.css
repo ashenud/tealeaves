@@ -70,6 +70,19 @@
     margin-bottom: 45px;
 }
 
+.top-button {
+    margin-top: -36px;
+    position: absolute;
+    z-index: 200;
+    right: 12px;
+    width: 100px;
+}
+
+.edit-btn {
+    right: 120px;
+}
+
+
 /* Hide Input Number Arrows */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -81,4 +94,32 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+} 
+
+@media screen and (max-width: 992px) {  
+    .user-anchor {
+        margin-bottom: -10px;
+    }
+}           
+
+@media screen and (max-width: 768px) {
+    .collection-date {
+        max-width: 225px;
+    }
+}     
+
+@media screen and (max-width: 576px) {
+    .collection-date {
+        max-width: 175px;
+    }
+}     
+
+@media screen and (max-width: 420px) {
+    .top-button {
+        width: 70px;
+        padding: 9px 0px;
+    }
+    .edit-btn {
+        right: 85px;
+    }
 }  

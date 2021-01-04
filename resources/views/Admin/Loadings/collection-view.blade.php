@@ -1,7 +1,12 @@
-
+@if ($data['collection_status'] == 0)
+    <div class="btn-edit-area">
+        <button class="btn btn-primary-custom top-button edit-btn" onclick="loadEditCollection({{ $data['collection_id'] }})">EDIT</button>
+        <button class="btn btn-primary-custom top-button" onclick="confirmCollection({{ $data['collection_id'] }})">CONFIRM</button>
+    </div>
+@endif
     
 <div class="supplier-list col-md-12">
-    <table width="100%" class="table" align="center">
+    <table width="100%" class="table" align="center" style="margin-bottom: 65px;">
         <thead>
             <tr>
                 <th width="35%">Supplier</th>
