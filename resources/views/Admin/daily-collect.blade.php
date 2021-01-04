@@ -218,7 +218,7 @@
             if (($("#daily_value_" + i).val() != '') && ($("#daily_value_" + i).val() != null)) {
                 sum += parseFloat($("#daily_value_" + i).val());
             }
-            $("#daily_total_value").val(sum);
+            $("#daily_total_value").val(sum.toFixed(2));
         }
 
         // console.log(remove_suppliers);
