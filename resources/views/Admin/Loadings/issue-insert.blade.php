@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th width="5%" height="25"></th>
-                <th width="30%">Supplier</th>
+                <th width="35%">Supplier</th>
                 <th width="20%">Item Name</th>
                 <th width="10%">C.Price(Rs.)</th>
                 <th width="10%">D.Cost(Rs.)</th>
@@ -21,26 +21,33 @@
                 </td>
                 <td>
                     <div class="form-group">
-                        <select class="form-control supplier-name" id="supplier_1" onchange="getSupplierValues(1)">
+                        <select class="form-control supplier-name" id="supplier_id_1" onchange="resetCurrentItem(1)">
                             <option value=""></option>
                             @if (isset($data['suppliers']))
                                 @foreach ($data['suppliers'] as $supplier)
-                                    <option value="{{ $supplier->value }}">{{ $supplier->sup_name }}</option>
+                                    <option value="{{ $supplier->id }}">{{ $supplier->sup_name }}</option>
+                                @endforeach
+                            @endif
+                        </select>                                            
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <select class="form-control item-name" id="item_1" onchange="getItemValues(1)">
+                            <option value=""></option>
+                            @if (isset($data['items']))
+                                @foreach ($data['items'] as $item)
+                                    <option value="{{ $item->value }}">{{ $item->item_name }}</option>
                                 @endforeach
                             @endif
                         </select>                                    
-                        <input type="hidden" id="supplier_id_1">                                             
+                        <input type="hidden" id="item_id_1">                                             
+                        <input type="hidden" id="item_type_1">                                             
                     </div>
                 </td>
                 <td>
                     <div class="form-group">
-                        <input type="text" id="item_1" class="form-control" value="{{ $data['item_name'] }}" readonly>    
-                        <input type="hidden" id="item_id_1" value="{{ $data['item_id'] }}"> 
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <input type="text" id="current_price_1" class="form-control text-right" value="{{ $data['item_price'] }}" readonly>
+                        <input type="text" id="current_price_1" class="form-control text-right" value="0.00" readonly>
                     </div>
                 </td>
                 <td>

@@ -104,13 +104,13 @@ input[type=number] {
 }           
 
 @media screen and (max-width: 768px) {
-    .collection-date {
+    .issue-date {
         max-width: 225px;
     }
 }     
 
 @media screen and (max-width: 576px) {
-    .collection-date {
+    .issue-date {
         max-width: 175px;
     }
 }     

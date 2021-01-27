@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th width="5%" height="25"></th>
-                <th width="35%">Supplier</th>
+                <th width="30%">Supplier</th>
                 <th width="20%">Item Name</th>
                 <th width="10%">C.Price(Rs.)</th>
                 <th width="10%">D.Cost(Rs.)</th>

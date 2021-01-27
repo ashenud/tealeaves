@@ -9,7 +9,7 @@
 
     <!-- base URL -->
     <script>
-        var baseURL = '/tealeaves/';
+        var baseURL = '/';
     </script>
 
     <!-- favicon -->

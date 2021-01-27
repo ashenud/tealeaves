@@ -9,11 +9,11 @@
     <table width="100%" class="table" align="center" style="margin-bottom: 65px;">
         <thead>
             <tr>
-                <th width="35%">Supplier</th>
-                <th width="25%">Item Name</th>
-                <th width="10%">C.Price(Rs.)</th>
-                <th width="10%">D.Cost(Rs.)</th>
-                <th width="10%">No. of Units</th>
+                <th width="30%">Supplier</th>
+                <th width="20%">Item Name</th>
+                <th width="12%">C.Price(Rs.)</th>
+                <th width="12%">D.Cost(Rs.)</th>
+                <th width="11%">No. of Units</th>
                 <th width="15%">Amount(Rs.)</th>
             </tr>
         </thead>

@@ -43,3 +43,10 @@ Route::get('/admin/load-edit-collection/{id}', 'App\Http\Controllers\Admin\Daily
 Route::post('/admin/insert-collection', 'App\Http\Controllers\Admin\DailyCollectController@insertCollection')->middleware('admin'); // insert collection action
 Route::post('/admin/edit-collection', 'App\Http\Controllers\Admin\DailyCollectController@editCollection')->middleware('admin'); // edit collection action
 Route::post('/admin/confirm-collection', 'App\Http\Controllers\Admin\DailyCollectController@confirmCollection')->middleware('admin'); // confirm collection action
+
+Route::get('/admin/daily-issue', 'App\Http\Controllers\Admin\DailyIssueController@index')->name('daily-issue')->middleware('admin');
+Route::get('/admin/load-insert-issues/{day}', 'App\Http\Controllers\Admin\DailyIssueController@loadInsertIssues')->name('load-insert-issues')->middleware('admin'); // insert and view issues
+Route::get('/admin/load-edit-issues/{id}', 'App\Http\Controllers\Admin\DailyIssueController@loadEditIssues')->name('load-edit-issues')->middleware('admin'); // edit issues
+Route::post('/admin/insert-issues', 'App\Http\Controllers\Admin\DailyIssueController@insertIssues')->middleware('admin'); // insert issues action
+Route::post('/admin/edit-issues', 'App\Http\Controllers\Admin\DailyIssueController@editIssues')->middleware('admin'); // edit issues action
+Route::post('/admin/confirm-issues', 'App\Http\Controllers\Admin\DailyIssueController@confirmIssues')->middleware('admin'); // confirm issues action
