@@ -228,8 +228,6 @@ class DailyCollectController extends Controller
                     for ($j = 0; $j < count($remove_suppliers_array); $j++) {
 
                         $daily_supplier = DailyCollectionSupplier::find($remove_suppliers_array[$j]);
-                        $daily_supplier->edited_user_id = $user_id;
-                        $daily_supplier->edited_status = 1;
                         $daily_supplier->deleted_at = Carbon::now();
                         $daily_supplier->save();                        
                     }
@@ -266,8 +264,6 @@ class DailyCollectController extends Controller
                             $collection_supplier->delivery_cost = $supplier_array[$i]->delivery_cost;
                             $collection_supplier->daily_amount = $supplier_array[$i]->daily_amount;
                             $collection_supplier->daily_value = $supplier_array[$i]->daily_value;
-                            $collection_supplier->edited_user_id = $user_id;
-                            $collection_supplier->edited_status = 1;
                             $collection_supplier->save();
                         }
                         

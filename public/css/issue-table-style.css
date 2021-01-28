@@ -1,3 +1,7 @@
+.supplier-area {
+    margin-top: 40px;
+}
+
 .table td {
     padding: 6px 2px;
     line-height: 0;
@@ -25,6 +29,19 @@
 .minus_icon:hover,
 .plus_icon:hover {
     color: #ffffff;
+}
+
+
+.readonly-select {
+    background-color: #f5ffef;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.readonly-div .select2-selection--single {
+    background-color: #f5ffef;
+    cursor: not-allowed !important;
+    pointer-events: none;
 }
 
 .select2-container .select2-selection--single {

@@ -24,8 +24,6 @@ class CreateDailyCollectionSuppliersTable extends Migration
             $table->decimal('delivery_cost',8,2);
             $table->decimal('daily_amount',12,2)->comment('actual amount of the_supplier current day');
             $table->decimal('daily_value',12,2)->comment('value of the_supplier current day after reducing delivery cost');
-            $table->unsignedBigInteger('edited_user_id')->nullable();
-            $table->tinyInteger('edited_status')->default(0)->comment('0-not edited, 1-edited');
             $table->softDeletes();
             $table->timestamps();
         });

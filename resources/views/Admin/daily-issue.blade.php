@@ -48,14 +48,14 @@
 <script>
 
     var count = 1;
-    var remove_suppliers = [];
+    var remove_supplier_issues = [];
 
     $(document).ready(function() {
         $('#issue_date').trigger("change");
         $('.side-link.li-issue').addClass('active');
     });
     $(document).ajaxComplete(function ( event, xhr, settings ) {      
-        if (typeof xhr.responseJSON === 'undefined')   {
+        if (typeof xhr.responseJSON === 'undefined')   {            
             $('#supplier_id_1').select2();
             $('#item_1').select2();
             count = $('#count').val();
@@ -83,11 +83,11 @@
 
     }
 
-    function loadEditCollection(collection_id) {
+    function loadEditIssues(issue_id) {
         
-        remove_suppliers = [];
+        remove_supplier_issues = [];
 
-        var apiURL = baseURL+'admin/load-edit-collection/'+collection_id;
+        var apiURL = baseURL+'admin/load-edit-issues/'+issue_id;
         // console.log(apiURL);
         $('#supplier-area').html('<p style="display: flex; justify-content: center; margin-top: 75px;"><img src="{{asset("img/loading.gif")}}" /></p>');        
         $('#supplier-area').load(apiURL);        
@@ -105,7 +105,7 @@
         load_net_total_amt();
     }
 
-    // (product)
+    // (product) validate if same item usimg twice
     function getItemValues(row) {
 
         var values =  $("#item_" + row).val().split(",");
@@ -143,7 +143,7 @@
             $("#no_units_" + row).val('');
             $("#daily_value_" + row).val('0.00');
             $("#item_" + row).next().find('.select2-selection').addClass('is-invalid');
-            swal("Error!", "Can not add same supplier twice", "error");            
+            swal("Error!", "Can not add same supplier and item twice", "error");            
             load_net_total_amt();
         }
         else {
@@ -193,18 +193,11 @@
                                     '</td>'+
                                     '<td>'+
                                         '<div class="form-group">'+
-                                            '<input type="hidden" id="delivery_cost_per_unit_' + (row + 1) + '">'+
-                                            '<input type="text" id="delivery_cost_' + (row + 1) + '" class="form-control text-right" value="0.00" readonly>'+
-                                        '</div>'+
-                                    '</td>'+
-                                    '<td>'+
-                                        '<div class="form-group">'+
                                             '<input type="number" id="no_units_' + (row + 1) + '" class="form-control text-right" min="1" autocomplete="off" onkeypress="return event.charCode >= 48" onkeyup="cal_total(' + (row + 1) + ')">'+
                                         '</div>'+
                                     '</td>'+
                                     '<td>'+
                                         '<div class="form-group">'+
-                                            '<input type="hidden" id="daily_amount_' + (row + 1) + '">'+
                                             '<input type="text" id="daily_value_' + (row + 1) + '" class="form-control text-right" value="0.00" readonly>'+
                                         '</div>'+
                                     '</td>'+
@@ -230,12 +223,12 @@
         if( ($("#actual_supplier_count").val() != "") && (typeof $("#actual_supplier_count").val() !== 'undefined') ) {
             var actual_count = $("#actual_supplier_count").val();
             if(row <= actual_count) {
-                var sup_collection_id = $('#sup_collection_id_' + row).val();
-                remove_suppliers.push(sup_collection_id);
+                var sup_issue_id = $('#sup_issue_id_' + row).val();
+                remove_supplier_issues.push(sup_issue_id);
             }
         }
         else {
-            remove_suppliers = [];
+            remove_supplier_issues = [];
         }
 
         $('#tr_' + row).remove();
@@ -248,7 +241,7 @@
             $("#daily_total_value").val(sum.toFixed(2));
         }
 
-        // console.log(remove_suppliers);
+        // console.log(remove_supplier_issues);
 
     }
 
@@ -267,16 +260,13 @@
 
         if( ($("#supplier_id_" + row).val() != "") && (typeof $("#supplier_id_" + row).val() !== 'undefined') ) {
 
-            $("#supplier_" + row).next().find('.select2-selection').removeClass('is-invalid');
+            $("#supplier_id_" + row).next().find('.select2-selection').removeClass('is-invalid');
             var no_of_units = $("#no_units_" + row).val();        
             var unit_price = $("#current_price_" + row).val();
-            var delivery_cost_per_unit = $("#delivery_cost_per_unit_" + row).val();
 
             var sum = 0;
 
-            $("#delivery_cost_" + row).val(parseFloat(no_of_units*delivery_cost_per_unit).toFixed(2));
-            $("#daily_amount_" + row).val(parseFloat(no_of_units*unit_price).toFixed(2));
-            $("#daily_value_" + row).val(parseFloat(no_of_units*(unit_price - delivery_cost_per_unit)).toFixed(2));
+            $("#daily_value_" + row).val(parseFloat(no_of_units*unit_price).toFixed(2));
 
             for (var i = 1; i <= count; i++) {
                 if ($("#daily_value_" + i).val() != "" && ($("#daily_value_" + i).val() != null)) {
@@ -287,7 +277,7 @@
             } 
         }
         else {
-            $("#supplier_" + row).next().find('.select2-selection').addClass('is-invalid');
+            $("#supplier_id_" + row).next().find('.select2-selection').addClass('is-invalid');
             swal("Retry!", "Please select a supplier first", "error");
             $("#no_units_" + row).val('');  
         }
@@ -295,13 +285,13 @@
     }
 
     function submit_data_to_db() {
-        if ($('#collection_date').val() === "") {
-            $("#collection_date").addClass('is-invalid');
-            swal("Retry!", "Please select the collection date", "error");
+        if ($('#issue_date').val() === "") {
+            $("#issue_date").addClass('is-invalid');
+            swal("Retry!", "Please select the issue date", "error");
             $('#s_id').focus();
         }
         else  {
-            $("#collection_date").removeClass('is-invalid');
+            $("#issue_date").removeClass('is-invalid');
             valid = true;
             var arr = [];
             for (var i = 1; i <= count; i++) {
@@ -311,18 +301,16 @@
 
                     var supplier_id = $("#supplier_id_" + i).val();
                     var item_id = $("#item_id_" + i).val();
-                    var delivery_cost_per_unit = $("#delivery_cost_per_unit_" + i).val();
-                    var delivery_cost = $("#delivery_cost_" + i).val();
-                    var daily_amount = $("#daily_amount_" + i).val();
-                    $("#supplier_" + i).removeClass('is-invalid');
+                    var item_type = $("#item_type_" + i).val();
+                    $("#supplier_id_" + i).removeClass('is-invalid');
 
                     if( ($("#current_price_" + i).val() != null) && ($("#current_price_" + i).val() > 0 ) ) {
                         var current_price = $("#current_price_" + i).val();
-                        $("#current_price_" + i).removeClass('is-invalid');
+                        $("#item_" + i).next().find('.select2-selection').removeClass('is-invalid');
                     }
                     else {
                         valid = false;
-                        $("#current_price_" + i).addClass('is-invalid');
+                        $("#item_" + i).next().find('.select2-selection').addClass('is-invalid');
                     }
 
                     if( $("#no_units_" + i).val() > 0 ) {
@@ -347,12 +335,10 @@
 
                         var obj = {
                             'supplier_id': supplier_id,
+                            'item_type': item_type,
                             'item_id': item_id,
                             'current_price': current_price,
-                            'delivery_cost_per_unit': delivery_cost_per_unit,
                             'no_of_units': no_of_units,
-                            'delivery_cost': delivery_cost,
-                            'daily_amount': daily_amount,
                             'daily_value': daily_value,                                
                         };
 
@@ -361,7 +347,7 @@
                     }
                 }
                 else {
-                    $("#supplier_" + i).addClass('is-invalid');
+                    $("#supplier_id_" + i).addClass('is-invalid');
                 }
 
             }
@@ -373,9 +359,9 @@
                 }
                 else {
 
-                    var collection_array = JSON.stringify(arr);
-                    // console.log(JSON.parse(collection_array));
-                    var collection_date = $('#collection_date').val();
+                    var issue_array = JSON.stringify(arr);
+                    // console.log(JSON.parse(issue_array));
+                    var issue_date = $('#issue_date').val();
                     var daily_total_value = $('#daily_total_value').val();
 
                     swal({
@@ -393,12 +379,12 @@
                                 }
                             });
                             $.ajax({
-                                url: '{{url("/admin/insert-collection")}}',
+                                url: '{{url("/admin/insert-issues")}}',
                                 type: "POST",
                                 data: {
 
-                                    collection_date: collection_date,
-                                    collection_array: collection_array,
+                                    issue_date: issue_date,
+                                    issue_array: issue_array,
                                     daily_total_value: daily_total_value,
 
                                 },
@@ -408,7 +394,7 @@
                                     if(data.result===true){
                                         swal("Done!", data.message, "success")
                                         .then((value) => {
-                                            $('#collection_date').val(collection_date).trigger("change");
+                                            $('#issue_date').val(issue_date).trigger("change");
                                         });
                                     }
                                     else{
@@ -436,13 +422,13 @@
     }
 
     function submit_edited_data_to_db() {
-        if ($('#collection_date').val() === "") {
-            $("#collection_date").addClass('is-invalid');
-            swal("Retry!", "Please select the collection date", "error");
+        if ($('#issue_date').val() === "") {
+            $("#issue_date").addClass('is-invalid');
+            swal("Retry!", "Please select the issue date", "error");
             $('#s_id').focus();
         }
         else  {
-            $("#collection_date").removeClass('is-invalid');
+            $("#issue_date").removeClass('is-invalid');
             valid = true;
             var arr = [];
             for (var i = 1; i <= count; i++) {
@@ -450,8 +436,8 @@
                 // validate if current row actualy has a product
                 if( ($("#supplier_id_" + i).val() != "") && (typeof $("#supplier_id_" + i).val() !== 'undefined') ) {
 
-                    if( ($("#sup_collection_id_" + i).val() != "") && (typeof $("#sup_collection_id_" + i).val() !== 'undefined') ) {
-                        var sup_col_id = $("#sup_collection_id_" + i).val();
+                    if( ($("#sup_issue_id_" + i).val() != "") && (typeof $("#sup_issue_id_" + i).val() !== 'undefined') ) {
+                        var sup_col_id = $("#sup_issue_id_" + i).val();
                     }
                     else {
                         var sup_col_id = 0; 
@@ -459,18 +445,16 @@
 
                     var supplier_id = $("#supplier_id_" + i).val();
                     var item_id = $("#item_id_" + i).val();
-                    var delivery_cost_per_unit = $("#delivery_cost_per_unit_" + i).val();
-                    var delivery_cost = $("#delivery_cost_" + i).val();
-                    var daily_amount = $("#daily_amount_" + i).val();
-                    $("#supplier_" + i).removeClass('is-invalid');
+                    var item_type = $("#item_type_" + i).val();
+                    $("#supplier_id_" + i).removeClass('is-invalid');
 
                     if( ($("#current_price_" + i).val() != null) && ($("#current_price_" + i).val() > 0 ) ) {
                         var current_price = $("#current_price_" + i).val();
-                        $("#current_price_" + i).removeClass('is-invalid');
+                        $("#item_" + i).next().find('.select2-selection').removeClass('is-invalid');
                     }
                     else {
                         valid = false;
-                        $("#current_price_" + i).addClass('is-invalid');
+                        $("#item_" + i).next().find('.select2-selection').addClass('is-invalid');
                     }
 
                     if( $("#no_units_" + i).val() > 0 ) {
@@ -484,11 +468,9 @@
 
                     if( $("#daily_value_" + i).val() > 0 ) {
                         var daily_value = $("#daily_value_" + i).val();
-                        // $("#daily_value_" + i).removeClass('is-invalid');
                     }
                     else {
                         valid = false;
-                        // $("#daily_value_" + i).addClass('is-invalid');
                     }
 
                     if (valid === true) {
@@ -496,12 +478,10 @@
                         var obj = {
                             'sup_col_id': sup_col_id,
                             'supplier_id': supplier_id,
+                            'item_type': item_type,
                             'item_id': item_id,
                             'current_price': current_price,
-                            'delivery_cost_per_unit': delivery_cost_per_unit,
                             'no_of_units': no_of_units,
-                            'delivery_cost': delivery_cost,
-                            'daily_amount': daily_amount,
                             'daily_value': daily_value,                                
                         };
 
@@ -510,7 +490,7 @@
                     }
                 }
                 else {
-                    $("#supplier_" + i).addClass('is-invalid');
+                    $("#supplier_id_" + i).addClass('is-invalid');
                 }
 
             }
@@ -522,11 +502,11 @@
                 }
                 else {
 
-                    var collection_array = JSON.stringify(arr);
-                    var removed_suppliers = JSON.stringify(remove_suppliers);
-                    // console.log(JSON.parse(collection_array));
-                    var collection_id = $('#collection_id').val();
-                    var collection_date = $('#collection_date').val();
+                    var issue_array = JSON.stringify(arr);
+                    var removed_supplier_issues = JSON.stringify(remove_supplier_issues);
+                    // console.log(JSON.parse(issue_array),JSON.parse(removed_supplier_issues));
+                    var issue_id = $('#issue_id').val();
+                    var issue_date = $('#issue_date').val();
                     var daily_total_value = $('#daily_total_value').val();
 
                     swal({
@@ -544,14 +524,14 @@
                                 }
                             });
                             $.ajax({
-                                url: '{{url("/admin/edit-collection")}}',
+                                url: '{{url("/admin/edit-issues")}}',
                                 type: "POST",
                                 data: {
 
-                                    collection_id: collection_id,
-                                    collection_date: collection_date,
-                                    collection_array: collection_array,
-                                    removed_suppliers: removed_suppliers,
+                                    issue_id: issue_id,
+                                    issue_date: issue_date,
+                                    issue_array: issue_array,
+                                    removed_supplier_issues: removed_supplier_issues,
                                     daily_total_value: daily_total_value,
                                 },
                                 success: function (data) {
@@ -559,7 +539,7 @@
                                     if(data.result===true){
                                         swal("Done!", data.message, "success")
                                         .then((value) => {
-                                            $('#collection_date').val(collection_date).trigger("change");
+                                            $('#issue_date').val(issue_date).trigger("change");
                                         });
                                     }
                                     else{
@@ -590,7 +570,7 @@
         
     }
 
-    function confirmCollection(collection_id) {
+    function confirmIssues(issue_id) {
 
         swal({
             title: "Are you sure?",
@@ -607,17 +587,17 @@
                     }
                 });
                 $.ajax({
-                    url: '{{url("/admin/confirm-collection")}}',
+                    url: '{{url("/admin/confirm-issues")}}',
                     type: "POST",
                     data: {
-                        collection_id: collection_id,
+                        issue_id: issue_id,
                     },
                     success: function (data) {
                         console.log(data);
                         if(data.result===true){
                             swal("Done!", data.message, "success")
                             .then((value) => {
-                                $('#collection_date').trigger("change");
+                                $('#issue_date').trigger("change");
                             });
                         }
                         else{
@@ -640,7 +620,7 @@
     }
 
     function cancelSubmition() {
-        $('#collection_date').trigger("change");
+        $('#issue_date').trigger("change");
     }
 
 </script>

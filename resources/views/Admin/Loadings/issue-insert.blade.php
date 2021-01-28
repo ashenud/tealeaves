@@ -6,7 +6,6 @@
                 <th width="35%">Supplier</th>
                 <th width="20%">Item Name</th>
                 <th width="10%">C.Price(Rs.)</th>
-                <th width="10%">D.Cost(Rs.)</th>
                 <th width="10%">No. of Units</th>
                 <th width="15%">Amount(Rs.)</th>
             </tr>
@@ -52,12 +51,6 @@
                 </td>
                 <td>
                     <div class="form-group">
-                        <input type="hidden" id="delivery_cost_per_unit_1">
-                        <input type="text" id="delivery_cost_1" class="form-control text-right" value="0.00" readonly>
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
                         <input type="number" id="no_units_1" class="form-control text-right" min="1" autocomplete="off" onkeypress="return event.charCode >= 48" onkeyup="cal_total(1)">
                     </div>
                 </td>
@@ -75,7 +68,7 @@
             
             <!--Display Daily Total-->
             <tr>
-                <td colspan="6" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="5" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="0.00" readonly> </b>
@@ -83,7 +76,7 @@
                 </td>
             </tr>
             <tr class="submit-button-row">
-                <td colspan="7" align="right">
+                <td colspan="6" align="right">
                     <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="SUBMIT COLLECTION DATA"  id="dd" onclick="submit_data_to_db()" />
                 </td>
             </tr>
