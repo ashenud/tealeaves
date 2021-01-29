@@ -50,25 +50,35 @@ class DailyIssueController extends Controller {
 
         if(count($issue) == 0) {
 
-            $data = array();
+            $current_month = date("Y-m");
+            $timestamp = strtotime($issue_date);
+            $cuurent_issue_month = date("Y-m", $timestamp);
 
-            $suppliers = DB::table('suppliers AS ts')
-                        ->select('ts.sup_name','ts.id')
-                        ->whereNull('ts.deleted_at')
-                        ->get();
-            $data['suppliers'] = $suppliers;
+            if ($current_month == $cuurent_issue_month) {
+                $data = array();
 
-            $items = DB::table('items AS ti')
-                        ->join('item_types AS tit','tit.id','ti.item_type')
-                        ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                        ->whereNotIn('tit.id', [1, 5])
-                        ->whereNull('ti.deleted_at')
-                        ->whereNull('tit.deleted_at')
-                        ->get();
-            $data['items'] = $items;
+                $suppliers = DB::table('suppliers AS ts')
+                            ->select('ts.sup_name','ts.id')
+                            ->whereNull('ts.deleted_at')
+                            ->get();
+                $data['suppliers'] = $suppliers;
 
-            // dd($data);
-            return view('Admin.Loadings.issue-insert')->with('data',$data);
+                $items = DB::table('items AS ti')
+                            ->join('item_types AS tit','tit.id','ti.item_type')
+                            ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
+                            ->whereNotIn('tit.id', [1, 5])
+                            ->whereNull('ti.deleted_at')
+                            ->whereNull('tit.deleted_at')
+                            ->get();
+                $data['items'] = $items;
+
+                // dd($cuurent_issue_month);
+                return view('Admin.Loadings.issue-insert')->with('data',$data);
+
+            }
+            else {
+                return view('Admin.Loadings.no-data');
+            }
 
         }
         else {

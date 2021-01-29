@@ -26,6 +26,16 @@
             </a>
         </li>
         <li class="side-item">
+            <a class="side-link li-f-issue" href="{{ url('admin/fertilizer-issue') }}">
+                <i class="now-ui-icons shopping_cart-simple"></i> Fertilizer Issue
+            </a>
+        </li>
+        <li class="side-item">
+            <a class="side-link li-loan" href="{{ url('admin/loan-issue') }}">
+                <i class="now-ui-icons business_money-coins"></i> Loan Issue
+            </a>
+        </li>
+        <li class="side-item">
             <a class="side-link li-report" href="{{ url('admin/reports') }}">
                 <i class="now-ui-icons files_single-copy-04"></i> Reports
             </a>

@@ -77,7 +77,7 @@
             </tr>
             <tr class="submit-button-row">
                 <td colspan="6" align="right">
-                    <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="SUBMIT COLLECTION DATA"  id="dd" onclick="submit_data_to_db()" />
+                    <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="SUBMIT ISSUE DATA"  id="dd" onclick="submit_data_to_db()" />
                 </td>
             </tr>
 
