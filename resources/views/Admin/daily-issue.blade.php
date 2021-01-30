@@ -163,7 +163,7 @@
                                     '<td>'+
                                         '<div class="form-group">'+
                                             '<select class="form-control supplier-name" id="supplier_id_' + (row + 1) + '"  onchange="resetCurrentItem(' + (row + 1) + ')">'+
-                                                '<option value=""></option>'+
+                                                '<option value="">Select Supplier</option>'+
                                                 '@if (isset($data["suppliers"]))'+
                                                     '@foreach ($data["suppliers"] as $supplier)'+
                                                         '<option value="{{ $supplier->id }}">{{ $supplier->sup_name }}</option>'+
@@ -175,7 +175,7 @@
                                     '<td>'+
                                         '<div class="form-group">'+
                                             '<select class="form-control item-name" id="item_' + (row + 1) + '" onchange="getItemValues(' + (row + 1) + ')">'+
-                                                '<option value=""></option>'+
+                                                '<option value="">Select Item</option>'+
                                                 '@if (isset($data["items"]))'+
                                                     '@foreach ($data["items"] as $item)'+
                                                         '<option value="{{ $item->value }}">{{ $item->item_name }}</option>'+

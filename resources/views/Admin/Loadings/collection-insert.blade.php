@@ -22,7 +22,7 @@
                 <td>
                     <div class="form-group">
                         <select class="form-control supplier-name" id="supplier_1" onchange="getSupplierValues(1)">
-                            <option value=""></option>
+                            <option value="">Select Supplier</option>
                             @if (isset($data['suppliers']))
                                 @foreach ($data['suppliers'] as $supplier)
                                     <option value="{{ $supplier->value }}">{{ $supplier->sup_name }}</option>
