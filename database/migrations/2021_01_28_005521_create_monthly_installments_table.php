@@ -15,10 +15,11 @@ class CreateMonthlyInstallmentsTable extends Migration
     {
         Schema::create('monthly_installments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('supplier_id');
             $table->string('month');
             $table->decimal('installment',12,2);
-            $table->unsignedBigInteger('reference');
-            $table->string('remarks');
+            $table->unsignedBigInteger('reference')->nullable();
+            $table->string('remarks')->nullable();
             $table->tinyInteger('deducted_status')->default(0)->comment('0-not deducted, 1-deducted');
             $table->softDeletes();
             $table->timestamps();

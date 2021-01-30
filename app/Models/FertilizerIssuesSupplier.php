@@ -4,8 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FertilizerIssuesSupplier extends Model
 {
-    use HasFactory;
+    use HasFactory, RevisionableTrait, SoftDeletes;
+
+    protected $revisionCreationsEnabled = true;
+    protected $revisionForceDeleteEnabled = true;
 }

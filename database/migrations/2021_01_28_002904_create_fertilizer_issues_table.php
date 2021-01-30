@@ -15,6 +15,7 @@ class CreateFertilizerIssuesTable extends Migration
     {
         Schema::create('fertilizer_issues', function (Blueprint $table) {
             $table->id();
+            $table->date('date');
             $table->string('fertilizer_issue_no')->nullable();
             $table->decimal('daily_total_value',14,2);
             $table->unsignedBigInteger('user_id')->comment('created user id');

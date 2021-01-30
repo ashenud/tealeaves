@@ -27,7 +27,7 @@
         </li>
         <li class="side-item">
             <a class="side-link li-f-issue" href="{{ url('admin/fertilizer-issue') }}">
-                <i class="now-ui-icons shopping_cart-simple"></i> Fertilizer Issue
+                <i class="now-ui-icons shopping_bag-16"></i> Fertilizer Issue
             </a>
         </li>
         <li class="side-item">

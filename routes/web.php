@@ -50,3 +50,10 @@ Route::get('/admin/load-edit-issues/{id}', 'App\Http\Controllers\Admin\DailyIssu
 Route::post('/admin/insert-issues', 'App\Http\Controllers\Admin\DailyIssueController@insertIssues')->middleware('admin'); // insert issues action
 Route::post('/admin/edit-issues', 'App\Http\Controllers\Admin\DailyIssueController@editIssues')->middleware('admin'); // edit issues action
 Route::post('/admin/confirm-issues', 'App\Http\Controllers\Admin\DailyIssueController@confirmIssues')->middleware('admin'); // confirm issues action
+
+Route::get('/admin/fertilizer-issue', 'App\Http\Controllers\Admin\FertilizerIssueController@index')->name('fertilizer-issue')->middleware('admin');
+Route::get('/admin/load-insert-fertilizer-issues/{day}', 'App\Http\Controllers\Admin\FertilizerIssueController@loadInsertFertilizerIssues')->name('load-insert-fertilizer-issues')->middleware('admin'); // insert and view fertilizer
+Route::get('/admin/load-edit-fertilizer-issues/{id}', 'App\Http\Controllers\Admin\FertilizerIssueController@loadEditFertilizerIssues')->name('load-edit-fertilizer-issues')->middleware('admin'); // edit fertilizer
+Route::post('/admin/insert-fertilizer-issues', 'App\Http\Controllers\Admin\FertilizerIssueController@insertFertilizerIssues')->middleware('admin'); // insert fertilizer action
+Route::post('/admin/edit-fertilizer-issues', 'App\Http\Controllers\Admin\FertilizerIssueController@editFertilizerIssues')->middleware('admin'); // edit fertilizer action
+Route::post('/admin/confirm-fertilizer-issues', 'App\Http\Controllers\Admin\FertilizerIssueController@confirmFertilizerIssues')->middleware('admin'); // confirm fertilizer action
