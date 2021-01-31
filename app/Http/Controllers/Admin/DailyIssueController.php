@@ -50,7 +50,7 @@ class DailyIssueController extends Controller {
 
         if(count($issue) == 0) {
 
-            $current_month = date("Y-m");
+            $current_month = '2020-12';
             $timestamp = strtotime($issue_date);
             $cuurent_issue_month = date("Y-m", $timestamp);
 

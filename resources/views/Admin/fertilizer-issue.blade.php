@@ -198,8 +198,8 @@
                                             '<select class="form-control payment_frequency" id="payment_frequency_' + (row + 1) + '">'+
                                                 '<option value="">Select Frequency</option>'+
                                                 '<option value="1">One Month</option>'+
-                                                '<option value="2">Two Month</option>'+
-                                                '<option value="3">Two Month</option>'+
+                                                '<option value="2">Two Months</option>'+
+                                                '<option value="3">Three Months</option>'+
                                             '</select>'+                                 
                                         '</div>'+
                                     '</td>'+

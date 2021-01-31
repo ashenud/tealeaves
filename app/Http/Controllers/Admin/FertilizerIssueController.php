@@ -51,11 +51,11 @@ class FertilizerIssueController extends Controller {
 
         if(count($fertilizer_issue) == 0) {
 
-            $current_month = date("Y-m");
+            $current_month = '2020-12';
             $timestamp = strtotime($fertilizer_issue_date);
-            $cuurent_issue_month = date("Y-m", $timestamp);
+            $current_issue_month = date("Y-m", $timestamp);
 
-            if ($current_month == $cuurent_issue_month) {
+            if ($current_month == $current_issue_month) {
                 $data = array();
 
                 $suppliers = DB::table('suppliers AS ts')
@@ -73,7 +73,7 @@ class FertilizerIssueController extends Controller {
                             ->get();
                 $data['items'] = $items;
 
-                // dd($cuurent_issue_month);
+                // dd($current_issue_month);
                 return view('Admin.Loadings.fertilizer-issue-insert')->with('data',$data);
 
             }
@@ -312,18 +312,20 @@ class FertilizerIssueController extends Controller {
         $user_id = Auth::user()->id;
         $fertilizer_issue_id = $request->fertilizer_issue_id;
 
-        $is_exist = FertilizerIssues::where('id',$fertilizer_issue_id)->where('confirm_status',0)->limit(1)->get();
+        $current_issue = FertilizerIssues::where('id',$fertilizer_issue_id)->where('confirm_status',0)->limit(1)->get();
 
-        if(count($is_exist) > 0) {
+        if(count($current_issue) > 0) {
+
+            $ending_month = $current_issue[0]->date;
 
             try {
 
                 DB::beginTransaction();
 
                 $month = array();
-                $month[1] = date("Y-m");
-                $month[2] = date('Y-m',strtotime('first day of +1 month'));
-                $month[3] = date('Y-m',strtotime('first day of +2 month'));
+                $month[1] = date("Y-m", strtotime($ending_month));
+                $month[2] = date('Y-m',strtotime('first day of +1 month',strtotime($ending_month)));
+                $month[3] = date('Y-m',strtotime('first day of +2 month',strtotime($ending_month)));
 
                 $sup_fertilizer_issues =DB::table('fertilizer_issues_suppliers AS tfis')
                                     ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
