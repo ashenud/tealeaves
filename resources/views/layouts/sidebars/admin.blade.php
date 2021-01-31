@@ -36,8 +36,8 @@
             </a>
         </li>
         <li class="side-item">
-            <a class="side-link li-report" href="{{ url('admin/reports') }}">
-                <i class="now-ui-icons files_single-copy-04"></i> Reports
+            <a class="side-link li-month-end" href="{{ url('admin/month-end') }}">
+                <i class="now-ui-icons files_single-copy-04"></i> Month End
             </a>
         </li>
     </ul>

@@ -90,7 +90,7 @@
     <script>
 
         $(document).ready(function() {
-            $('.side-link.li-loan').addClass('active');
+            $('.side-link.li-month-end').addClass('active');
             $('#supplier').select2();
         });
 

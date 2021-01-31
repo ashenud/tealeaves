@@ -59,3 +59,7 @@ Route::post('/admin/edit-fertilizer-issues', 'App\Http\Controllers\Admin\Fertili
 Route::post('/admin/confirm-fertilizer-issues', 'App\Http\Controllers\Admin\FertilizerIssueController@confirmFertilizerIssues')->middleware('admin'); // confirm fertilizer action
 
 Route::get('/admin/loan-issue', 'App\Http\Controllers\Admin\LoanIssueController@index')->name('loan-issue')->middleware('admin');
+Route::post('/admin/insert-loan', 'App\Http\Controllers\Admin\LoanIssueController@insertLoan')->middleware('admin'); // insert loan action
+
+Route::get('/admin/month-end', 'App\Http\Controllers\Admin\MonthEndController@index')->name('month-end')->middleware('admin');
+Route::post('/admin/create-month-end', 'App\Http\Controllers\Admin\MonthEndController@createMonthEnd')->middleware('admin');

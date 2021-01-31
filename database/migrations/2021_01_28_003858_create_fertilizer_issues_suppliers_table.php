@@ -15,7 +15,7 @@ class CreateFertilizerIssuesSuppliersTable extends Migration
     {
         Schema::create('fertilizer_issues_suppliers', function (Blueprint $table) {
             $table->id();
-            $table->string('fertilizer_issue_id')->nullable();
+            $table->string('fertilizer_issue_id');
             $table->unsignedBigInteger('supplier_id');
             $table->unsignedBigInteger('item_type');
             $table->unsignedBigInteger('item_id');
