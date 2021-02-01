@@ -13,6 +13,7 @@ use App\Models\Route;
 use App\Models\Item;
 use App\Models\DailyIssues;
 use App\Models\DailyIssuesSupplier;
+use App\Models\MonthEnd;
 
 class DailyIssueController extends Controller {
 
@@ -44,67 +45,78 @@ class DailyIssueController extends Controller {
     public function loadInsertIssues($date) {
 
         $user_id = Auth::user()->id;
+        
+        $requested_date = $date;
+        $requested_month = date("Y-m", strtotime($requested_date));
 
-        $issue_date = $date;
-        $issue = DailyIssues::where('date',$issue_date)->limit(1)->get();
+        $start_month = date("Y-m", strtotime(config('tealeaves.start_date')));
 
-        if(count($issue) == 0) {
+        if($start_month <= $requested_month) {
 
-            $current_month = '2020-12';
-            $timestamp = strtotime($issue_date);
-            $cuurent_issue_month = date("Y-m", $timestamp);
+            $issue_date = $date;
+            $issue = DailyIssues::where('date',$issue_date)->limit(1)->get();
 
-            if ($current_month == $cuurent_issue_month) {
-                $data = array();
+            if(count($issue) == 0) {
 
-                $suppliers = DB::table('suppliers AS ts')
-                            ->select('ts.sup_name','ts.id')
-                            ->whereNull('ts.deleted_at')
-                            ->get();
-                $data['suppliers'] = $suppliers;
+                $month_end = MonthEnd::where('month',$requested_month)->limit(1)->get();
 
-                $items = DB::table('items AS ti')
-                            ->join('item_types AS tit','tit.id','ti.item_type')
-                            ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                            ->whereNotIn('tit.id', [1, 5])
-                            ->whereNull('ti.deleted_at')
-                            ->whereNull('tit.deleted_at')
-                            ->get();
-                $data['items'] = $items;
+                if ($month_end[0]->ended_status == 0) {
 
-                // dd($cuurent_issue_month);
-                return view('Admin.Loadings.issue-insert')->with('data',$data);
+                    $data = array();
+
+                    $suppliers = DB::table('suppliers AS ts')
+                                ->select('ts.sup_name','ts.id')
+                                ->whereNull('ts.deleted_at')
+                                ->get();
+                    $data['suppliers'] = $suppliers;
+
+                    $items = DB::table('items AS ti')
+                                ->join('item_types AS tit','tit.id','ti.item_type')
+                                ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
+                                ->whereNotIn('tit.id', [1, 5])
+                                ->whereNull('ti.deleted_at')
+                                ->whereNull('tit.deleted_at')
+                                ->get();
+                    $data['items'] = $items;
+
+                    // dd($cuurent_issue_month);
+                    return view('Admin.Loadings.issue-insert')->with('data',$data);
+
+                }
+                else {
+                    return view('Admin.Loadings.no-data');
+                }
 
             }
             else {
-                return view('Admin.Loadings.no-data');
-            }
 
+                $issue_id = $issue[0]->id;
+
+                $data = array();
+
+                $data['issue_id'] = $issue[0]->id;
+                $data['daily_total_value'] = $issue[0]->daily_total_value;
+                $data['issue_status'] = $issue[0]->confirm_status;
+
+                $supplier_issue = DB::table('daily_issues_suppliers AS tdis')
+                                        ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
+                                        ->join('suppliers AS ts','ts.id','tdis.supplier_id')
+                                        ->join('items AS ti','ti.id','tdis.item_id')
+                                        ->select('ts.sup_name','ti.item_name','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
+                                        ->where('tdi.id',$issue_id)
+                                        ->whereNull('tdis.deleted_at')
+                                        ->whereNull('tdi.deleted_at')
+                                        ->whereNull('ts.deleted_at')
+                                        ->whereNull('ti.deleted_at')
+                                        ->get();
+                $data['suppliers'] = $supplier_issue;
+                // dd($data);
+                return view('Admin.Loadings.issue-view')->with('data',$data);
+            }
+        
         }
         else {
-
-            $issue_id = $issue[0]->id;
-
-            $data = array();
-
-            $data['issue_id'] = $issue[0]->id;
-            $data['daily_total_value'] = $issue[0]->daily_total_value;
-            $data['issue_status'] = $issue[0]->confirm_status;
-
-            $supplier_issue = DB::table('daily_issues_suppliers AS tdis')
-                                      ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
-                                      ->join('suppliers AS ts','ts.id','tdis.supplier_id')
-                                      ->join('items AS ti','ti.id','tdis.item_id')
-                                      ->select('ts.sup_name','ti.item_name','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
-                                      ->where('tdi.id',$issue_id)
-                                      ->whereNull('tdis.deleted_at')
-                                      ->whereNull('tdi.deleted_at')
-                                      ->whereNull('ts.deleted_at')
-                                      ->whereNull('ti.deleted_at')
-                                      ->get();
-            $data['suppliers'] = $supplier_issue;
-            // dd($data);
-            return view('Admin.Loadings.issue-view')->with('data',$data);
+            return view('Admin.Loadings.no-data');
         }
     }
 

@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class DatabaseSeeder extends Seeder
 {
@@ -89,6 +92,31 @@ class DatabaseSeeder extends Seeder
             ['sup_name' => 'Kumar Sangakkara', 'sup_address' => '71/O, Teppanawa, Awissawella', 'sup_contact' => '0725469874', 'route_id' => '1', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['sup_name' => 'Mahela Jayawardhane', 'sup_address' => '19/I, Teppanawa, Awissawella', 'sup_contact' => '0725852203', 'route_id' => '1', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
+
+        DB::table('month_ends')->insert([
+            'month' => config('tealeaves.previous_month'),
+            'ended_date' => config('tealeaves.start_date'),
+            'ended_status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        
+        $start    = new DateTime(config('tealeaves.start_date'));
+        $start->modify('first day of this month');
+        $end      = new DateTime(config('tealeaves.end_date'));
+        $end->modify('first day of next month');
+        $interval = DateInterval::createFromDateString('1 month');
+        $period   = new DatePeriod($start, $interval, $end);
+
+        foreach ($period as $dt) {
+
+            DB::table('month_ends')->insert([
+                'month' => $dt->format("Y-m"),
+                'ended_status' => 0,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+        }
 
     }
 }

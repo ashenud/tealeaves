@@ -14,6 +14,7 @@ use App\Models\Item;
 use App\Models\FertilizerIssues;
 use App\Models\FertilizerIssuesSupplier;
 use App\Models\MonthlyInstallment;
+use App\Models\MonthEnd;
 
 class FertilizerIssueController extends Controller {
 
@@ -46,66 +47,76 @@ class FertilizerIssueController extends Controller {
 
         $user_id = Auth::user()->id;
 
-        $fertilizer_issue_date = $date;
-        $fertilizer_issue = FertilizerIssues::where('date',$fertilizer_issue_date)->limit(1)->get();
+        $requested_date = $date;
+        $requested_month = date("Y-m", strtotime($requested_date));
 
-        if(count($fertilizer_issue) == 0) {
+        $start_month = date("Y-m", strtotime(config('tealeaves.start_date')));
 
-            $current_month = '2020-12';
-            $timestamp = strtotime($fertilizer_issue_date);
-            $current_issue_month = date("Y-m", $timestamp);
+        if($start_month <= $requested_month) {
 
-            if ($current_month == $current_issue_month) {
-                $data = array();
+            $fertilizer_issue_date = $date;
+            $fertilizer_issue = FertilizerIssues::where('date',$fertilizer_issue_date)->limit(1)->get();
 
-                $suppliers = DB::table('suppliers AS ts')
-                            ->select('ts.sup_name','ts.id')
-                            ->whereNull('ts.deleted_at')
-                            ->get();
-                $data['suppliers'] = $suppliers;
+            if(count($fertilizer_issue) == 0) {
 
-                $items = DB::table('items AS ti')
-                            ->join('item_types AS tit','tit.id','ti.item_type')
-                            ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                            ->whereNotIn('tit.id', [1,2,3,4])
-                            ->whereNull('ti.deleted_at')
-                            ->whereNull('tit.deleted_at')
-                            ->get();
-                $data['items'] = $items;
+                $month_end = MonthEnd::where('month',$requested_month)->limit(1)->get();
 
-                // dd($current_issue_month);
-                return view('Admin.Loadings.fertilizer-issue-insert')->with('data',$data);
+                if ($month_end[0]->ended_status == 0) {
+                    
+                    $data = array();
+
+                    $suppliers = DB::table('suppliers AS ts')
+                                ->select('ts.sup_name','ts.id')
+                                ->whereNull('ts.deleted_at')
+                                ->get();
+                    $data['suppliers'] = $suppliers;
+
+                    $items = DB::table('items AS ti')
+                                ->join('item_types AS tit','tit.id','ti.item_type')
+                                ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
+                                ->whereNotIn('tit.id', [1,2,3,4])
+                                ->whereNull('ti.deleted_at')
+                                ->whereNull('tit.deleted_at')
+                                ->get();
+                    $data['items'] = $items;
+
+                    // dd($current_issue_month);
+                    return view('Admin.Loadings.fertilizer-issue-insert')->with('data',$data);
+
+                }
+                else {
+                    return view('Admin.Loadings.no-data');
+                }
 
             }
             else {
-                return view('Admin.Loadings.no-data');
-            }
 
+                $fertilizer_issue_id = $fertilizer_issue[0]->id;
+
+                $data = array();
+
+                $data['fertilizer_issue_id'] = $fertilizer_issue[0]->id;
+                $data['daily_total_value'] = $fertilizer_issue[0]->daily_total_value;
+                $data['fertilizer_issue_status'] = $fertilizer_issue[0]->confirm_status;
+
+                $supplier_issue = DB::table('fertilizer_issues_suppliers AS tfis')
+                                        ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
+                                        ->join('suppliers AS ts','ts.id','tfis.supplier_id')
+                                        ->join('items AS ti','ti.id','tfis.item_id')
+                                        ->select('ts.sup_name','ti.item_name','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency')
+                                        ->where('tfi.id',$fertilizer_issue_id)
+                                        ->whereNull('tfis.deleted_at')
+                                        ->whereNull('tfi.deleted_at')
+                                        ->whereNull('ts.deleted_at')
+                                        ->whereNull('ti.deleted_at')
+                                        ->get();
+                $data['suppliers'] = $supplier_issue;
+                // dd($data);
+                return view('Admin.Loadings.fertilizer-issue-view')->with('data',$data);
+            }
         }
         else {
-
-            $fertilizer_issue_id = $fertilizer_issue[0]->id;
-
-            $data = array();
-
-            $data['fertilizer_issue_id'] = $fertilizer_issue[0]->id;
-            $data['daily_total_value'] = $fertilizer_issue[0]->daily_total_value;
-            $data['fertilizer_issue_status'] = $fertilizer_issue[0]->confirm_status;
-
-            $supplier_issue = DB::table('fertilizer_issues_suppliers AS tfis')
-                                      ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
-                                      ->join('suppliers AS ts','ts.id','tfis.supplier_id')
-                                      ->join('items AS ti','ti.id','tfis.item_id')
-                                      ->select('ts.sup_name','ti.item_name','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency')
-                                      ->where('tfi.id',$fertilizer_issue_id)
-                                      ->whereNull('tfis.deleted_at')
-                                      ->whereNull('tfi.deleted_at')
-                                      ->whereNull('ts.deleted_at')
-                                      ->whereNull('ti.deleted_at')
-                                      ->get();
-            $data['suppliers'] = $supplier_issue;
-            // dd($data);
-            return view('Admin.Loadings.fertilizer-issue-view')->with('data',$data);
+            return view('Admin.Loadings.no-data');
         }
     }
 

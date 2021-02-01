@@ -13,6 +13,7 @@ use App\Models\Route;
 use App\Models\Item;
 use App\Models\DailyCollection;
 use App\Models\DailyCollectionSupplier;
+use App\Models\MonthEnd;
 
 class DailyCollectController extends Controller
 {
@@ -44,55 +45,77 @@ class DailyCollectController extends Controller
 
         $user_id = Auth::user()->id;
 
-        $collection_date = $date;
-        $collection = DailyCollection::where('date',$collection_date)->limit(1)->get();
+        $requested_date = $date;
+        $requested_month = date("Y-m", strtotime($requested_date));
 
-        if(count($collection) == 0) {
+        $start_month = date("Y-m", strtotime(config('tealeaves.start_date')));
 
-            $data = array();
+        if($start_month <= $requested_month) {
 
-            $suppliers = DB::table('suppliers AS ts')
-                        ->join('routes AS tr','tr.id','ts.route_id')
-                        ->select('ts.sup_name',DB::raw('CONCAT(ts.id, ",", tr.delivery_cost) AS value'))
-                        ->whereNull('ts.deleted_at')
-                        ->whereNull('tr.deleted_at')
-                        ->get();
-            $data['suppliers'] = $suppliers;
+            $collection_date = $date;
+            $collection = DailyCollection::where('date',$collection_date)->limit(1)->get();
 
-            $items = Item::where('id',1)->get();
-            $data['item_id'] = $items[0]->id;
-            $data['item_name'] = $items[0]->item_name;
-            $data['item_price'] = $items[0]->unit_price;
+            if(count($collection) == 0) {
 
-            // dd($data);
-            return view('Admin.Loadings.collection-insert')->with('data',$data);
+                $month_end = MonthEnd::where('month',$requested_month)->limit(1)->get();
+
+                if ($month_end[0]->ended_status == 0) {
+
+                    $data = array();
+
+                    $suppliers = DB::table('suppliers AS ts')
+                                ->join('routes AS tr','tr.id','ts.route_id')
+                                ->select('ts.sup_name',DB::raw('CONCAT(ts.id, ",", tr.delivery_cost) AS value'))
+                                ->whereNull('ts.deleted_at')
+                                ->whereNull('tr.deleted_at')
+                                ->get();
+                    $data['suppliers'] = $suppliers;
+
+                    $items = Item::where('id',1)->get();
+                    $data['item_id'] = $items[0]->id;
+                    $data['item_name'] = $items[0]->item_name;
+                    $data['item_price'] = $items[0]->unit_price;
+
+                    // dd($data);
+                    return view('Admin.Loadings.collection-insert')->with('data',$data);
+
+                }
+                else {
+                    return view('Admin.Loadings.no-data');
+                }
+
+            }
+            else {
+
+                $collection_id = $collection[0]->id;
+
+                $data = array();
+
+                $data['collection_id'] = $collection[0]->id;
+                $data['daily_total_value'] = $collection[0]->daily_total_value;
+                $data['collection_status'] = $collection[0]->confirm_status;
+
+                $supplier_collection = DB::table('daily_collection_suppliers AS tdcs')
+                                        ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
+                                        ->join('suppliers AS ts','ts.id','tdcs.supplier_id')
+                                        ->join('items AS ti','ti.id','tdcs.item_id')
+                                        ->select('ts.sup_name','ti.item_name','tdcs.number_of_units','tdcs.current_units_price','tdcs.delivery_cost','tdcs.daily_value')
+                                        ->where('tdc.id',$collection_id)
+                                        ->whereNull('tdcs.deleted_at')
+                                        ->whereNull('tdc.deleted_at')
+                                        ->whereNull('ts.deleted_at')
+                                        ->whereNull('ti.deleted_at')
+                                        ->get();
+                $data['suppliers'] = $supplier_collection;
+                // dd($data);
+                return view('Admin.Loadings.collection-view')->with('data',$data);
+            }
 
         }
         else {
-
-            $collection_id = $collection[0]->id;
-
-            $data = array();
-
-            $data['collection_id'] = $collection[0]->id;
-            $data['daily_total_value'] = $collection[0]->daily_total_value;
-            $data['collection_status'] = $collection[0]->confirm_status;
-
-            $supplier_collection = DB::table('daily_collection_suppliers AS tdcs')
-                                      ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
-                                      ->join('suppliers AS ts','ts.id','tdcs.supplier_id')
-                                      ->join('items AS ti','ti.id','tdcs.item_id')
-                                      ->select('ts.sup_name','ti.item_name','tdcs.number_of_units','tdcs.current_units_price','tdcs.delivery_cost','tdcs.daily_value')
-                                      ->where('tdc.id',$collection_id)
-                                      ->whereNull('tdcs.deleted_at')
-                                      ->whereNull('tdc.deleted_at')
-                                      ->whereNull('ts.deleted_at')
-                                      ->whereNull('ti.deleted_at')
-                                      ->get();
-            $data['suppliers'] = $supplier_collection;
-            // dd($data);
-            return view('Admin.Loadings.collection-view')->with('data',$data);
+            return view('Admin.Loadings.no-data');
         }
+
     }
 
     public function loadEditCollection($id) {

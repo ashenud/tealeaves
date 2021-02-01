@@ -19,15 +19,16 @@ class MonthEndSeeder extends Seeder
     public function run() {
 
         DB::table('month_ends')->insert([
-            'month' => '2020-10',
-            'ended_status' => 0,
+            'month' => config('tealeaves.previous_month'),
+            'ended_date' => config('tealeaves.start_date'),
+            'ended_status' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
         
-        $start    = new DateTime('2020-11-01');
+        $start    = new DateTime(config('tealeaves.start_date'));
         $start->modify('first day of this month');
-        $end      = new DateTime('2030-01-01');
+        $end      = new DateTime(config('tealeaves.end_date'));
         $end->modify('first day of next month');
         $interval = DateInterval::createFromDateString('1 month');
         $period   = new DatePeriod($start, $interval, $end);
