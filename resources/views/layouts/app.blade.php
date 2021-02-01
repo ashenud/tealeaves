@@ -9,7 +9,7 @@
 
     <!-- base URL -->
     <script>
-        var baseURL = '/';
+        var baseURL = "{{config('tealeaves.base_url')}}";
     </script>
 
     <!-- favicon -->
