@@ -17,8 +17,15 @@ class MonthEndSeeder extends Seeder
      * @return void
      */
     public function run() {
+
+        DB::table('month_ends')->insert([
+            'month' => '2020-10',
+            'ended_status' => 0,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
         
-        $start    = new DateTime('2020-10-01');
+        $start    = new DateTime('2020-11-01');
         $start->modify('first day of this month');
         $end      = new DateTime('2030-01-01');
         $end->modify('first day of next month');

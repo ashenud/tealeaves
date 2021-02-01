@@ -20,7 +20,9 @@ class CreateMonthEndSuppliersTable extends Migration
             $table->decimal('total_earnings',14,2);
             $table->decimal('total_cost',14,2);
             $table->decimal('total_installment',14,2);
-            $table->decimal('current credit',14,2);
+            $table->decimal('forwarded_credit',14,2);
+            $table->decimal('current_income',14,2);
+            $table->decimal('current_credit',14,2);
             $table->softDeletes();
             $table->timestamps();
         });

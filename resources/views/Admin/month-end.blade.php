@@ -101,8 +101,8 @@
                     data: {month_end_id : id},
                     dataType: 'JSON',
                     success: function (data) { 
+                        console.log(data);
                         if(data.result == true) {
-                            console.log(data);
                             supplierTable.ajax.reload();
                             swal(data.message, {
                                 icon: "success",

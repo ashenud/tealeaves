@@ -16,6 +16,7 @@ use App\Models\MonthEndSupplier;
 use App\Models\FertilizerIssues;
 use App\Models\FertilizerIssuesSupplier;
 use App\Models\MonthlyInstallment;
+use App\Models\DebtorDetails;
 use App\Models\Supplier;
 
 class MonthEndController extends Controller {
@@ -26,35 +27,41 @@ class MonthEndController extends Controller {
         $data = array();
         $data['page_title'] = 'Month End';
 
-        /* $current_month = date("Y-m");
-        $last_month = date("Y-m", strtotime("first day of previous month"));
-        $data = DailyCollection::select('id','date','daily_total_value')
-                             ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'),'=',$current_month)
-                             ->get();
-
-        dd($data); */
         return view('Admin.month-end')->with('data',$data);
     }
 
     public function monthEndDatatable(Request $request ) {
 
         $current_month = date("Y-m");
-        $last_month = date("Y-m", strtotime("first day of previous month"));
 
         if ($request->ajax()) {
             $data = MonthEnd::select('id','month','user_id','ended_status',
                                     DB::raw('IFNULL(ended_date, "Month not ended yet") AS ended_date'))
-                             ->where('month','<',$current_month)                             
+                             ->where('month','<',$current_month)      
+                             ->whereNotIn('month', ['2020-10'])
                              ->orderBy('month','DESC');
             return Datatables::of($data)
                     ->addColumn('create', function($data){
      
-                        if ($data->ended_status == 1) {
-                            $btn = '<a class="btn btn-disabled btn-sm" type="button"><i class="fas fa-check-square"></i></i></a>';
+                        $last_month = date('Y-m',strtotime('first day of previous month',strtotime($data->month)));
+                        $last_data = MonthEnd::select('ended_status')
+                                              ->where('month','=',$last_month)                          
+                                              ->limit(1)
+                                              ->get();
+
+                        if($last_data[0]->ended_status == 1) {
+                            
+                            if ($data->ended_status == 1) {
+                                $btn = '<a class="btn btn-disabled btn-sm" type="button"><i class="fas fa-check-square"></i></i></a>';
+                            }
+                            else {
+                                $btn = '<a class="btn btn-sheding btn-sm" onclick="createMonthEnd('.$data->id.')" type="button"><i class="far fa-check-square"></i></a>';
+                            }
                         }
                         else {
-                            $btn = '<a class="btn btn-sheding btn-sm" onclick="createMonthEnd('.$data->id.')" type="button"><i class="far fa-check-square"></i></a>';
+                            $btn = '<a class="btn btn-disabled btn-sm" type="button"><i class="fas fa-check-square"></i></i></a>';
                         }
+                        
                         return $btn;
                     })
                     ->addColumn('print', function($data){
@@ -190,6 +197,89 @@ class MonthEndController extends Controller {
                 foreach ($monthly_installments as $installment) {
                     $supplier_data[$installment->supplier_id]['installments'] = $installment->total_installments;
                 }
+
+                $debtor_details =DB::table('debtor_details AS tdd')
+                                    ->select('tdd.supplier_id',DB::raw('IFNULL(SUM(tdd.amount),0) AS sup_credit'))
+                                    ->where('tdd.relevant_month','=',$ending_month)
+                                    ->where('tdd.forwarded_status','=', 0)
+                                    ->whereNull('tdd.deleted_at')
+                                    ->groupBy('tdd.supplier_id')
+                                    ->get();
+
+                foreach ($debtor_details as $debtors) {
+                    $supplier_data[$debtors->supplier_id]['forwarded_credit'] = $debtors->sup_credit;
+                }
+
+                /* INSERT MONTH END SUPLIER DATA */
+                if(count($supplier_data) > 0) {
+
+                    foreach ($supplier_data as $supplier_id => $sup_data) {
+
+                        $total_earnings = 0;
+                        $total_cost = 0;
+                        $total_installment = 0;
+                        $forwarded_credit = 0;
+
+                        if(isset($sup_data['net_earnings'])) {
+                            $total_earnings = $sup_data['net_earnings'];
+                        }
+                        if(isset($sup_data['item_cost'])) {
+                            $total_cost = $sup_data['item_cost'];
+                        }
+                        if(isset($sup_data['installments'])) {
+                            $total_installment = $sup_data['installments'];
+                        }
+                        if(isset($sup_data['forwarded_credit'])) {
+                            $forwarded_credit = $sup_data['forwarded_credit'];
+                        }
+                        
+                        $total_outstanding = $total_earnings - ($total_cost + $total_installment + $forwarded_credit);
+
+                        if($total_outstanding >= 0) {
+                            $current_income = $total_outstanding;
+                            $current_credit = 0;
+                        }
+                        else {
+                            $current_income = 0;
+                            $current_credit = 0 - $total_outstanding;
+                        }
+
+                        /* FORWARD CURRENT CREDIT TO NEXT MONTH IF EXISTS*/
+                        if($current_credit>0) {
+                            $next_month = date('Y-m',strtotime('first day of +1 month',strtotime($ending_month)));
+
+                            $debtor_details = new DebtorDetails();
+                            $debtor_details->supplier_id = $supplier_id;
+                            $debtor_details->relevant_month = $next_month;
+                            $debtor_details->amount = $current_credit;
+                            $debtor_details->forwarded_status = 0;
+                            $debtor_details->save();
+                        }
+
+                        $month_end_supplier = new MonthEndSupplier();
+                        $month_end_supplier->month_end_id = $month_end_id;
+                        $month_end_supplier->supplier_id = $supplier_id;
+                        $month_end_supplier->total_earnings = $total_earnings;
+                        $month_end_supplier->total_cost = $total_cost;
+                        $month_end_supplier->total_installment = $total_installment;
+                        $month_end_supplier->forwarded_credit = $forwarded_credit;
+                        $month_end_supplier->current_income = $current_income;
+                        $month_end_supplier->current_credit = $current_credit;
+                        $month_end_supplier->save();
+
+                    }
+
+                }
+
+                /* MARK DEBTORS AMOUNTS AS DEDUCTED */
+                DebtorDetails::where('relevant_month','=',$ending_month)
+                             ->where(['forwarded_status' => 0])
+                            ->update(['forwarded_status' => 1]);
+
+                /* MARK MONTH END AS CREATED */
+                $today = date("Y-m-d");
+                MonthEnd::where('id','=',$month_end_id)
+                       ->update(['ended_date' => $today,'user_id' => $user_id,'ended_status' => 1]);                
                 
                 DB::commit();
                 return response()->json([
@@ -216,7 +306,5 @@ class MonthEndController extends Controller {
         }
 
     }
-
-
 
 }
