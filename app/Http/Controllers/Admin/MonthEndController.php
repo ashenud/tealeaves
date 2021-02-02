@@ -306,4 +306,27 @@ class MonthEndController extends Controller {
 
     }
 
+    public function printBulkBills(Request $request) {
+
+        $user_id = Auth::user()->user_id;
+
+        $month_end_id = $request->month_end_id;
+
+        $data = array();
+
+        $pdf = app('dompdf.wrapper')->loadView('templates.invoice-bill3', ['order' => $this])->setPaper('a4', 'landscape');
+
+        return $pdf->download('invoice.pdf');
+        /* 
+        if ($type == 'download') {
+            return $pdf->download('invoice.pdf');
+        } */
+
+        /* return response()->json([
+            'result' => true,
+            'message' => $month_end_id,
+        ]); */
+        
+    }
+
 }

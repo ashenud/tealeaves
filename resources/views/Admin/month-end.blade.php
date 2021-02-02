@@ -54,18 +54,18 @@
 
 <script>
 
-    var supplierTable;
+    var monthEndTable;
 
     $(document).ready(function() {
         $('#supplier_route').select2();
         $('#supplier_route2').select2();
         $('.side-link.li-month-end').addClass('active');
-        supplierDatatable();
+        monthEndDatatable();
     });
 
-    function supplierDatatable() {
+    function monthEndDatatable() {
     
-        supplierTable = $('.data-table').DataTable({
+        monthEndTable = $('.data-table').DataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ url('admin/month-end-datatable') }}",
@@ -103,7 +103,7 @@
                     success: function (data) { 
                         console.log(data);
                         if(data.result == true) {
-                            supplierTable.ajax.reload();
+                            monthEndTable.ajax.reload();
                             swal(data.message, {
                                 icon: "success",
                             });
@@ -118,6 +118,50 @@
                 
             } else {
                 swal("Month end creation canceled!");
+            }
+        });
+    }
+
+    function printBill(id) {
+
+        swal({
+            title: "Are yoy sure ?",
+            text: "You are going to print all bills !",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{url("/admin/print-bulk-bills")}}',
+                    type: 'POST',
+                    data: {month_end_id : id},
+                    dataType: 'JSON',
+                    success: function (data) { 
+                        console.log(data);
+                        if(data.result == true) {
+                            // monthEndTable.ajax.reload();
+                            swal(data.message, {
+                                icon: "success",
+                            });
+                        }
+                        else {
+                            swal(data.message, {
+                                icon: "error",
+                            });
+                        }                      
+                    }
+                });
+                
+            } else {
+                swal("Bulk bill printing canceled!");
             }
         });
     }

@@ -65,3 +65,4 @@ Route::post('/admin/insert-loan', 'App\Http\Controllers\Admin\LoanIssueControlle
 Route::get('/admin/month-end', 'App\Http\Controllers\Admin\MonthEndController@index')->name('month-end')->middleware('admin');
 Route::get('/admin/month-end-datatable', 'App\Http\Controllers\Admin\MonthEndController@monthEndDatatable')->name('month-end-datatable')->middleware('admin');
 Route::post('/admin/create-month-end', 'App\Http\Controllers\Admin\MonthEndController@createMonthEnd')->middleware('admin');
+Route::post('/admin/print-bulk-bills', 'App\Http\Controllers\Admin\MonthEndController@printBulkBills')->middleware('admin');
