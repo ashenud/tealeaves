@@ -38,7 +38,7 @@ class MonthEndController extends Controller {
             $data = MonthEnd::select('id','month','user_id','ended_status',
                                     DB::raw('IFNULL(ended_date, "Month not ended yet") AS ended_date'))
                              ->where('month','<',$current_month)      
-                             ->whereNotIn('month', [config('tealeaves.previous_month')])
+                             ->whereNotIn('month', [config('application.previous_month')])
                              ->orderBy('month','DESC');
             return Datatables::of($data)
                     ->addColumn('create', function($data){

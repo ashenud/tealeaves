@@ -32,7 +32,7 @@ class DailyIssueController extends Controller {
         $items = DB::table('items AS ti')
                         ->join('item_types AS tit','tit.id','ti.item_type')
                         ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                        ->whereNotIn('tit.id', [1, 5])
+                        ->whereNotIn('tit.id', [config('application.tealeaves_type'),config('application.fertilizer_type')])
                         ->whereNull('ti.deleted_at')
                         ->whereNull('tit.deleted_at')
                         ->get();
@@ -49,7 +49,7 @@ class DailyIssueController extends Controller {
         $requested_date = $date;
         $requested_month = date("Y-m", strtotime($requested_date));
 
-        $start_month = date("Y-m", strtotime(config('tealeaves.start_date')));
+        $start_month = date("Y-m", strtotime(config('application.start_date')));
 
         if($start_month <= $requested_month) {
 
@@ -73,7 +73,7 @@ class DailyIssueController extends Controller {
                     $items = DB::table('items AS ti')
                                 ->join('item_types AS tit','tit.id','ti.item_type')
                                 ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                                ->whereNotIn('tit.id', [1, 5])
+                                ->whereNotIn('tit.id', [config('application.tealeaves_type'),config('application.fertilizer_type')])
                                 ->whereNull('ti.deleted_at')
                                 ->whereNull('tit.deleted_at')
                                 ->get();

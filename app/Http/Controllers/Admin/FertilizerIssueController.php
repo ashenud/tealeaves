@@ -33,7 +33,7 @@ class FertilizerIssueController extends Controller {
         $items = DB::table('items AS ti')
                         ->join('item_types AS tit','tit.id','ti.item_type')
                         ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                        ->whereNotIn('tit.id', [1,2,3,4])
+                        ->whereIn('tit.id', [config('application.fertilizer_type')])
                         ->whereNull('ti.deleted_at')
                         ->whereNull('tit.deleted_at')
                         ->get();
@@ -50,7 +50,7 @@ class FertilizerIssueController extends Controller {
         $requested_date = $date;
         $requested_month = date("Y-m", strtotime($requested_date));
 
-        $start_month = date("Y-m", strtotime(config('tealeaves.start_date')));
+        $start_month = date("Y-m", strtotime(config('application.start_date')));
 
         if($start_month <= $requested_month) {
 
@@ -74,7 +74,7 @@ class FertilizerIssueController extends Controller {
                     $items = DB::table('items AS ti')
                                 ->join('item_types AS tit','tit.id','ti.item_type')
                                 ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                                ->whereNotIn('tit.id', [1,2,3,4])
+                                ->whereIn('tit.id', [config('application.fertilizer_type')])
                                 ->whereNull('ti.deleted_at')
                                 ->whereNull('tit.deleted_at')
                                 ->get();

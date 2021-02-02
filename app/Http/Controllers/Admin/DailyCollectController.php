@@ -32,7 +32,7 @@ class DailyCollectController extends Controller
                        ->get();
         $data['suppliers'] = $suppliers;
 
-        $items = Item::where('id',1)->get();
+        $items = Item::where('id',config('application.tealeaves'))->get();
         $data['item_id'] = $items[0]->id;
         $data['item_name'] = $items[0]->item_name;
         $data['item_price'] = $items[0]->unit_price;
@@ -48,7 +48,7 @@ class DailyCollectController extends Controller
         $requested_date = $date;
         $requested_month = date("Y-m", strtotime($requested_date));
 
-        $start_month = date("Y-m", strtotime(config('tealeaves.start_date')));
+        $start_month = date("Y-m", strtotime(config('application.start_date')));
 
         if($start_month <= $requested_month) {
 
@@ -71,7 +71,7 @@ class DailyCollectController extends Controller
                                 ->get();
                     $data['suppliers'] = $suppliers;
 
-                    $items = Item::where('id',1)->get();
+                    $items = Item::where('id',config('application.tealeaves'))->get();
                     $data['item_id'] = $items[0]->id;
                     $data['item_name'] = $items[0]->item_name;
                     $data['item_price'] = $items[0]->unit_price;

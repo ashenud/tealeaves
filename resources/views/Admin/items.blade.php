@@ -8,7 +8,6 @@
 
 <!-- for datatable -->
 <link rel="stylesheet" href="{{asset('css/custom-table-style.css')}}">
-{{-- <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
 
 @endsection
 
@@ -64,7 +63,7 @@
                                 <select class="form-control" id="item_type" name="item_type">
                                     @if (isset($data['item_types']))
                                         @foreach ($data['item_types'] as $type)
-                                            @if ($type->id != 1 && $type->id != 2 && $type->id != 3)
+                                            @if ($type->id != config('application.tealeaves_type') && $type->id != config('application.teabag_type') && $type->id != config('application.dolamite_type'))
                                                 <option value="{{ $type->id }}">{{ $type->type_name }}</option>
                                             @endif
                                         @endforeach

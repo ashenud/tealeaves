@@ -38,7 +38,7 @@ class ItemController extends Controller
             return Datatables::of($data)
                     ->addColumn('action', function($data){
                         
-                        if ($data->type_id == 1 ||$data->type_id == 2 || $data->type_id == 3 ) {
+                        if ($data->type_id == config('application.tealeaves_type') || $data->type_id == config('application.teabag_type') || $data->type_id == config('application.dolamite_type') ) {
                             $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToViewModel('.$data->item_id.')" type="button"><i class="far fa-eye"></i></a>
                                     <a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->item_id.')" type="button"><i class="far fa-edit"></i></a>
                                     <a class="btn btn-disabled btn-sm" type="button"><i class="far fa-trash-alt"></i></a>';
