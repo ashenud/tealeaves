@@ -32,9 +32,9 @@
                                 <td><input type="date" id="date" class="form-control" value="{{ date('Y-m-d') }}" readonly></td>
                             </tr>
                             <tr>
-                                <td>Loan No.</td>
+                                <td>Advance No.</td>
                                 <td> : </td>
-                                <td><input type="text" id="loan_no" class="form-control"></td>
+                                <td><input type="text" id="advance_no" class="form-control"></td>
                             </tr>
                             <tr>
                                 <td>Supplier</td>
@@ -62,7 +62,7 @@
                             </tr>
                             <tr class="submit-button-row">
                                 <td colspan="7" align="right">
-                                    <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="APPROVE LOAN"  id="dd" onclick="submit_data_to_db()" />
+                                    <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="APPROVE ADVANCE"  id="dd" onclick="submit_data_to_db()" />
                                 </td>
                             </tr>
                         </table>
@@ -90,7 +90,7 @@
     <script>
 
         $(document).ready(function() {
-            $('.side-link.li-loan').addClass('active');
+            $('.side-link.li-advance').addClass('active');
             $('#supplier').select2();
         });
 
@@ -119,11 +119,11 @@
             var supplier = $('#supplier').val();
             var amount = $('#amount').val();
             var remarks = $('#remarks').val();
-            var loan_no = $('#loan_no').val();
+            var advance_no = $('#advance_no').val();
 
             swal({
                 title: "Are you sure?",
-                text: "You are going to add " + amount + " loan amount !",
+                text: "You are going to add " + amount + " advance amount !",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
@@ -136,7 +136,7 @@
                         }
                     });
                     $.ajax({
-                        url: '{{url("/admin/insert-loan")}}',
+                        url: '{{url("/admin/insert-advance")}}',
                         type: "POST",
                         data: {
 
@@ -144,7 +144,7 @@
                             supplier: supplier,
                             amount: amount,
                             remarks: remarks,
-                            loan_no: loan_no,
+                            advance_no: advance_no,
 
                         },
                         success: function (data) {

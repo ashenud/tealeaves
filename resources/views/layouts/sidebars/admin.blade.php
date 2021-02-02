@@ -31,8 +31,13 @@
             </a>
         </li>
         <li class="side-item">
+            <a class="side-link li-advance" href="{{ url('admin/advance-issue') }}">
+                <i class="now-ui-icons business_money-coins"></i> Advance Issue
+            </a>
+        </li>
+        <li class="side-item">
             <a class="side-link li-loan" href="{{ url('admin/loan-issue') }}">
-                <i class="now-ui-icons business_money-coins"></i> Loan Issue
+                <i class="now-ui-icons business_bank"></i> Loan Issue
             </a>
         </li>
         <li class="side-item">

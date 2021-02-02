@@ -59,6 +59,9 @@ Route::post('/admin/insert-fertilizer-issues', 'App\Http\Controllers\Admin\Ferti
 Route::post('/admin/edit-fertilizer-issues', 'App\Http\Controllers\Admin\FertilizerIssueController@editFertilizerIssues')->middleware('admin'); // edit fertilizer action
 Route::post('/admin/confirm-fertilizer-issues', 'App\Http\Controllers\Admin\FertilizerIssueController@confirmFertilizerIssues')->middleware('admin'); // confirm fertilizer action
 
+Route::get('/admin/advance-issue', 'App\Http\Controllers\Admin\AdvanceIssueController@index')->name('advance-issue')->middleware('admin');
+Route::post('/admin/insert-advance', 'App\Http\Controllers\Admin\AdvanceIssueController@insertAdvance')->middleware('admin'); // insert advance action
+
 Route::get('/admin/loan-issue', 'App\Http\Controllers\Admin\LoanIssueController@index')->name('loan-issue')->middleware('admin');
 Route::post('/admin/insert-loan', 'App\Http\Controllers\Admin\LoanIssueController@insertLoan')->middleware('admin'); // insert loan action
 
