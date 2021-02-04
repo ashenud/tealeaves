@@ -381,7 +381,7 @@ class MonthEndController extends Controller {
             foreach ($period as $dt) {                    
                 foreach ($daily_colection as $collection) {
                     if($collection->date == $dt->format("Y-m-d")) {
-                        $data['supplier_data'][$collection->supplier_id]['daily_data'][$dt->format("d")] = $collection->number_of_units;
+                        $data['supplier_data'][$collection->supplier_id]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
                     }                    
                 }
             }
@@ -440,14 +440,14 @@ class MonthEndController extends Controller {
                 $data['supplier_data'][$debtors->supplier_id]['forwarded_credit'] = $debtors->sup_credit;
             }
 
-            /* return response()->json([
+            return response()->json([
                 'result' => true,
                 'message' => 'This month end has allready created',
                 'data' => $data,
-            ]); */
+            ]);
 
-            $pdf = app('dompdf.wrapper')->loadView('templates.monthly-bill', ['data' => $data])->setPaper('a4', 'landscape');
-            return $pdf->download('invoice.pdf');
+            // $pdf = app('dompdf.wrapper')->loadView('templates.monthly-bill', ['data' => $data])->setPaper('a4', 'landscape');
+            // return $pdf->download('invoice.pdf');
 
         }
         else {

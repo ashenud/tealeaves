@@ -195,20 +195,33 @@
                             </thead>
                             <tbody>
                                
+                                @php
+
+                                    $date = array();
+
+                                    if(isset($supplier['daily_data'])) {
+                                        foreach ($supplier['daily_data'] as $day => $value) {
+                                            if($day == 1) {
+                                                
+                                            }
+                                        }
+                                    }
+                                @endphp
+
                                 @if (isset($supplier['daily_data']))
                                     @foreach ($supplier['daily_data'] as $day => $value)
                                         @if ($day==1)                                            
                                             <tr>
-                                                <td align="center">{{ $day }}</td>
+                                                <td align="center">01</td>
                                                 <td align="center">{{ $value }}</td>
                                             </tr>
                                         @else                                                                                          
                                             <tr>
-                                                <td align="center">{{ $day }}</td>
+                                                <td align="center">01</td>
                                                 <td align="center"></td>
                                             </tr>
                                         @endif
-                                    @endforeach
+                                    @endforeach                              
                                 @else
                                     
                                 @endif
