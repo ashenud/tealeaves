@@ -334,120 +334,130 @@ class MonthEndController extends Controller {
                             ->whereNull('tr.deleted_at')
                             ->get();
             
+            if(count($supplier_info) > 0) {
 
-            foreach ($supplier_info as $supplier) {
-                $data['supplier_data'][$supplier->id]['supplier_id'] = $supplier->id;
-                $data['supplier_data'][$supplier->id]['supplier_name'] = $supplier->sup_name;
-                $data['supplier_data'][$supplier->id]['route_name'] = $supplier->route_name;
-                $data['supplier_data'][$supplier->id]['total_issues'] = $supplier->total_cost;
-                $data['supplier_data'][$supplier->id]['total_installment'] = $supplier->total_installment;
-                $data['supplier_data'][$supplier->id]['current_income'] = $supplier->current_income;
-                $data['supplier_data'][$supplier->id]['current_credit'] = $supplier->current_credit;
+                foreach ($supplier_info as $supplier) {
+                    $data['supplier_data'][$supplier->id]['supplier_id'] = $supplier->id;
+                    $data['supplier_data'][$supplier->id]['supplier_name'] = $supplier->sup_name;
+                    $data['supplier_data'][$supplier->id]['route_name'] = $supplier->route_name;
+                    $data['supplier_data'][$supplier->id]['total_issues'] = $supplier->total_cost;
+                    $data['supplier_data'][$supplier->id]['total_installment'] = $supplier->total_installment;
+                    $data['supplier_data'][$supplier->id]['forwarded_credit'] = $supplier->forwarded_credit;
+                    $data['supplier_data'][$supplier->id]['current_income'] = $supplier->current_income;
+                    $data['supplier_data'][$supplier->id]['current_credit'] = $supplier->current_credit;
+                }
+
+                $monthly_colection =DB::table('daily_collection_suppliers AS tdcs')
+                                        ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
+                                        ->select('tdcs.supplier_id',DB::raw('MAX(tdcs.current_units_price) AS current_units_price'),DB::raw('IFNULL(SUM(tdcs.number_of_units),0) AS total_units'),DB::raw('IFNULL(SUM(tdcs.daily_amount),0) AS total_value'),DB::raw('IFNULL(SUM(tdcs.delivery_cost),0) AS total_delivery_cost'),DB::raw('IFNULL(SUM(tdcs.daily_value),0) AS net_value'))
+                                        ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
+                                        ->where('tdc.confirm_status', '=', 1)
+                                        ->whereNull('tdcs.deleted_at')
+                                        ->whereNull('tdc.deleted_at')
+                                        ->groupBy('tdcs.supplier_id')
+                                        ->get();
+
+                foreach ($monthly_colection as $collection) {
+                    $data['supplier_data'][$collection->supplier_id]['current_units_price'] = $collection->current_units_price;
+                    $data['supplier_data'][$collection->supplier_id]['tea_units'] = $collection->total_units;
+                    $data['supplier_data'][$collection->supplier_id]['delivery_cost'] = $collection->total_delivery_cost;
+                    $data['supplier_data'][$collection->supplier_id]['total_earnings'] = $collection->total_value;
+                    $data['supplier_data'][$collection->supplier_id]['net_earnings'] = $collection->net_value;
+                }
+
+                $daily_colection =DB::table('daily_collection_suppliers AS tdcs')
+                                        ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
+                                        ->select('tdc.date','tdcs.supplier_id','tdcs.number_of_units')
+                                        ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
+                                        ->where('tdc.confirm_status', '=', 1)
+                                        ->whereNull('tdcs.deleted_at')
+                                        ->whereNull('tdc.deleted_at')
+                                        ->get();
+
+                $start    = new DateTime(date('Y-m-01',strtotime($requested_month)));
+                $end      = new DateTime(date('Y-m-t',strtotime($requested_month)));
+                $end->modify('first day of next month');
+                $interval = DateInterval::createFromDateString('1 day');
+                $period   = new DatePeriod($start, $interval, $end);
+
+                foreach ($period as $dt) {                    
+                    foreach ($daily_colection as $collection) {
+                        if($collection->date == $dt->format("Y-m-d")) {
+                            $data['supplier_data'][$collection->supplier_id]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
+                        }                    
+                    }
+                }
+
+                $monthly_issues =DB::table('daily_issues_suppliers AS tdis')
+                                        ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
+                                        ->select('tdis.supplier_id','tdis.item_type',DB::raw('IFNULL(SUM(tdis.daily_value),0) AS net_cost'))
+                                        ->where(DB::raw('DATE_FORMAT(tdi.date, "%Y-%m")'),'=',$requested_month)
+                                        ->where('tdi.confirm_status', '=', 1)
+                                        ->whereNull('tdis.deleted_at')
+                                        ->whereNull('tdi.deleted_at')
+                                        ->groupBy('tdis.supplier_id','tdis.item_type')
+                                        ->get();
+
+                foreach ($monthly_issues as $issues) {
+                    if ($issues->item_type == config('application.teabag_type')) {
+                        $data['supplier_data'][$issues->supplier_id]['issue_teabag'] = $issues->net_cost;
+                    }
+                    else if ($issues->item_type == config('application.dolamite_type')) {
+                        $data['supplier_data'][$issues->supplier_id]['issue_dolamite'] = $issues->net_cost;
+                    }
+                    else if ($issues->item_type == config('application.dolamite_type')) {
+                        $data['supplier_data'][$issues->supplier_id]['issue_chemical'] = $issues->net_cost;
+                    }
+                }
+
+                $monthly_installments =DB::table('monthly_installments AS tmi')
+                                        ->select('tmi.supplier_id','tmi.remarks',DB::raw('IFNULL(SUM(tmi.installment),0) AS total_installments'))
+                                        ->where('tmi.month','=',$requested_month)
+                                        ->where('tmi.deducted_status','=', 1)
+                                        ->whereNull('tmi.deleted_at')
+                                        ->groupBy('tmi.supplier_id','tmi.remarks')
+                                        ->get();
+
+                foreach ($monthly_installments as $installment) {
+                    if($installment->remarks == 'fertilizer') {
+                        $data['supplier_data'][$installment->supplier_id]['installment_fertilizer'] = $installment->total_installments;
+                    }
+                    else if($installment->remarks == 'advance') {
+                        $data['supplier_data'][$installment->supplier_id]['installment_advance'] = $installment->total_installments;
+                    }
+                    else if($installment->remarks == 'loan') {
+                        $data['supplier_data'][$installment->supplier_id]['installment_loan'] = $installment->total_installments;
+                    }
+                }
+
+                $debtor_details =DB::table('debtor_details AS tdd')
+                                        ->select('tdd.supplier_id',DB::raw('IFNULL(SUM(tdd.amount),0) AS sup_credit'))
+                                        ->where('tdd.relevant_month','=',$requested_month)
+                                        ->where('tdd.forwarded_status','=', 1)
+                                        ->whereNull('tdd.deleted_at')
+                                        ->groupBy('tdd.supplier_id')
+                                        ->get();
+
+                foreach ($debtor_details as $debtors) {
+                    $data['supplier_data'][$debtors->supplier_id]['forwarded_credit'] = $debtors->sup_credit;
+                }
+
+                // return response()->json([
+                //     'result' => true,
+                //     'message' => 'This month end has allready created',
+                //     'data' => $data,
+                // ]);
+
+                $pdf = app('dompdf.wrapper')->loadView('templates.monthly-bill', ['data' => $data])->setPaper('a4', 'landscape');
+                return $pdf->download('bulk-bill-print.pdf');
+
             }
-
-            $monthly_colection =DB::table('daily_collection_suppliers AS tdcs')
-                                    ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
-                                    ->select('tdcs.supplier_id',DB::raw('MAX(tdcs.current_units_price) AS current_units_price'),DB::raw('IFNULL(SUM(tdcs.number_of_units),0) AS total_units'),DB::raw('IFNULL(SUM(tdcs.daily_amount),0) AS total_value'),DB::raw('IFNULL(SUM(tdcs.delivery_cost),0) AS total_delivery_cost'),DB::raw('IFNULL(SUM(tdcs.daily_value),0) AS net_value'))
-                                    ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
-                                    ->where('tdc.confirm_status', '=', 1)
-                                    ->whereNull('tdcs.deleted_at')
-                                    ->whereNull('tdc.deleted_at')
-                                    ->groupBy('tdcs.supplier_id')
-                                    ->get();
-
-            foreach ($monthly_colection as $collection) {
-                $data['supplier_data'][$collection->supplier_id]['current_units_price'] = $collection->current_units_price;
-                $data['supplier_data'][$collection->supplier_id]['tea_units'] = $collection->total_units;
-                $data['supplier_data'][$collection->supplier_id]['delivery_cost'] = $collection->total_delivery_cost;
-                $data['supplier_data'][$collection->supplier_id]['total_earnings'] = $collection->total_value;
-                $data['supplier_data'][$collection->supplier_id]['net_earnings'] = $collection->net_value;
-            }
-
-            $daily_colection =DB::table('daily_collection_suppliers AS tdcs')
-                                    ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
-                                    ->select('tdc.date','tdcs.supplier_id','tdcs.number_of_units')
-                                    ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
-                                    ->where('tdc.confirm_status', '=', 1)
-                                    ->whereNull('tdcs.deleted_at')
-                                    ->whereNull('tdc.deleted_at')
-                                    ->get();
-
-            $start    = new DateTime(date('Y-m-01',strtotime($requested_month)));
-            $end      = new DateTime(date('Y-m-t',strtotime($requested_month)));
-            $end->modify('first day of next month');
-            $interval = DateInterval::createFromDateString('1 day');
-            $period   = new DatePeriod($start, $interval, $end);
-
-            foreach ($period as $dt) {                    
-                foreach ($daily_colection as $collection) {
-                    if($collection->date == $dt->format("Y-m-d")) {
-                        $data['supplier_data'][$collection->supplier_id]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
-                    }                    
-                }
-            }
-
-            $monthly_issues =DB::table('daily_issues_suppliers AS tdis')
-                                    ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
-                                    ->select('tdis.supplier_id','tdis.item_type',DB::raw('IFNULL(SUM(tdis.daily_value),0) AS net_cost'))
-                                    ->where(DB::raw('DATE_FORMAT(tdi.date, "%Y-%m")'),'=',$requested_month)
-                                    ->where('tdi.confirm_status', '=', 1)
-                                    ->whereNull('tdis.deleted_at')
-                                    ->whereNull('tdi.deleted_at')
-                                    ->groupBy('tdis.supplier_id','tdis.item_type')
-                                    ->get();
-
-            foreach ($monthly_issues as $issues) {
-                if ($issues->item_type == config('application.teabag_type')) {
-                    $data['supplier_data'][$issues->supplier_id]['issue_data']['teabag'] = $issues->net_cost;
-                }
-                else if ($issues->item_type == config('application.dolamite_type')) {
-                    $data['supplier_data'][$issues->supplier_id]['issue_data']['dolamite'] = $issues->net_cost;
-                }
-                else if ($issues->item_type == config('application.dolamite_type')) {
-                    $data['supplier_data'][$issues->supplier_id]['issue_data']['chemical'] = $issues->net_cost;
-                }
-            }
-
-            $monthly_installments =DB::table('monthly_installments AS tmi')
-                                    ->select('tmi.supplier_id','tmi.remarks',DB::raw('IFNULL(SUM(tmi.installment),0) AS total_installments'))
-                                    ->where('tmi.month','=',$requested_month)
-                                    ->where('tmi.deducted_status','=', 1)
-                                    ->whereNull('tmi.deleted_at')
-                                    ->groupBy('tmi.supplier_id','tmi.remarks')
-                                    ->get();
-
-            foreach ($monthly_installments as $installment) {
-                if($installment->remarks == 'fertilizer') {
-                    $data['supplier_data'][$installment->supplier_id]['installments']['fertilizer'] = $installment->total_installments;
-                }
-                else if($installment->remarks == 'advance') {
-                    $data['supplier_data'][$installment->supplier_id]['installments']['advance'] = $installment->total_installments;
-                }
-                else if($installment->remarks == 'loan') {
-                    $data['supplier_data'][$installment->supplier_id]['installments']['loan'] = $installment->total_installments;
-                }
-            }
-
-            $debtor_details =DB::table('debtor_details AS tdd')
-                                    ->select('tdd.supplier_id',DB::raw('IFNULL(SUM(tdd.amount),0) AS sup_credit'))
-                                    ->where('tdd.relevant_month','=',$requested_month)
-                                    ->where('tdd.forwarded_status','=', 1)
-                                    ->whereNull('tdd.deleted_at')
-                                    ->groupBy('tdd.supplier_id')
-                                    ->get();
-
-            foreach ($debtor_details as $debtors) {
-                $data['supplier_data'][$debtors->supplier_id]['forwarded_credit'] = $debtors->sup_credit;
-            }
-
+        else {
             return response()->json([
-                'result' => true,
-                'message' => 'This month end has allready created',
-                'data' => $data,
+                'result' => false,
+                'message' => 'Not any data for this month !',
             ]);
-
-            // $pdf = app('dompdf.wrapper')->loadView('templates.monthly-bill', ['data' => $data])->setPaper('a4', 'landscape');
-            // return $pdf->download('invoice.pdf');
+        }
 
         }
         else {

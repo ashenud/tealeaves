@@ -53,5 +53,17 @@ return [
     'dolamite_type' => env('DOLAMITE_TYPE', 3),
     'chemical_type' => env('CHEMICAL_TYPE', 4),
     'fertilizer_type' => env('FERTILIZER_TYPE', 5),
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | str_pad counts
+    |--------------------------------------------------------------------------
+    |
+    | Use to create IDs and Numbers using DB auto increment ids 
+    |
+    */
+
+    'supplier_str_pad' => env('SUPPLIER_STR_PAD', 4),
 
 ];

@@ -53,7 +53,7 @@
                 <tr>
                     <td>
                         <h1 style="margin-bottom: -10px; font-size: 30px;">INDRA Leaf Collectors</h1>
-                        <h3 style="margin-bottom: 0px;">Wickramagiri, Pahalagama, Theppanawa, Kuruwita. 071-8015237 0453609215</h3>
+                        <h3 style="margin-bottom: 0px;">"Wikramagiri", Pahalagama, Theppanawa, Kuruwita. 071-8015237 / 0453609215</h3>
                     </td>
                 </tr>
             </table>
@@ -74,22 +74,22 @@
             <table width="1008px">
                 <tr>
                     <td width="40%">
-                        <table>
+                        <table width="100%">
                             <tr>
-                                <th align="left">No</th>
+                                <th align="left">NO</th>
                                 <th align="center"> : </th>
-                                <td align="left">
+                                <th align="left">
                                     @if (isset($supplier['supplier_id']))
-                                        {{ $supplier['supplier_id'] }}                                        
+                                        {{ str_pad($supplier['supplier_id'], config('application.supplier_str_pad',5), '0', STR_PAD_LEFT) }}                                        
                                     @else
                                         
                                     @endif
-                                </td>
+                                </th>
                             </tr>
                             <tr>
-                                <th align="left">Name</th>
+                                <th align="left">NAME</th>
                                 <th align="center"> : </th>
-                                <td align="left">
+                                <td align="left" style="text-transform: uppercase;">
                                     @if (isset($supplier['supplier_name']))
                                         {{ $supplier['supplier_name'] }}                                        
                                     @else
@@ -98,9 +98,9 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th align="left">Month</th>
+                                <th align="left">MONTH</th>
                                 <th align="center"> : </th>
-                                <td align="left">
+                                <td align="left" style="text-transform: uppercase;">
                                     @if (isset($data['month']))
                                         {{ $data['month'] }}                                        
                                     @else
@@ -109,7 +109,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th align="left">Route</th>
+                                <th align="left">ROUTE</th>
                                 <th align="center"> : </th>
                                 <td align="left" style="text-transform: uppercase;">
                                     @if (isset($supplier['route_name']))
@@ -124,51 +124,40 @@
 
                     <td width="10%"></td>
                         
-                    <td width="30%">
-                        <table>
+                    <td width="30%" style="vertical-align: top;">
+                        <table width="100%">
                             <tr>
-                                <th align="left">Tea Leave Unit Price (1Kg)</th>
+                                <th align="left">RATE</th>
                                 <th align="center"> : </th>
-                                <td align="left">
+                                <th align="left">
                                     @if (isset($supplier['current_units_price']))
-                                        {{ $supplier['current_units_price'] }}                                        
+                                        {{ number_format($supplier['current_units_price'],2) }}                                        
                                     @else
                                         0.00
                                     @endif
-                                </td>
+                                </th>
                             </tr>
                             <tr>
-                                <th align="left">Total Tea Leave Collection</th>
+                                <th align="left">COLLECTION TOTAL</th>
                                 <th align="center"> : </th>
-                                <td align="left">
+                                <th align="left">
                                     @if (isset($supplier['tea_units']))
                                         {{ $supplier['tea_units'] }}                                        
                                     @else
-                                        0.00
+                                        0
                                     @endif
-                                </td>
+                                </th>
                             </tr>
                             <tr>
-                                <th align="left">Total Amount</th>
+                                <th align="left">TOTAL</th>
                                 <th align="center"> : </th>
-                                <td align="left">
+                                <th align="left">
                                     @if (isset($supplier['total_earnings']))
-                                        {{ $supplier['total_earnings'] }}                                        
+                                        {{ number_format($supplier['total_earnings'],2) }}                                        
                                     @else
                                         0.00
                                     @endif
-                                </td>
-                            </tr>
-                            <tr>
-                                <th align="left">Previous Month Arrears</th>
-                                <th align="center"> : </th>
-                                <td align="left">
-                                    @if (isset($supplier['forwarded_credit']))
-                                        {{ $supplier['forwarded_credit'] }}                                        
-                                    @else
-                                        0.00
-                                    @endif
-                                </td>
+                                </th>
                             </tr>
                         </table>
                     </td>
@@ -179,241 +168,397 @@
 
             <table width="1008px">
                 <tr>
-                    <td style="height: 20px;"><hr></td>
+                    <td style="height: 15px;"><hr></td>
                 </tr>
             </table>        
 
             <table width="1008px">
                 <tr>
-                    <td width="15%">
-                        <table>
+                    <td width="12%">
+                        <table width="100%">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Quantity(Kg)</th>
+                                    <th width="40%">DATE</th>
+                                    <th width="30%">KG</th>
                                 </tr>
                             </thead>
                             <tbody>
                                
                                 @php
+                                    $all_days =  array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0, 11 => 0, 12 => 0, 13 => 0, 14 => 0, 15 => 0, 16 => 0, 17 => 0, 18 => 0, 19 => 0, 20 => 0, 21 => 0, 22 => 0, 23 => 0, 24 => 0, 25 => 0, 26 => 0, 27 => 0, 28 => 0, 29 => 0, 30 => 0, 31 => 0);
+                                    $daily_data = array();
+                                    if(isset($supplier['daily_data'])) {                                        
+                                        $keys = array_keys($all_days + $supplier['daily_data']);
+                                        foreach ($keys as $key) {
+                                            $daily_data[$key] = (empty($all_days[$key]) ? 0 : $all_days[$key]) + (empty($supplier['daily_data'][$key]) ? 0 : $supplier['daily_data'][$key]);
+                                        }
 
-                                    $date = array();
+                                        $j = 0;
+                                        foreach ($daily_data as $day => $values) {
+                                            $j++;
+                                            if($j < 9) {
+                                                echo '<tr>';
+                                                echo    '<td align="center">0'.$day.'</td>';
+                                                if($values != 0) {
+                                                    echo'<th align="center">'. $values .'</th>';
+                                                }
+                                                else {
+                                                    echo'<td align="center"></td>';
+                                                }
+                                                echo '</tr>';
+                                            }
+                                        }
 
-                                    if(isset($supplier['daily_data'])) {
-                                        foreach ($supplier['daily_data'] as $day => $value) {
-                                            if($day == 1) {
-                                                
+                                    }
+                                    else {
+                                        echo '<tr>';
+                                        echo    '<td align="center">01</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">02</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">03</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">04</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">05</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">06</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">07</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">08</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                    }                                        
+                                @endphp
+                                    
+                            </tbody>                        
+                        </table>
+                    </td>
+                    <td width="12%">
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="40%">DATE</th>
+                                    <th width="30%">KG</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                @php
+                                    if(isset($supplier['daily_data'])) {    
+                                        $j = 0;
+                                        foreach ($daily_data as $day => $values) {
+                                            $j++;
+                                            if($j > 8 && $j < 17) {
+                                                echo '<tr>';
+                                                if($day == 9) {
+                                                    echo'<td align="center">0'.$day.'</td>';
+                                                }
+                                                else {
+                                                    echo'<td align="center">'.$day.'</td>';
+                                                }
+                                                if($values != 0) {
+                                                    echo'<th align="center">'. $values .'</th>';
+                                                }
+                                                else {
+                                                    echo'<td align="center"></td>';
+                                                }
+                                                echo '</tr>';
                                             }
                                         }
                                     }
+                                    else {
+                                        echo '<tr>';
+                                        echo    '<td align="center">01</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">02</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">03</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">04</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">05</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">06</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">07</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">08</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                    }
                                 @endphp
 
-                                @if (isset($supplier['daily_data']))
-                                    @foreach ($supplier['daily_data'] as $day => $value)
-                                        @if ($day==1)                                            
-                                            <tr>
-                                                <td align="center">01</td>
-                                                <td align="center">{{ $value }}</td>
-                                            </tr>
-                                        @else                                                                                          
-                                            <tr>
-                                                <td align="center">01</td>
-                                                <td align="center"></td>
-                                            </tr>
-                                        @endif
-                                    @endforeach                              
-                                @else
-                                    
-                                @endif
-                                    
                             </tbody>                        
                         </table>
                     </td>
-                    <td width="15%">
-                        <table>
+                    <td width="12%">
+                        <table width="100%">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Quantity(Kg)</th>
+                                    <th width="40%">DATE</th>
+                                    <th width="30%">KG</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
+                                @php
+                                    if(isset($supplier['daily_data'])) {    
+                                        $j = 0;
+                                        foreach ($daily_data as $day => $values) {
+                                            $j++;
+                                            if($j > 16 && $j < 25) {
+                                                echo '<tr>';
+                                                echo    '<td align="center">'.$day.'</td>';
+                                                if($values != 0) {
+                                                    echo'<th align="center">'. $values .'</th>';
+                                                }
+                                                else {
+                                                    echo'<td align="center"></td>';
+                                                }
+                                                echo '</tr>';
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        echo '<tr>';
+                                        echo    '<td align="center">01</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">02</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">03</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">04</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">05</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">06</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">07</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">08</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                    }
+                                @endphp
                             </tbody>                        
                         </table>
                     </td>
-                    <td width="15%">
-                        <table>
+                    <td width="12%">
+                        <table width="100%">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Quantity(Kg)</th>
+                                    <th width="40%">DATE</th>
+                                    <th width="30%">KG</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                            </tbody>                        
-                        </table>
-                    </td>
-                    <td width="15%">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Quantity(Kg)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">1</td>
-                                    <td align="center">10</td>
-                                </tr>
+                                @php
+                                    if(isset($supplier['daily_data'])) {    
+                                        $j = 0;
+                                        foreach ($daily_data as $day => $values) {
+                                            $j++;
+                                            if($j > 24 && $j < 32) {
+                                                echo '<tr>';
+                                                echo    '<td align="center">'.$day.'</td>';
+                                                if($values != 0) {
+                                                    echo'<th align="center">'. $values .'</th>';
+                                                }
+                                                else {
+                                                    echo'<td align="center"></td>';
+                                                }
+                                                echo '</tr>';
+                                            }
+                                        }                                    
+                                        echo '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
+                                    }
+                                    else {
+                                        echo '<tr>';
+                                        echo    '<td align="center">01</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">02</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">03</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">04</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">05</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">06</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">07</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                        echo '<tr>';
+                                        echo    '<td align="center">08</td>';
+                                        echo    '<td align="center"></td>';
+                                        echo '</tr>';
+                                    }
+                                @endphp
                             </tbody>                        
                         </table>
                     </td>
                     <td width="10%"></td>
-                    <td width="30%">
+                    <td width="42%">
                         <table width="100%">
                             <thead>
                                 <tr>
-                                    <th colspan="2">Deductions</th>
+                                    <th width="50%" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEDUCTIONS</th>
+                                    <th width="10%">&nbsp;</th>
+                                    <th width="30%">&nbsp;</th>
+                                    <th width="10%">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td align="left">01.Transport Cost</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">01 TRANSPORTATION</th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['delivery_cost']))
+                                            {{ number_format($supplier['delivery_cost'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td align="left">02.Previous Month Fretilizer Cost</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">02 FROM LAST MONTH</th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['forwarded_credit']))
+                                            {{ number_format($supplier['forwarded_credit'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td align="left">03.Previous Month Arre</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">03 ADVANCES</th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['installment_advance']))
+                                            {{ number_format($supplier['installment_advance'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td align="left">04. Issued Advances (Total)</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">04 FERTILIZER - CURRENT</th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['installment_fertilizer']))
+                                            {{ number_format($supplier['installment_fertilizer'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td align="left">05. Fertilizer Cost for the Current Month</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">05 TEA BAGS</th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['issue_teabag']))
+                                            {{ number_format($supplier['issue_teabag'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td align="left">06. Tea Bag Cost</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">06 CHEMICALS</th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['issue_chemical']))
+                                            {{ number_format($supplier['issue_chemical'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td align="left">07. Chemical Cost </td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">07 DOLAMITE </th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['issue_dolamite']))
+                                            {{ number_format($supplier['issue_dolamite'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td align="left">08. Dolomite Cost</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">1000.00</td>
-                                </tr>
-                                <tr>
-                                    <td align="left">09. Other Costs</td>
-                                    <td align="center"> : </td>
-                                    <td align="left">10</td>
+                                    <th align="left">08 OTHER</th>
+                                    <th align="center"> : </th>
+                                    <td align="right">&nbsp;&nbsp;&nbsp;
+                                        @if (isset($supplier['installment_loan']))
+                                            {{ number_format($supplier['installment_loan'],2) }}                              
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
+                                    <td align="left">&nbsp;</td>
                                 </tr>
                             </tbody>                        
                         </table>
@@ -423,46 +568,70 @@
 
             <table width="1008px">
                 <tr>
-                    <td style="height: 20px;"><hr></td>
+                    <td style="height: 15px;"><hr></td>
                 </tr>
             </table>           
 
             <table width="1008px">
                 <tr>
                     <td width="30%">
-                        <table>
+                        <table width="100%">
                             <tbody>
                                 <tr>
-                                    <th align="left">Continuing Arrears</th>
-                                    <th align="center"> : </th>
-                                    <td align="left">1000.00</td>
+                                    <th width="50%" align="left">CREDITS</th>
+                                    <th width="10%" align="center"> : </th>
+                                    <td width="40%" align="right">
+                                        @if (isset($supplier['current_credit']))
+                                            {{ number_format($supplier['current_credit'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <th align="left">Fertilizer Arrears for Next Month</th>
+                                    <th align="left">FERT.CREDITS</th>
                                     <th align="center"> : </th>
-                                    <td align="left">10</td>
+                                    <td align="right"></td>
                                 </tr>
                                 <tr>
-                                    <th align="left">Balance for the Next Month</th>
+                                    <th align="left">CARRIED</th>
                                     <th align="center"> : </th>
-                                    <td align="left">10</td>
+                                    <th align="right">
+                                        @if (isset($supplier['current_credit']))
+                                            {{ number_format($supplier['current_credit'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </th>
                                 </tr>
                             </tbody>                        
                         </table>
                     </td>
-                    <td width="40%"></td>
-                    <td width="30%">
+                    <td width="28%"></td>
+                    <td width="42%"  style="vertical-align: top;">
                         <table width="100%">
                             <tbody>
                                 <tr>
-                                    <th align="left">Total Deductions</th>
-                                    <th align="center"> : </th>
-                                    <td align="left">10</td>
+                                    <th width="50%" align="left">DEDUCTION TOTAL</th>
+                                    <th width="10%" align="center"> : </th>
+                                    <td width="30%" align="right">&nbsp;&nbsp;&nbsp;
+                                        {{ number_format(($supplier['total_issues'] + $supplier['total_installment'] + $supplier['forwarded_credit'] + (isset($supplier['delivery_cost']) ? $supplier['delivery_cost'] : 0) ),2) }}
+                                    </td>
+                                    <td width="10%" align="left">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <th align="left">Balance Amount</th>
-                                    <th align="center"> : </th>
-                                    <td align="left">10</td>
+                                    <th align="left" style="font-size: 14px; padding-top: 15px;">PAYABLE AMOUNT</th>
+                                    <th align="center" style="padding-top: 15px;"> : </th>
+                                    <th align="right" style="border-bottom: 2px solid; padding-top: 15px;">&nbsp;&nbsp;&nbsp;
+                                        {{ number_format(ceil($supplier['current_income'] / 10) * 10 ,2)}}
+                                    </th>
+                                    <td width="10%" align="left" style="padding-top: 15px;">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <th align="left">&nbsp;</th>
+                                    <th align="center">&nbsp;</th>
+                                    <td align="right" style="border-top: 1px solid;">&nbsp;</td>
+                                    <td width="10%" align="left">&nbsp;</td>
                                 </tr>
                             </tbody>                        
                         </table>
@@ -472,7 +641,7 @@
 
             <table width="1008px">
                 <tr>
-                    <td style="height: 20px;"><hr></td>
+                    <td style="height: 15px;"><hr></td>
                 </tr>
             </table>       
 
