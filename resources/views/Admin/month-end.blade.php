@@ -146,7 +146,7 @@
                     dataType: 'JSON',
                     success: function (data) { 
                         console.log(data);
-                        if(data.result == true) {
+                        /* if(data.result == true) {
                             // monthEndTable.ajax.reload();
                             swal(data.message, {
                                 icon: "success",
@@ -156,7 +156,7 @@
                             swal(data.message, {
                                 icon: "error",
                             });
-                        }                      
+                        }   */                    
                     }
                 });
                 
