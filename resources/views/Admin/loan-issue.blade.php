@@ -100,80 +100,81 @@
 
         
 
-    function submit_data_to_db() {
-        if ($('#supplier').val() === "") {
-            $("#supplier").next().find('.select2-selection').addClass('is-invalid');
-            swal("Retry!", "Please select a supplier", "error");
-            $('#supplier').focus();
-        }
-        else if ($('#amount').val() === "" || $('#amount').val() <= 0) {
-            $("#supplier").next().find('.select2-selection').removeClass('is-invalid');
-            $("#amount").addClass('is-invalid');
-            swal("Retry!", "Please enter a amount", "error");
-            $('#amount').focus();
-        }
-        else  {
-            
-            $("#amount").removeClass('is-invalid');
-            var date = $('#date').val();
-            var supplier = $('#supplier').val();
-            var amount = $('#amount').val();
-            var remarks = $('#remarks').val();
-            var loan_no = $('#loan_no').val();
+        function submit_data_to_db() {
+            if ($('#supplier').val() === "") {
+                $("#supplier").next().find('.select2-selection').addClass('is-invalid');
+                swal("Retry!", "Please select a supplier", "error");
+                $('#supplier').focus();
+            }
+            else if ($('#amount').val() === "" || $('#amount').val() <= 0) {
+                $("#supplier").next().find('.select2-selection').removeClass('is-invalid');
+                $("#amount").addClass('is-invalid');
+                swal("Retry!", "Please enter a amount", "error");
+                $('#amount').focus();
+            }
+            else  {
+                
+                $("#amount").removeClass('is-invalid');
+                var date = $('#date').val();
+                var supplier = $('#supplier').val();
+                var amount = $('#amount').val();
+                var remarks = $('#remarks').val();
+                var loan_no = $('#loan_no').val();
 
-            swal({
-                title: "Are you sure?",
-                text: "You are going to add " + amount + " loan amount !",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {                            
+                swal({
+                    title: 'Are you sure?',
+                    text: "You are going to add " + amount + " loan amount !",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.value) {
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        url: '{{url("/admin/insert-loan")}}',
-                        type: "POST",
-                        data: {
-
-                            date: date,
-                            supplier: supplier,
-                            amount: amount,
-                            remarks: remarks,
-                            loan_no: loan_no,
-
-                        },
-                        success: function (data) {
-                            // var data = JSON.parse(data);
-                            console.log(data);
-                            if(data.result===true){
-                                swal("Done!", data.message, "success")
-                                .then((value) => {                                    
-                                    location.reload();
-                                });
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             }
-                            else{
-                                swal("Opps!", data.message, "error")
-                                .then((value) => {
-                                    location.reload();
-                                });
-                            }
-                        },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                            swal("Opps!", "Please try again", "error");
-                        }
-                    });
+                        });
+                        $.ajax({
+                            url: '{{url("/admin/insert-loan")}}',
+                            type: "POST",
+                            data: {
 
-                }
-            });
+                                date: date,
+                                supplier: supplier,
+                                amount: amount,
+                                remarks: remarks,
+                                loan_no: loan_no,
+
+                            },
+                            success: function (data) {
+                                // var data = JSON.parse(data);
+                                console.log(data);
+                                if(data.result===true){
+                                    swal("Done!", data.message, "success")
+                                    .then((value) => {                                    
+                                        location.reload();
+                                    });
+                                }
+                                else{
+                                    swal("Opps!", data.message, "error")
+                                    .then((value) => {
+                                        location.reload();
+                                    });
+                                }
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                swal("Opps!", "Please try again", "error");
+                            }
+                        });
+                    }
+                })
+
+            }
 
         }
-
-    }
 
     </script>
 

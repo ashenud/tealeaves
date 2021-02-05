@@ -352,13 +352,15 @@
                     var daily_total_value = $('#daily_total_value').val();
 
                     swal({
-                        title: "Are you sure?",
+                        title: 'Are you sure?',
                         text: "Do you want to add this records !",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    }).then((willDelete) => {
-                        if (willDelete) {                            
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                    }).then((result) => {
+                        if (result.value) {
 
                             $.ajaxSetup({
                                 headers: {
@@ -395,9 +397,8 @@
                                     swal("Opps!", "Please try again", "error");
                                 }
                             });
-
                         }
-                    });
+                    })
                 }
 
             }
@@ -503,13 +504,15 @@
                     var daily_total_value = $('#daily_total_value').val();
 
                     swal({
-                        title: "Are you sure?",
+                        title: 'Are you sure?',
                         text: "Do you want to add these edited records !",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    }).then((willDelete) => {
-                        if (willDelete) {                            
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                    }).then((result) => {
+                        if (result.value) {
 
                             $.ajaxSetup({
                                 headers: {
@@ -549,10 +552,9 @@
                                     });
                                 }
                             });
-
                         }
+                    })
 
-                    });
                 }
 
             }
@@ -566,13 +568,15 @@
     function confirmCollection(collection_id) {
 
         swal({
-            title: "Are you sure?",
+            title: 'Are you sure?',
             text: "Once you confirmed you can not edit these records !",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {                            
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
 
                 $.ajaxSetup({
                     headers: {
@@ -605,10 +609,8 @@
                         swal("Opps!", "Please try again", "error");
                     }
                 });
-
             }
-
-        });
+        })
 
     }
 

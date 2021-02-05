@@ -377,14 +377,15 @@
     function deleteSupplier(id) {
 
         swal({
-            title: "Are yoy sure ?",
+            title: 'Are you sure?',
             text: "You are going to delete this supplier !",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
 
                 $.ajaxSetup({
                     headers: {
@@ -400,22 +401,16 @@
                         if(data.result == true) {
                             console.log(data);
                             supplierTable.ajax.reload();
-                            swal(data.message, {
-                                icon: "success",
-                            });
+                            swal("Done!", data.message, "success")
                         }
                         else {
-                            swal(data.message, {
-                                icon: "error",
-                            });
+                            swal("Opps!", data.message, "error")
                         }                      
                     }
                 });
-                
-            } else {
-                swal("Your supplier data is safe!");
             }
-        });
+        })
+
     }
 
 </script>

@@ -81,14 +81,15 @@
     function createMonthEnd(id) {
 
         swal({
-            title: "Are yoy sure ?",
+            title: 'Are you sure?',
             text: "You are going to create this month end !",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
 
                 $.ajaxSetup({
                     headers: {
@@ -115,24 +116,25 @@
                         }                      
                     }
                 });
-                
             } else {
                 swal("Month end creation canceled!");
             }
-        });
+        })
+        
     }
 
     function printBill(id) {
 
         swal({
-            title: "Are yoy sure ?",
+            title: 'Are you sure?',
             text: "You are going to print all bills !",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
 
                 $.ajaxSetup({
                     headers: {
@@ -159,11 +161,9 @@
                         }   */                    
                     }
                 });
-                
-            } else {
-                swal("Bulk bill printing canceled!");
             }
-        });
+        })
+
     }
 
 </script>
