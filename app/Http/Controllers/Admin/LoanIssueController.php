@@ -17,7 +17,7 @@ class LoanIssueController extends Controller
 
         $user_id = Auth::user()->id;
         $data = array();
-        $data['page_title'] = 'Loan Issue';
+        $data['page_title'] = 'Other';
 
         $suppliers = DB::table('suppliers AS ts')
                        ->join('routes AS tr','tr.id','ts.route_id')

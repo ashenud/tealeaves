@@ -349,7 +349,7 @@ class MonthEndController extends Controller {
 
                 $monthly_colection =DB::table('daily_collection_suppliers AS tdcs')
                                         ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
-                                        ->select('tdcs.supplier_id',DB::raw('MAX(tdcs.current_units_price) AS current_units_price'),DB::raw('IFNULL(SUM(tdcs.number_of_units),0) AS total_units'),DB::raw('IFNULL(SUM(tdcs.daily_amount),0) AS total_value'),DB::raw('IFNULL(SUM(tdcs.delivery_cost),0) AS total_delivery_cost'),DB::raw('IFNULL(SUM(tdcs.daily_value),0) AS net_value'))
+                                        ->select('tdcs.supplier_id',DB::raw('MIN(tdcs.current_units_price) AS current_units_price'),DB::raw('IFNULL(SUM(tdcs.number_of_units),0) AS total_units'),DB::raw('IFNULL(SUM(tdcs.daily_amount),0) AS total_value'),DB::raw('IFNULL(SUM(tdcs.delivery_cost),0) AS total_delivery_cost'),DB::raw('IFNULL(SUM(tdcs.daily_value),0) AS net_value'))
                                         ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
                                         ->where('tdc.confirm_status', '=', 1)
                                         ->whereNull('tdcs.deleted_at')
@@ -440,6 +440,24 @@ class MonthEndController extends Controller {
 
                 foreach ($debtor_details as $debtors) {
                     $data['supplier_data'][$debtors->supplier_id]['forwarded_credit'] = $debtors->sup_credit;
+                }
+
+                $fertilizer_credits =DB::table('fertilizer_issues AS tfi')
+                                        ->join('fertilizer_issues_suppliers AS tfis','tfis.fertilizer_issue_id','tfi.id')
+                                        ->join('monthly_installments AS tmi','tmi.reference','tfis.id')
+                                        ->select('tmi.supplier_id',DB::raw('IFNULL(SUM(tmi.installment),0) AS total_value'))
+                                        ->where(DB::raw('DATE_FORMAT(tfi.date, "%Y-%m")'),'=',$requested_month)
+                                        ->where('tfi.confirm_status','=', 1)
+                                        ->where('tmi.deducted_status','=', 0)
+                                        ->where('tmi.remarks','=', 'fertilizer')
+                                        ->whereNull('tfi.deleted_at')
+                                        ->whereNull('tfis.deleted_at')
+                                        ->whereNull('tmi.deleted_at')
+                                        ->groupBy('tmi.supplier_id')
+                                        ->get();
+
+                foreach ($fertilizer_credits as $fert_credt) {
+                    $data['supplier_data'][$fert_credt->supplier_id]['fert_credt'] = $fert_credt->total_value;
                 }
 
                 // return response()->json([

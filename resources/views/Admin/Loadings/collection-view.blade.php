@@ -1,7 +1,7 @@
 @if ($data['collection_status'] == 0)
     <div class="btn-edit-area">
         <button class="btn btn-primary-custom top-button edit-btn" onclick="loadEditCollection({{ $data['collection_id'] }})">EDIT</button>
-        <button class="btn btn-primary-custom top-button" onclick="confirmCollection({{ $data['collection_id'] }})">CONFIRM</button>
+        {{-- <button class="btn btn-primary-custom top-button" onclick="confirmCollection({{ $data['collection_id'] }})">CONFIRM</button> --}}
     </div>
 @endif
     

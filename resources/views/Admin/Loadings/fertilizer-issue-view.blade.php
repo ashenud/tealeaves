@@ -1,7 +1,7 @@
 @if ($data['fertilizer_issue_status'] == 0)
     <div class="btn-edit-area">
         <button class="btn btn-primary-custom top-button edit-btn" onclick="loadEditFertilizerIssues({{ $data['fertilizer_issue_id'] }})">EDIT</button>
-        <button class="btn btn-primary-custom top-button" onclick="confirmFertilizerIssues({{ $data['fertilizer_issue_id'] }})">CONFIRM</button>
+        {{-- <button class="btn btn-primary-custom top-button" onclick="confirmFertilizerIssues({{ $data['fertilizer_issue_id'] }})">CONFIRM</button> --}}
     </div>
 @endif
     

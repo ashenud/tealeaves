@@ -3,26 +3,26 @@
     <head>
         <style>
             @page {
-                margin: 100px 25px 20px 25px;
+                margin: 25px 25px 20px 25px;
             }
 
-            header {
+            /* header {
                 position: fixed;
                 top: -60px;
                 left: 0px;
                 right: 0px;
-                /* background-color: lightblue; */
+                background-color: lightblue;
                 height: 50px;
-            }
+            } */
 
-            footer {
+            /* footer {
                 position: fixed;
                 bottom: -60px;
                 left: 0px;
                 right: 0px;
-                /* background-color: lightblue; */
+                background-color: lightblue;
                 height: 50px;
-            }
+            } */
 
             p {
                 page-break-after: always;
@@ -48,11 +48,34 @@
     </head>
 
     <body>
-        <header>
+        {{-- <header></header>
+        <footer></footer> --}}
+
+        @foreach ($data['supplier_data'] as $supplier)
+        <main>
             <table width="1008px">
                 <tr>
-                    <td>
+                    <td width="50%">
                         <h1 style="margin-bottom: -10px; font-size: 30px;">INDRA Leaf Collectors</h1>
+                    </td>
+                    <td width="10%">
+                        <h2> R4391 </h2>
+                    </td>
+                    <td width="10%"> </td>
+                    <th align="right" width="15%"><h2>USER ID</h2></th>
+                    <th align="center" width="5%"><h2> : </h2></th>
+                    <th align="left" width="10%">
+                        <h2>
+                        @if (isset($supplier['supplier_id']))
+                            {{ str_pad($supplier['supplier_id'], config('application.supplier_str_pad',5), '0', STR_PAD_LEFT) }}                                        
+                        @else
+                            
+                        @endif
+                        </h2>
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="6">
                         <h3 style="margin-bottom: 0px;">"Wikramagiri", Pahalagama, Theppanawa, Kuruwita. 071-8015237 / 0453609215</h3>
                     </td>
                 </tr>
@@ -63,29 +86,11 @@
                     <td style="height: 20px;"><hr></td>
                 </tr>
             </table>
-            
-        </header>
-        <footer>
-        </footer>
-
-        @foreach ($data['supplier_data'] as $supplier)
-        <main style="margin-top: 40px">
 
             <table width="1008px">
                 <tr>
                     <td width="40%">
                         <table width="100%">
-                            <tr>
-                                <th align="left">NO</th>
-                                <th align="center"> : </th>
-                                <th align="left">
-                                    @if (isset($supplier['supplier_id']))
-                                        {{ str_pad($supplier['supplier_id'], config('application.supplier_str_pad',5), '0', STR_PAD_LEFT) }}                                        
-                                    @else
-                                        
-                                    @endif
-                                </th>
-                            </tr>
                             <tr>
                                 <th align="left">NAME</th>
                                 <th align="center"> : </th>
@@ -591,17 +596,19 @@
                                 <tr>
                                     <th align="left">FERT.CREDITS</th>
                                     <th align="center"> : </th>
-                                    <td align="right"></td>
+                                    <td align="right">
+                                        @if (isset($supplier['fert_credt']))
+                                            {{ number_format($supplier['fert_credt'],2) }}                                        
+                                        @else
+                                            0.00
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th align="left">CARRIED</th>
                                     <th align="center"> : </th>
                                     <th align="right">
-                                        @if (isset($supplier['current_credit']))
-                                            {{ number_format($supplier['current_credit'],2) }}                                        
-                                        @else
-                                            0.00
-                                        @endif
+                                        {{ number_format((ceil($supplier['current_income'] / 10) * 10) - $supplier['current_income'],2) }}
                                     </th>
                                 </tr>
                             </tbody>                        
@@ -647,7 +654,6 @@
 
             <table width="1008px">
                 <tr>
-                    <td width="5%"></td>
                     <td width="50%">
                         <table>
                             <tbody>
@@ -694,6 +700,7 @@
                             </tbody>                        
                         </table>
                     </td>
+                    <td width="5%"></td>
                 </tr>
             </table> 
 
