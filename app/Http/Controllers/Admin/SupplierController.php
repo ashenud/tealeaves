@@ -28,16 +28,24 @@ class SupplierController extends Controller
     public function supplierDatatable(Request $request ) {
 
         if ($request->ajax()) {
-            $data = Supplier::select('id','sup_name','sup_address','sup_contact','route_id');
+            $data = Supplier::withTrashed()->select('id','sup_name','sup_address','sup_contact','route_id','deleted_at');
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($data){
-     
-                           $btn = ' <a class="btn btn-sheding btn-sm" onclick="sendDataToViewModel('.$data->id.')" type="button"><i class="far fa-eye"></i></a>
+
+                        if (is_null($data->deleted_at)){
+                            $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToViewModel('.$data->id.')" type="button"><i class="far fa-eye"></i></a>
                                     <a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->id.')" data-mdb-toggle="modal" data-mdb-target="#edit_model" type="button"><i class="far fa-edit"></i></a>
                                     <a class="btn btn-sheding btn-sm" onclick="deleteSupplier('.$data->id.')" type="button"><i class="far fa-trash-alt"></i></a>';
-    
-                            return $btn;
+                        }
+                        else {
+                            $btn = '<a class="btn btn-disabled btn-sm" type="button"><i class="far fa-eye"></i></a>
+                                    <a class="btn btn-disabled btn-sm" type="button"><i class="far fa-edit"></i></a>
+                                    <a class="btn btn-deleted btn-sm" onclick="activateSupplier('.$data->id.')" type="button"><i class="fas fa-trash-restore-alt"></i></a>';
+                        }
+                        
+                        return $btn;
+                            
                     })
                     ->rawColumns(['action'])
                     ->make(true);
@@ -147,6 +155,30 @@ class SupplierController extends Controller
                 'result' => false,
                 'message' => 'Supplier data not successfully deleted',
                 'add_class' => 'alert-danger',
+            ]);
+        }
+    }
+
+    public function supplierReactivate(Request $request ) {
+
+        try {
+
+            DB::beginTransaction();
+
+            $supplier = Supplier::withTrashed()->find($request->supplier_id);
+            $supplier->restore(); 
+            
+            DB::commit();
+            return response()->json([
+                'result' => true,
+                'message' => 'Supplier data successfully restored',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();    
+            return response()->json([
+                'result' => false,
+                'message' => 'Supplier data not successfully restored',
             ]);
         }
     }

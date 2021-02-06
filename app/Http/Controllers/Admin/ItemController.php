@@ -31,23 +31,30 @@ class ItemController extends Controller
         if ($request->ajax()) {
             $data = DB::table('items AS ti')
                     ->join('item_types AS tit','tit.id','ti.item_type')
-                    ->select('ti.id AS item_id','ti.item_name','tit.id AS type_id','tit.type_name','ti.item_code','ti.unit_price','ti.weight','ti.volume','ti.pack_size')
-                    ->whereNull('ti.deleted_at')
+                    ->select('ti.id AS item_id','ti.item_name','tit.id AS type_id','tit.type_name','ti.item_code','ti.unit_price','ti.weight','ti.volume','ti.pack_size','ti.deleted_at')
                     ->whereNull('tit.deleted_at')
                     ->orderBy('tit.id', 'ASC');
             return Datatables::of($data)
                     ->addColumn('action', function($data){
-                        
-                        if ($data->type_id == config('application.tealeaves_type') || $data->type_id == config('application.teabag_type') || $data->type_id == config('application.dolamite_type') ) {
-                            $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToViewModel('.$data->item_id.')" type="button"><i class="far fa-eye"></i></a>
-                                    <a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->item_id.')" type="button"><i class="far fa-edit"></i></a>
-                                    <a class="btn btn-disabled btn-sm" type="button"><i class="far fa-trash-alt"></i></a>';
+
+                        if (is_null($data->deleted_at)) {
+                            if ($data->type_id == config('application.tealeaves_type') || $data->type_id == config('application.teabag_type') || $data->type_id == config('application.dolamite_type') ) {
+                                $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToViewModel('.$data->item_id.')" type="button"><i class="far fa-eye"></i></a>
+                                        <a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->item_id.')" type="button"><i class="far fa-edit"></i></a>
+                                        <a class="btn btn-disabled btn-sm" type="button"><i class="far fa-trash-alt"></i></a>';
+                            }
+                            else {
+                                $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToViewModel('.$data->item_id.')" type="button"><i class="far fa-eye"></i></a>
+                                        <a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->item_id.')" data-mdb-toggle="modal" data-mdb-target="#edit_model" type="button"><i class="far fa-edit"></i></a>
+                                        <a class="btn btn-sheding btn-sm" onclick="deleteItem('.$data->item_id.')" type="button"><i class="far fa-trash-alt"></i></a>';
+                            }
                         }
                         else {
-                            $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToViewModel('.$data->item_id.')" type="button"><i class="far fa-eye"></i></a>
-                                    <a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->item_id.')" data-mdb-toggle="modal" data-mdb-target="#edit_model" type="button"><i class="far fa-edit"></i></a>
-                                    <a class="btn btn-sheding btn-sm" onclick="deleteItem('.$data->item_id.')" type="button"><i class="far fa-trash-alt"></i></a>';
+                            $btn = '<a class="btn btn-disabled btn-sm" type="button"><i class="far fa-eye"></i></a>
+                                    <a class="btn btn-disabled btn-sm" type="button"><i class="far fa-edit"></i></a>
+                                    <a class="btn btn-deleted btn-sm" onclick="activateItem('.$data->item_id.')" type="button"><i class="fas fa-trash-restore-alt"></i></a>';
                         }
+
                         return $btn;
                     })
                     ->filter(function ($query) use ($request) {
@@ -168,6 +175,30 @@ class ItemController extends Controller
                 'result' => false,
                 'message' => 'Item data not successfully deleted',
                 'add_class' => 'alert-danger',
+            ]);
+        }
+    }
+
+    public function itemReactivate(Request $request ) {
+
+        try {
+
+            DB::beginTransaction();
+
+            $item = Item::withTrashed()->find($request->item_id);
+            $item->restore(); 
+            
+            DB::commit();
+            return response()->json([
+                'result' => true,
+                'message' => 'Item data successfully restored',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();    
+            return response()->json([
+                'result' => false,
+                'message' => 'Item data not successfully restored',
             ]);
         }
     }

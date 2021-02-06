@@ -404,6 +404,45 @@
 
     }
 
+    function activateItem(id) {
+
+        swal({
+            title: 'Are you sure?',
+            text: "You are going to activate this item !",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#4d7f2b',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{url("/admin/item-reactivate")}}',
+                    type: 'POST',
+                    data: {item_id:id},
+                    dataType: 'JSON',
+                    success: function (data) { 
+                        if(data.result == true) {
+                            console.log(data);
+                            itemTable.ajax.reload();
+                            swal("Done!", data.message, "success")
+                        }
+                        else {
+                            swal("Opps!", data.message, "error")
+                        }                      
+                    }
+                });
+            }
+        })
+
+    }
+
 </script>
 
 @endsection

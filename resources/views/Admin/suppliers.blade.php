@@ -415,6 +415,45 @@
 
     }
 
+    function activateSupplier(id) {
+
+        swal({
+            title: 'Are you sure?',
+            text: "You are going to activate this supplier !",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{url("/admin/supplier-reactivate")}}',
+                    type: 'POST',
+                    data: {supplier_id:id},
+                    dataType: 'JSON',
+                    success: function (data) { 
+                        if(data.result == true) {
+                            console.log(data);
+                            supplierTable.ajax.reload();
+                            swal("Done!", data.message, "success")
+                        }
+                        else {
+                            swal("Opps!", data.message, "error")
+                        }                      
+                    }
+                });
+            }
+        })
+
+    }
+
 </script>
 
 @endsection
