@@ -17,16 +17,14 @@
 
     <!--css files-->
     <link rel="stylesheet" href="{{asset('css/mdb.min.css')}}">
-    <style>
-        .view,body,html{height:100vh;font-family:Nunito}@media (max-width:740px){,body,html{height:815px}}@media (min-width:800px) and (max-width:850px){,body,html{height:650px}}.form-section{background-image:linear-gradient(to bottom,rgb(78 78 81 / 52%),rgb(0 0 0 / 73%)),url("{{asset('img/login-background.jpg')}}");background-size:cover}.card{background-color:rgb(255 255 255 / 35%);margin-top:30px}input::placeholder{color:red}a{color:#fff}:-webkit-autofill,:-webkit-autofill:active,:-webkit-autofill:focus,:-webkit-autofill:hover{transition:all 5000s ease-in-out 0s;transition-property:background-color,color;-webkit-box-shadow:0 0 0 1000px #fff inset;-webkit-text-fill-color:#fff;font-weight:300!important}
-    </style>
+    <link rel="stylesheet" href="{{asset('css/welcome-style.css')}}">
 
     <title>TEALEAVES COLLECT MANAGEMENT SYSTEM</title>
 
 </head>
 <body>
    
-    <div class="form-section rgba-stylish-strong h-100 d-flex justify-content-center align-items-center">
+    <div class="form-section rgba-stylish-strong h-100 d-flex justify-content-center align-items-center" style="height: 100% !important;">
         <div class="container">
             <div class="row">
                 <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto">

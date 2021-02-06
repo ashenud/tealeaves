@@ -274,6 +274,7 @@ input[type=number] {
     text-align: right;
 }
 
+/* @@ sweet alert css @@ */
 .swal2-actions .swal2-styled {
     border-radius: .25rem !important;
     padding: 7px 35px !important;
