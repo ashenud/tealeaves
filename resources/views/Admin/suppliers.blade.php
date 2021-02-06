@@ -26,9 +26,10 @@
             <table class="table data-table table-hover">
                 <thead>
                     <tr>
+                        <th width="15%" scope="col">Supplier ID</th>
                         <th width="25%" scope="col">Supplier Name</th>
-                        <th width="30%" scope="col">Supplier Address</th>
-                        <th width="25%"scope="col">Supplier Contact</th>
+                        <th width="25%" scope="col">Supplier Address</th>
+                        <th width="15%"scope="col">Supplier Contact</th>
                         <th width="20%"scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -212,6 +213,7 @@
         serverSide: true,
         ajax: "{{ url('admin/suppliers-datatable') }}",
         columns: [
+                { data:'supplier_id', name:'supplier_id'},
                 { data:'sup_name', name:'sup_name'},
                 { data:'sup_address', name:'sup_address'},
                 { data:'sup_contact', name:'sup_contact'},

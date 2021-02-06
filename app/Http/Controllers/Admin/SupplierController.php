@@ -28,7 +28,7 @@ class SupplierController extends Controller
     public function supplierDatatable(Request $request ) {
 
         if ($request->ajax()) {
-            $data = Supplier::withTrashed()->select('id','sup_name','sup_address','sup_contact','route_id','deleted_at');
+            $data = Supplier::withTrashed()->select('id',DB::raw('LPAD(id,4,0) AS supplier_id'),'sup_name','sup_address','sup_contact','route_id','deleted_at');
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($data){

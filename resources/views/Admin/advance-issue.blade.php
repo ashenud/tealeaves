@@ -26,11 +26,11 @@
             <table class="table data-table table-hover">
                 <thead>
                     <tr>
-                        <th width="20%" scope="col">Supplier ID</th>
-                        <th width="20%" scope="col">Supplier Name</th>
-                        <th width="20%" scope="col">Advanced Date</th>
-                        <th width="20%" scope="col">Remarks</th>
-                        <th width="20%" scope="col">Amount</th>
+                        <th width="15%" scope="col">Supplier ID</th>
+                        <th width="30%" scope="col">Supplier Name</th>
+                        <th width="15%" scope="col">Advanced Date</th>
+                        <th width="25%" scope="col">Remarks</th>
+                        <th width="15%" scope="col">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
