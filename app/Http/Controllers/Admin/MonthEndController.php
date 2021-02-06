@@ -349,10 +349,12 @@ class MonthEndController extends Controller {
 
                 $monthly_colection =DB::table('daily_collection_suppliers AS tdcs')
                                         ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
+                                        ->join('suppliers AS ts','ts.id','tdcs.supplier_id')
                                         ->select('tdcs.supplier_id',DB::raw('MIN(tdcs.current_units_price) AS current_units_price'),DB::raw('IFNULL(SUM(tdcs.number_of_units),0) AS total_units'),DB::raw('IFNULL(SUM(tdcs.daily_amount),0) AS total_value'),DB::raw('IFNULL(SUM(tdcs.delivery_cost),0) AS total_delivery_cost'),DB::raw('IFNULL(SUM(tdcs.daily_value),0) AS net_value'))
                                         ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
                                         ->where('tdc.confirm_status', '=', 1)
                                         ->whereNull('tdcs.deleted_at')
+                                        ->whereNull('ts.deleted_at')
                                         ->whereNull('tdc.deleted_at')
                                         ->groupBy('tdcs.supplier_id')
                                         ->get();
@@ -367,10 +369,12 @@ class MonthEndController extends Controller {
 
                 $daily_colection =DB::table('daily_collection_suppliers AS tdcs')
                                         ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
+                                        ->join('suppliers AS ts','ts.id','tdcs.supplier_id')
                                         ->select('tdc.date','tdcs.supplier_id','tdcs.number_of_units')
                                         ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
                                         ->where('tdc.confirm_status', '=', 1)
                                         ->whereNull('tdcs.deleted_at')
+                                        ->whereNull('ts.deleted_at')
                                         ->whereNull('tdc.deleted_at')
                                         ->get();
 
@@ -390,11 +394,13 @@ class MonthEndController extends Controller {
 
                 $monthly_issues =DB::table('daily_issues_suppliers AS tdis')
                                         ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
+                                        ->join('suppliers AS ts','ts.id','tdis.supplier_id')
                                         ->select('tdis.supplier_id','tdis.item_type',DB::raw('IFNULL(SUM(tdis.daily_value),0) AS net_cost'))
                                         ->where(DB::raw('DATE_FORMAT(tdi.date, "%Y-%m")'),'=',$requested_month)
                                         ->where('tdi.confirm_status', '=', 1)
                                         ->whereNull('tdis.deleted_at')
                                         ->whereNull('tdi.deleted_at')
+                                        ->whereNull('ts.deleted_at')
                                         ->groupBy('tdis.supplier_id','tdis.item_type')
                                         ->get();
 
@@ -411,10 +417,12 @@ class MonthEndController extends Controller {
                 }
 
                 $monthly_installments =DB::table('monthly_installments AS tmi')
+                                        ->join('suppliers AS ts','ts.id','tmi.supplier_id')
                                         ->select('tmi.supplier_id','tmi.remarks',DB::raw('IFNULL(SUM(tmi.installment),0) AS total_installments'))
                                         ->where('tmi.month','=',$requested_month)
                                         ->where('tmi.deducted_status','=', 1)
                                         ->whereNull('tmi.deleted_at')
+                                        ->whereNull('ts.deleted_at')
                                         ->groupBy('tmi.supplier_id','tmi.remarks')
                                         ->get();
 
@@ -431,10 +439,12 @@ class MonthEndController extends Controller {
                 }
 
                 $debtor_details =DB::table('debtor_details AS tdd')
+                                        ->join('suppliers AS ts','ts.id','tdd.supplier_id')
                                         ->select('tdd.supplier_id',DB::raw('IFNULL(SUM(tdd.amount),0) AS sup_credit'))
                                         ->where('tdd.relevant_month','=',$requested_month)
                                         ->where('tdd.forwarded_status','=', 1)
                                         ->whereNull('tdd.deleted_at')
+                                        ->whereNull('ts.deleted_at')
                                         ->groupBy('tdd.supplier_id')
                                         ->get();
 
@@ -445,6 +455,7 @@ class MonthEndController extends Controller {
                 $fertilizer_credits =DB::table('fertilizer_issues AS tfi')
                                         ->join('fertilizer_issues_suppliers AS tfis','tfis.fertilizer_issue_id','tfi.id')
                                         ->join('monthly_installments AS tmi','tmi.reference','tfis.id')
+                                        ->join('suppliers AS ts','ts.id','tmi.supplier_id')
                                         ->select('tmi.supplier_id',DB::raw('IFNULL(SUM(tmi.installment),0) AS total_value'))
                                         ->where(DB::raw('DATE_FORMAT(tfi.date, "%Y-%m")'),'=',$requested_month)
                                         ->where('tfi.confirm_status','=', 1)
@@ -453,6 +464,7 @@ class MonthEndController extends Controller {
                                         ->whereNull('tfi.deleted_at')
                                         ->whereNull('tfis.deleted_at')
                                         ->whereNull('tmi.deleted_at')
+                                        ->whereNull('ts.deleted_at')
                                         ->groupBy('tmi.supplier_id')
                                         ->get();
 
