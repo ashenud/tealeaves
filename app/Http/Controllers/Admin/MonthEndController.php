@@ -309,11 +309,11 @@ class MonthEndController extends Controller {
 
     }
 
-    public function printBulkBills(Request $request) {
+    public function printBulkBills($id) {
 
         $data = array();
         $user_id = Auth::user()->user_id;
-        $month_end_id = $request->month_end_id;
+        $month_end_id = $id;
         $month_end = MonthEnd::where('id',$month_end_id)->where('ended_status',1)->limit(1)->get();
         if(count($month_end) > 0) {
             
@@ -467,7 +467,7 @@ class MonthEndController extends Controller {
                 // ]);
 
                 $pdf = app('dompdf.wrapper')->loadView('templates.monthly-bill', ['data' => $data])->setPaper('a4', 'landscape');
-                return $pdf->download('bulk-bill-print.pdf');
+                return $pdf->stream('bulk-bill-print.pdf');
 
             }
         else {

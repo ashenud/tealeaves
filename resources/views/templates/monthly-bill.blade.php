@@ -1,6 +1,9 @@
 <html>
 
     <head>
+
+        <title>MONTHLY BULK BILL VIEW</title>
+
         <style>
             @page {
                 margin: 25px 25px 20px 25px;

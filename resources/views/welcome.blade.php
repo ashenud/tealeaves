@@ -65,7 +65,7 @@
 
     <script type="text/javascript" src="{{asset('js/jquery-3.5.1.min.js')}}"></script>
     <script type="text/javascript" src="{{asset('js/mdb.min.js')}}"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" src="{{asset('sweetalert/sweetalert2.all.js')}}"></script>
 
     <script>
         !function(e){navigator.userAgent.toLowerCase().indexOf("chrome")>=0&&e("input, select").on("change focus",function(t){setTimeout(function(){e.each(document.querySelectorAll("*:-webkit-autofill"),function(){var t=e(this).clone(!0,!0);e(this).after(t).remove(),n()})},300)}).change();var n=function(){};n()}(jQuery);

@@ -127,44 +127,9 @@
 
     function printBill(id) {
 
-        swal({
-            title: 'Are you sure?',
-            text: "You are going to print all bills !",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes'
-        }).then((result) => {
-            if (result.value) {
+        var pageURL = baseURL+'admin/print-bulk-bills/'+id;
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    url: '{{url("/admin/print-bulk-bills")}}',
-                    type: 'POST',
-                    data: {month_end_id : id},
-                    dataType: 'JSON',
-                    success: function (data) { 
-                        console.log(data);
-                        /* if(data.result == true) {
-                            // monthEndTable.ajax.reload();
-                            swal(data.message, {
-                                icon: "success",
-                            });
-                        }
-                        else {
-                            swal(data.message, {
-                                icon: "error",
-                            });
-                        }   */                    
-                    }
-                });
-            }
-        })
+        window.open(pageURL, '_blank');
 
     }
 
