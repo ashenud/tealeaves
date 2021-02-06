@@ -9,6 +9,8 @@
 <!-- for datatable -->
 <link rel="stylesheet" href="{{asset('css/custom-table-style.css')}}">
 
+<link rel="stylesheet" href="{{ asset('css/month-end-style.css') }}">
+
 @endsection
 
 @section('navbar')
@@ -70,9 +72,9 @@
         serverSide: true,
         ajax: "{{ url('admin/month-end-datatable') }}",
         columns: [
-                { data:'month', name:'month'},
-                { data:'ended_date', name:'ended_date'},
-                { data:'create', name:'create'},
+                { data:'month', name:'month', orderable: false,},
+                { data:'ended_date', name:'ended_date', orderable: false, searchable: false},
+                { data:'create', name:'create', orderable: false, searchable: false},
                 { data:'print', name:'print', orderable: false, searchable: false},
         ]});
 
@@ -82,7 +84,7 @@
 
         swal({
             title: 'Are you sure?',
-            text: "You are going to create this month end !",
+            text: "Once you create month end, you can't undo !",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

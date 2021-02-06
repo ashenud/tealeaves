@@ -61,9 +61,11 @@ Route::post('/admin/confirm-fertilizer-issues', 'App\Http\Controllers\Admin\Fert
 
 Route::get('/admin/advance-issue', 'App\Http\Controllers\Admin\AdvanceIssueController@index')->name('advance-issue')->middleware('admin');
 Route::post('/admin/insert-advance', 'App\Http\Controllers\Admin\AdvanceIssueController@insertAdvance')->middleware('admin'); // insert advance action
+Route::get('/admin/advance-datatable', 'App\Http\Controllers\Admin\AdvanceIssueController@advanceDatatable')->name('advance-datatable')->middleware('admin');
 
 Route::get('/admin/loan-issue', 'App\Http\Controllers\Admin\LoanIssueController@index')->name('loan-issue')->middleware('admin');
 Route::post('/admin/insert-loan', 'App\Http\Controllers\Admin\LoanIssueController@insertLoan')->middleware('admin'); // insert loan action
+Route::get('/admin/loan-datatable', 'App\Http\Controllers\Admin\LoanIssueController@loanDatatable')->name('loan-datatable')->middleware('admin');
 
 Route::get('/admin/month-end', 'App\Http\Controllers\Admin\MonthEndController@index')->name('month-end')->middleware('admin');
 Route::get('/admin/month-end-datatable', 'App\Http\Controllers\Admin\MonthEndController@monthEndDatatable')->name('month-end-datatable')->middleware('admin');

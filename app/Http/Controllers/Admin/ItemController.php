@@ -51,18 +51,6 @@ class ItemController extends Controller
                         return $btn;
                     })
                     ->filter(function ($query) use ($request) {
-                        if ($request->has('item_name')) {
-                            $query->where('ti.item_name', 'like', "%{$request->get('item_name')}%");
-                        }
-                        if ($request->has('type_name')) {
-                            $query->where('tit.type_name', 'like', "%{$request->get('type_name')}%");
-                        }
-                        if ($request->has('item_code')) {
-                            $query->where('ti.item_code', 'like', "%{$request->get('item_code')}%");
-                        }
-                        if ($request->has('unit_price')) {
-                            $query->where('ti.unit_price', 'like', "%{$request->get('unit_price')}%");
-                        }
                         if ($request->has('search') && ! is_null($request->get('search')['value']) ) {
                             $regex = $request->get('search')['value'];
                             return $query->where(function($queryNew) use($regex){

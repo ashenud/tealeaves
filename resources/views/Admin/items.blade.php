@@ -9,6 +9,8 @@
 <!-- for datatable -->
 <link rel="stylesheet" href="{{asset('css/custom-table-style.css')}}">
 
+<link rel="stylesheet" href="{{ asset('css/item-style.css') }}">
+
 @endsection
 
 @section('navbar')

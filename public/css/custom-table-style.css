@@ -6,15 +6,7 @@
     padding: 6px 2px;
     line-height: 0;
     vertical-align: middle;
-}
-
-.data-table th:nth-child(3),
-.data-table th:nth-child(4),
-.data-table td:nth-child(3),
-.data-table td:nth-child(4) {
-    text-align: center;
-}
-  
+}  
 
 .data-table .btn  {
     padding: 0.275rem 0.81rem .125rem;
