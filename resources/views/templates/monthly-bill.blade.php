@@ -2,7 +2,7 @@
 
     <head>
 
-        <title>MONTHLY BULK BILL VIEW</title>
+        <title>@if (isset($data['month'])) {{ strtoupper($data['month']) }} @endif MONTHLY BULK BILL VIEW</title>
 
         <style>
             @page {
