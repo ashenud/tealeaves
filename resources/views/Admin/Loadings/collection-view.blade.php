@@ -9,11 +9,12 @@
     <table width="100%" class="table" align="center" style="margin-bottom: 65px;">
         <thead>
             <tr>
-                <th width="30%">Supplier</th>
-                <th width="20%">Item Name</th>
-                <th width="12%">C.Price(Rs.)</th>
-                <th width="12%">D.Cost(Rs.)</th>
-                <th width="11%">No. of Units</th>
+                <th width="15%">Supplier ID</th>
+                <th width="25%">Supplier Name</th>
+                <th width="15%">Item Name</th>
+                <th width="10%">C.Price(Rs.)</th>
+                <th width="10%">D.Cost(Rs.)</th>
+                <th width="10%">No. of Units</th>
                 <th width="15%">Amount(Rs.)</th>
             </tr>
         </thead>
@@ -21,6 +22,11 @@
             @if (isset($data['suppliers']))
                 @foreach ($data['suppliers'] as $supplier)
                     <tr id="tr" style="height: 30px">
+                        <td>
+                            <div class="form-group">
+                                <input type="text" class="form-control" value="{{ $supplier->sup_id }}" readonly>                                                                        
+                            </div>
+                        </td>
                         <td>
                             <div class="form-group">
                                 <input type="text" class="form-control" value="{{ $supplier->sup_name }}" readonly>                                                                        
@@ -61,7 +67,7 @@
             
             <!--Display Daily Total-->
             <tr>
-                <td colspan="5" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="6" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="{{ $data['daily_total_value'] }}" readonly> </b>

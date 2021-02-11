@@ -72,3 +72,5 @@ Route::get('/admin/month-end', 'App\Http\Controllers\Admin\MonthEndController@in
 Route::get('/admin/month-end-datatable', 'App\Http\Controllers\Admin\MonthEndController@monthEndDatatable')->name('month-end-datatable')->middleware('admin');
 Route::post('/admin/create-month-end', 'App\Http\Controllers\Admin\MonthEndController@createMonthEnd')->middleware('admin');
 Route::get('/admin/print-bulk-bills/{id}', 'App\Http\Controllers\Admin\MonthEndController@printBulkBills')->middleware('admin');
+
+Route::get('/admin/stock', 'App\Http\Controllers\Admin\StockController@index')->name('stock')->middleware('admin');

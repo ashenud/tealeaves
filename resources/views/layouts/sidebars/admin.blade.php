@@ -16,6 +16,11 @@
             </a>
         </li>
         <li class="side-item">
+            <a class="side-link li-stock" href="{{ url('admin/stock') }}">
+                <i class="now-ui-icons files_box"></i> Stock Manage
+            </a>
+        </li>
+        <li class="side-item">
             <a class="side-link li-collect" href="{{ url('admin/daily-collect') }}">
                 <i class="now-ui-icons shopping_cart-simple"></i> Daily Collect
             </a>

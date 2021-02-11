@@ -98,6 +98,7 @@
         var values =  $("#supplier_" + row).val().split(",");
         $("#supplier_id_" + row).val(values[0]);
         $("#delivery_cost_per_unit_" + row).val(values[1]);
+        $("#supplier_name_" + row).val(values[2]);
 
         valid = true;
         if($("#supplier_id_" + row).val() != null && $("#supplier_id_" + row).val() != '' ) {
@@ -123,6 +124,7 @@
         if (valid === false) {
             $("#supplier_id_" + row).val('');
             $("#delivery_cost_per_unit_" + row).val('');
+            $("#supplier_name_" + row).val('');
             $("#supplier_" + row).val('').trigger("change");
             $("#supplier_" + row).next().find('.select2-selection').addClass('is-invalid');
             swal("Error!", "Can not add same supplier twice", "error");
@@ -144,14 +146,19 @@
                                     '<td>'+
                                         '<div class="form-group">'+
                                             '<select class="form-control supplier-name" id="supplier_' + (row + 1) + '" onchange="getSupplierValues(' + (row + 1) + ')">'+
-                                                '<option value="">Select Supplier</option>'+
+                                                '<option value="">Select Supplier ID</option>'+
                                                 '@if (isset($data["suppliers"]))'+
                                                     '@foreach ($data["suppliers"] as $supplier)'+
-                                                        '<option value="{{ $supplier->value }}">{{ $supplier->sup_name }}</option>'+
+                                                        '<option value="{{ $supplier->value }}">{{ $supplier->sup_id }}</option>'+
                                                     '@endforeach'+
                                                 '@endif'+
                                             '</select>'+                                    
                                             '<input type="hidden" id="supplier_id_' + (row + 1) + '">'+                                             
+                                        '</div>'+
+                                    '</td>'+
+                                    '<td>'+
+                                        '<div class="form-group">'+
+                                            '<input type="text" id="supplier_name_' + (row + 1) + '" class="form-control" readonly>'+
                                         '</div>'+
                                     '</td>'+
                                     '<td>'+

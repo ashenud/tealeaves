@@ -47,6 +47,17 @@ class SupplierController extends Controller
                         return $btn;
                             
                     })
+                    ->filter(function ($query) use ($request) {
+                        if ($request->has('search') && ! is_null($request->get('search')['value']) ) {
+                            $regex = $request->get('search')['value'];
+                            return $query->where(function($queryNew) use($regex){
+                                $queryNew->where('id', 'like', '%' . $regex . '%')
+                                    ->orWhere('sup_name', 'like', '%' . $regex . '%')
+                                    ->orWhere('sup_address', 'like', '%' . $regex . '%')
+                                    ->orWhere('sup_contact', 'like', '%' . $regex . '%');
+                            });
+                        }
+                    })
                     ->rawColumns(['action'])
                     ->make(true);
         }
