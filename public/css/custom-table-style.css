@@ -1,5 +1,5 @@
 .data-table {
-    width: 100% !important;
+    width: 1220px;
 }
 
 .data-table td {
@@ -124,6 +124,9 @@ table.dataTable thead .sorting_desc_disabled {
 @media screen and (max-width:768px) {
     #DataTables_Table_0_wrapper .dataTables_filter {
         text-align: start !important;
+    }
+    .data-table {
+        width: 920px;
     }
     /* #DataTables_Table_0_wrapper .dataTables_length {
         display: grid;
