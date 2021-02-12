@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th width="5%" height="25"></th>
-                <th width="35%">Supplier</th>
+                <th width="15%">Supplier ID</th>
+                <th width="23%">Supplier Name</th>
                 <th width="20%">Item Name</th>
                 <th width="10%">C.Price(Rs.)</th>
                 <th width="10%">No. of Units</th>
-                <th width="15%">Amount(Rs.)</th>
+                <th width="12%">Amount(Rs.)</th>
             </tr>
         </thead>
         <tbody id="item_tbl">
@@ -20,14 +21,20 @@
                 </td>
                 <td>
                     <div class="form-group">
-                        <select class="form-control supplier-name" id="supplier_id_1" onchange="resetCurrentItem(1)">
-                            <option value="">Select Supplier</option>
+                        <select class="form-control supplier-name" id="supplier_1" onchange="resetCurrentItem(1)">
+                            <option value="">Select Supplier ID</option>
                             @if (isset($data['suppliers']))
                                 @foreach ($data['suppliers'] as $supplier)
-                                    <option value="{{ $supplier->id }}">{{ $supplier->sup_name }}</option>
+                                    <option value="{{ $supplier->value }}">{{ $supplier->sup_id }}</option>
                                 @endforeach
                             @endif
-                        </select>                                            
+                        </select>
+                        <input type="hidden" id="supplier_id_1">                                            
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input type="text" id="supplier_name_1" class="form-control" readonly>
                     </div>
                 </td>
                 <td>
@@ -68,7 +75,7 @@
             
             <!--Display Daily Total-->
             <tr>
-                <td colspan="5" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="6" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="0.00" readonly> </b>
@@ -76,7 +83,7 @@
                 </td>
             </tr>
             <tr class="submit-button-row">
-                <td colspan="6" align="right">
+                <td colspan="7" align="right">
                     <input class="btn btn-primary-custom submit-btn" type="button" class="btn" value="SUBMIT ISSUE DATA"  id="dd" onclick="submit_data_to_db()" />
                 </td>
             </tr>

@@ -56,7 +56,7 @@
     });
     $(document).ajaxComplete(function ( event, xhr, settings ) {      
         if (typeof xhr.responseJSON === 'undefined')   {            
-            $('#supplier_id_1').select2();
+            $('#supplier_1').select2();
             $('#item_1').select2();
             count = $('#count').val();
             // console.log(count);
@@ -96,6 +96,11 @@
 
     // current (product)
     function resetCurrentItem(row) {
+
+        var values =  $("#supplier_" + row).val().split(",");
+        $("#supplier_id_" + row).val(values[0]);
+        $("#supplier_name_" + row).val(values[1]);
+
         $("#item_" + row).val('').trigger("change");
         $("#current_price_" + row).val('0.00');
         $("#item_id_" + row).val('');
@@ -162,14 +167,20 @@
                                     '</td>'+
                                     '<td>'+
                                         '<div class="form-group">'+
-                                            '<select class="form-control supplier-name" id="supplier_id_' + (row + 1) + '"  onchange="resetCurrentItem(' + (row + 1) + ')">'+
-                                                '<option value="">Select Supplier</option>'+
+                                            '<select class="form-control supplier-name" id="supplier_' + (row + 1) + '"  onchange="resetCurrentItem(' + (row + 1) + ')">'+
+                                                '<option value="">Select Supplier ID</option>'+
                                                 '@if (isset($data["suppliers"]))'+
                                                     '@foreach ($data["suppliers"] as $supplier)'+
-                                                        '<option value="{{ $supplier->id }}">{{ $supplier->sup_name }}</option>'+
+                                                        '<option value="{{ $supplier->value }}">{{ $supplier->sup_id }}</option>'+
                                                     '@endforeach'+
                                                 '@endif'+
-                                            '</select>'+                                          
+                                            '</select>'+
+                                            '<input type="hidden" id="supplier_id_' + (row + 1) + '">'+                                      
+                                        '</div>'+
+                                    '</td>'+
+                                    '<td>'+
+                                        '<div class="form-group">'+
+                                            '<input type="text" id="supplier_name_' + (row + 1) + '" class="form-control" readonly>'+
                                         '</div>'+
                                     '</td>'+
                                     '<td>'+
@@ -208,7 +219,7 @@
         document.getElementById('minus_icon_' + row).style.display = 'block';
 
         
-        $('#supplier_id_' + (row + 1)).select2();        
+        $('#supplier_' + (row + 1)).select2();        
         $('#item_' + (row + 1)).select2();        
 
         count = count + 1;
