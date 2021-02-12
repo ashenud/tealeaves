@@ -25,7 +25,7 @@ class FertilizerIssueController extends Controller {
         $data['page_title'] = 'Fertilizer Issue';
 
         $suppliers = DB::table('suppliers AS ts')
-                       ->select('ts.sup_name','ts.id')
+                       ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
                        ->whereNull('ts.deleted_at')
                        ->get();
         $data['suppliers'] = $suppliers;
@@ -66,7 +66,7 @@ class FertilizerIssueController extends Controller {
                     $data = array();
 
                     $suppliers = DB::table('suppliers AS ts')
-                                ->select('ts.sup_name','ts.id')
+                                ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
                                 ->whereNull('ts.deleted_at')
                                 ->get();
                     $data['suppliers'] = $suppliers;
@@ -103,7 +103,7 @@ class FertilizerIssueController extends Controller {
                                         ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
                                         ->join('suppliers AS ts','ts.id','tfis.supplier_id')
                                         ->join('items AS ti','ti.id','tfis.item_id')
-                                        ->select('ts.sup_name','ti.item_name','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency')
+                                        ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','ti.item_name','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency')
                                         ->where('tfi.id',$fertilizer_issue_id)
                                         ->whereNull('tfis.deleted_at')
                                         ->whereNull('tfi.deleted_at')
@@ -139,7 +139,7 @@ class FertilizerIssueController extends Controller {
                                       ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
                                       ->join('suppliers AS ts','ts.id','tfis.supplier_id')
                                       ->join('items AS ti','ti.id','tfis.item_id')
-                                      ->select('tfis.id','ts.sup_name','tfis.supplier_id','ti.item_name','tfis.item_type','tfis.item_id','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency',
+                                      ->select('tfis.id',DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','tfis.supplier_id','ti.item_name','tfis.item_type','tfis.item_id','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency',
                                                 DB::raw('IF(tfis.payment_frequency=1, "One Month", IF(tfis.payment_frequency=2, "Two Months", IF(tfis.payment_frequency=3, "Three Months", "-"))) AS frequency'))
                                       ->where('tfi.id',$fertilizer_issue_id)
                                       ->whereNull('tfis.deleted_at')
