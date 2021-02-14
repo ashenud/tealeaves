@@ -74,3 +74,5 @@ Route::post('/admin/create-month-end', 'App\Http\Controllers\Admin\MonthEndContr
 Route::get('/admin/print-bulk-bills/{id}', 'App\Http\Controllers\Admin\MonthEndController@printBulkBills')->middleware('admin');
 
 Route::get('/admin/stock', 'App\Http\Controllers\Admin\StockController@index')->name('stock')->middleware('admin');
+Route::get('/admin/stock-datatable', 'App\Http\Controllers\Admin\StockController@stockDatatable')->name('stock-datatable')->middleware('admin');
+Route::post('/admin/insert-grn', 'App\Http\Controllers\Admin\StockController@insertGrn')->middleware('admin'); // insert issues action

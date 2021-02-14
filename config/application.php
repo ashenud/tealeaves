@@ -65,5 +65,20 @@ return [
     */
 
     'supplier_str_pad' => env('SUPPLIER_STR_PAD', 4),
+    'number_str_pad' => env('NUMBER_STR_PAD', 6),
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Number Format Types
+    |--------------------------------------------------------------------------
+    |
+    | Use to create auto increment numbers 
+    |
+    */
+
+    'advanced_no' => env('ADVANCED_NO', 1),
+    'loan_no' => env('LOAN_NO', 2),
+    'grn_no' => env('GRN_NO', 3),
 
 ];

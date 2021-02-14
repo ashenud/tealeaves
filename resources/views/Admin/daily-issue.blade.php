@@ -313,7 +313,7 @@
                     var supplier_id = $("#supplier_id_" + i).val();
                     var item_id = $("#item_id_" + i).val();
                     var item_type = $("#item_type_" + i).val();
-                    $("#supplier_id_" + i).removeClass('is-invalid');
+                    $("#supplier_" + i).removeClass('is-invalid');
 
                     if( ($("#current_price_" + i).val() != null) && ($("#current_price_" + i).val() > 0 ) ) {
                         var current_price = $("#current_price_" + i).val();
@@ -358,7 +358,7 @@
                     }
                 }
                 else {
-                    $("#supplier_id_" + i).addClass('is-invalid');
+                    $("#supplier_" + i).addClass('is-invalid');
                 }
 
             }
@@ -459,7 +459,7 @@
                     var supplier_id = $("#supplier_id_" + i).val();
                     var item_id = $("#item_id_" + i).val();
                     var item_type = $("#item_type_" + i).val();
-                    $("#supplier_id_" + i).removeClass('is-invalid');
+                    $("#supplier_" + i).removeClass('is-invalid');
 
                     if( ($("#current_price_" + i).val() != null) && ($("#current_price_" + i).val() > 0 ) ) {
                         var current_price = $("#current_price_" + i).val();
@@ -503,7 +503,7 @@
                     }
                 }
                 else {
-                    $("#supplier_id_" + i).addClass('is-invalid');
+                    $("#supplier_" + i).addClass('is-invalid');
                 }
 
             }

@@ -330,7 +330,7 @@
                     var supplier_id = $("#supplier_id_" + i).val();
                     var item_id = $("#item_id_" + i).val();
                     var item_type = $("#item_type_" + i).val();
-                    $("#supplier_id_" + i).removeClass('is-invalid');
+                    $("#supplier_" + i).removeClass('is-invalid');
 
                     if( $("#payment_frequency_" + i).val() != "" ) {
                         var payment_frequency = $("#payment_frequency_" + i).val();
@@ -385,7 +385,7 @@
                     }
                 }
                 else {
-                    $("#supplier_id_" + i).addClass('is-invalid');
+                    $("#supplier_" + i).addClass('is-invalid');
                 }
 
             }
@@ -486,7 +486,7 @@
                     var supplier_id = $("#supplier_id_" + i).val();
                     var item_id = $("#item_id_" + i).val();
                     var item_type = $("#item_type_" + i).val();
-                    $("#supplier_id_" + i).removeClass('is-invalid');
+                    $("#supplier_" + i).removeClass('is-invalid');
 
                     if( $("#payment_frequency_" + i).val() != "" ) {
                         var payment_frequency = $("#payment_frequency_" + i).val();
@@ -540,7 +540,7 @@
                     }
                 }
                 else {
-                    $("#supplier_id_" + i).addClass('is-invalid');
+                    $("#supplier_" + i).addClass('is-invalid');
                 }
 
             }
