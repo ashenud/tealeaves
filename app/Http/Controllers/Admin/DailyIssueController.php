@@ -29,13 +29,47 @@ class DailyIssueController extends Controller {
                        ->get();
         $data['suppliers'] = $suppliers;
 
-        $items = DB::table('items AS ti')
-                        ->join('item_types AS tit','tit.id','ti.item_type')
-                        ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                        ->whereNotIn('tit.id', [config('application.tealeaves_type'),config('application.fertilizer_type')])
-                        ->whereNull('ti.deleted_at')
-                        ->whereNull('tit.deleted_at')
-                        ->get();
+        $not_in = config('application.tealeaves_type').','.config('application.fertilizer_type');
+        $query="SELECT
+                    ti.item_name,
+                    @cuurentStock := IFNULL(
+                        (
+                        SELECT
+                            SUM(tcs.current_quantity)
+                        FROM
+                            current_stocks tcs
+                        WHERE
+                            tcs.item_id = ti.id
+                            AND tcs.deleted_at IS NULL
+                    ), 0 ) AS 'cuurentStock',
+                    @usedStock := IFNULL(
+                        (
+                        SELECT
+                            SUM(tdis.number_of_units)
+                        FROM
+                            daily_issues_suppliers tdis
+                                INNER JOIN
+                            daily_issues tdi ON tdi.id = tdis.issue_id
+                        WHERE
+                            tdis.item_id = ti.id
+                            AND tdi.confirm_status = 0
+                            AND tdi.deleted_at IS NULL
+                            AND tdis.deleted_at IS NULL
+                    ), 0 ) AS 'usedStock',
+                    CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', @cuurentStock-@usedStock) AS value
+                FROM
+                    items ti
+                        INNER JOIN 
+                    item_types tit ON tit.id = ti.item_type
+                WHERE
+                    ti.deleted_at IS NULL
+                    AND tit.deleted_at IS NULL
+                    AND tit.id NOT IN ($not_in)
+                ORDER BY
+                    ti.id";
+        
+        $items = DB::select(DB::raw($query));
+
         $data['items'] = $items;
 
         // dd($data);
@@ -70,13 +104,47 @@ class DailyIssueController extends Controller {
                                 ->get();
                     $data['suppliers'] = $suppliers;
 
-                    $items = DB::table('items AS ti')
-                                ->join('item_types AS tit','tit.id','ti.item_type')
-                                ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                                ->whereNotIn('tit.id', [config('application.tealeaves_type'),config('application.fertilizer_type')])
-                                ->whereNull('ti.deleted_at')
-                                ->whereNull('tit.deleted_at')
-                                ->get();
+                    $not_in = config('application.tealeaves_type').','.config('application.fertilizer_type');
+                    $query="SELECT
+                                ti.item_name,
+                                @cuurentStock := IFNULL(
+                                    (
+                                    SELECT
+                                        SUM(tcs.current_quantity)
+                                    FROM
+                                        current_stocks tcs
+                                    WHERE
+                                        tcs.item_id = ti.id
+                                        AND tcs.deleted_at IS NULL
+                                ), 0 ) AS 'cuurentStock',
+                                @usedStock := IFNULL(
+                                    (
+                                    SELECT
+                                        SUM(tdis.number_of_units)
+                                    FROM
+                                        daily_issues_suppliers tdis
+                                            INNER JOIN
+                                        daily_issues tdi ON tdi.id = tdis.issue_id
+                                    WHERE
+                                        tdis.item_id = ti.id
+                                        AND tdi.confirm_status = 0
+                                        AND tdi.deleted_at IS NULL
+                                        AND tdis.deleted_at IS NULL
+                                ), 0 ) AS 'usedStock',
+                                CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', @cuurentStock-@usedStock) AS value
+                            FROM
+                                items ti
+                                    INNER JOIN 
+                                item_types tit ON tit.id = ti.item_type
+                            WHERE
+                                ti.deleted_at IS NULL
+                                AND tit.deleted_at IS NULL
+                                AND tit.id NOT IN ($not_in)
+                            ORDER BY
+                                ti.id";
+                    
+                    $items = DB::select(DB::raw($query));
+
                     $data['items'] = $items;
 
                     // dd($cuurent_issue_month);
@@ -135,7 +203,64 @@ class DailyIssueController extends Controller {
             $data['issue_id'] = $issue_id;
             $data['daily_total_value'] = $issue[0]->daily_total_value;
 
-            $supplier_issue = DB::table('daily_issues_suppliers AS tdis')
+            $not_in = config('application.tealeaves_type').','.config('application.fertilizer_type');
+            $query="SELECT
+                        tdis.id,
+                        LPAD(ts.id,4,0) AS sup_id,
+                        ts.sup_name,
+                        tdis.supplier_id,
+                        ti.item_name,
+                        tdis.item_type,
+                        tdis.item_id,
+                        tdis.number_of_units,
+                        tdis.current_units_price,
+                        tdis.daily_value,
+                        @cuurentStock := IFNULL(
+                            (
+                            SELECT
+                                SUM(tcs.current_quantity)
+                            FROM
+                                current_stocks tcs
+                            WHERE
+                                tcs.item_id = ti.id
+                                AND tcs.deleted_at IS NULL
+                        ), 0 ) AS 'cuurentStock',
+                        @usedStock := IFNULL(
+                            (
+                            SELECT
+                                SUM(tdis2.number_of_units)
+                            FROM
+                                daily_issues_suppliers tdis2
+                                    INNER JOIN
+                                daily_issues tdi2 ON tdi2.id = tdis2.issue_id
+                            WHERE
+                                tdis2.item_id = ti.id
+                                AND tdi2.confirm_status = 0
+                                AND tdi2.deleted_at IS NULL
+                                AND tdis2.deleted_at IS NULL
+                                AND tdi2.id != $issue_id
+                        ), 0 ) AS 'usedStock',
+                        (@cuurentStock-@usedStock) AS actual_current_stock
+                        FROM
+                            items ti
+                                INNER JOIN 
+                            daily_issues_suppliers tdis ON tdis.item_id = ti.id
+                                INNER JOIN
+                            daily_issues tdi ON tdi.id = tdis.issue_id
+                                INNER JOIN
+                            suppliers ts ON ts.id = tdis.supplier_id
+                        WHERE
+                            ti.deleted_at IS NULL
+                            AND tdis.deleted_at IS NULL
+                            AND tdi.deleted_at IS NULL
+                            AND ts.deleted_at IS NULL
+                            AND tdi.id = $issue_id
+                        ORDER BY
+                            ti.id";
+            
+            $supplier_issue = DB::select(DB::raw($query));
+
+            /* $supplier_issue = DB::table('daily_issues_suppliers AS tdis')
                                       ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
                                       ->join('suppliers AS ts','ts.id','tdis.supplier_id')
                                       ->join('items AS ti','ti.id','tdis.item_id')
@@ -145,7 +270,8 @@ class DailyIssueController extends Controller {
                                       ->whereNull('tdi.deleted_at')
                                       ->whereNull('ts.deleted_at')
                                       ->whereNull('ti.deleted_at')
-                                      ->get();
+                                      ->get(); */
+
             $data['supplier_issues'] = $supplier_issue;
             $data['actual_supplier_count'] = count($supplier_issue);
 

@@ -46,6 +46,7 @@ class StockController extends Controller {
                     ->join('item_types AS tit','tit.id','ti.item_type')
                     ->leftJoin('current_stocks AS tcs','tcs.item_id','ti.id')
                     ->select('ti.id AS item_id','ti.item_name','tit.id AS type_id','tit.type_name','ti.item_code','ti.unit_price',DB::raw('IFNULL(SUM(tcs.current_quantity),0) AS current_quantity'))
+                    ->whereNotIn('tit.id', [config('application.tealeaves_type')])
                     ->whereNull('ti.deleted_at')
                     ->whereNull('tit.deleted_at')
                     ->whereNull('tcs.deleted_at')

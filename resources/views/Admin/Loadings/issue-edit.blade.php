@@ -4,10 +4,11 @@
             <tr>
                 <th width="5%" height="25"></th>
                 <th width="15%">Supplier ID</th>
-                <th width="23%">Supplier Name</th>
-                <th width="20%">Item Name</th>
-                <th width="10%">C.Price(Rs.)</th>
-                <th width="10%">No. of Units</th>
+                <th width="20%">Supplier Name</th>
+                <th width="18%">Item Name</th>
+                <th width="9%">C.Price(Rs.)</th>
+                <th width="8%">C.Stock</th>
+                <th width="8%">No. of Units</th>
                 <th width="12%">Amount(Rs.)</th>
             </tr>
         </thead>
@@ -54,6 +55,12 @@
                     </td>
                     <td>
                         <div class="form-group">
+                            <input type="number" id="current_stock_{{ $key+1 }}" class="form-control text-right" value="{{ $supplier->actual_current_stock }}" readonly>
+                            <input type="hidden" id="actual_current_stock_{{ $key+1 }}" value="{{ $supplier->actual_current_stock }}">                            
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
                             <input type="number" id="no_units_{{ $key+1 }}" class="form-control text-right" min="1" value="{{ $supplier->number_of_units }}" autocomplete="off" onkeypress="return event.charCode >= 48" onkeyup="cal_total({{ $key+1 }})">
                         </div>
                     </td>
@@ -71,7 +78,7 @@
             <input id="actual_supplier_count" type="hidden" value="{{ $data['actual_supplier_count'] }}">
             <!--Display Daily Total-->
             <tr>
-                <td colspan="6" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="7" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="{{ $data['daily_total_value'] }}" readonly> </b>
@@ -79,7 +86,7 @@
                 </td>
             </tr>
             <tr class="submit-button-row">
-                <td colspan="8" align="right">
+                <td colspan="9" align="right">
                     <input id="issue_id" type="hidden" value="{{ $data['issue_id'] }}">
                     <button class="btn btn-primary-custom submit-btn" onclick="cancelSubmition()">CANCEL</button>
                     <button class="btn btn-primary-custom submit-btn" onclick="submit_edited_data_to_db()">SUBMIT ISSUE DATA</button>
