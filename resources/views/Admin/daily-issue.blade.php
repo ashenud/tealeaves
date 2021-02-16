@@ -140,8 +140,22 @@
                     }
                 }
             }
-            
-            $("#current_stock_" + row).val(values[3]-current_quantity);
+
+            var editable_actual_stock = values[3];
+
+            if($("#actual_supplier_count").val() != null && $("#actual_supplier_count").val() != '') {
+                for (var j = 1; j <= $("#actual_supplier_count").val(); j++) {
+                    if($("#item_id_" + j).val() == values[1]) {
+                            editable_actual_stock = parseFloat($("#actual_current_stock_" + j).val());
+                    }
+                }
+
+                $("#current_stock_" + row).val( (editable_actual_stock-current_quantity) > 0 ? (editable_actual_stock-current_quantity) : 0 );
+
+            }
+            else {
+                $("#current_stock_" + row).val(values[3]-current_quantity);
+            }
 
             if(suppliers.indexOf(current_row_value) !== -1){
                 valid = false;
@@ -296,6 +310,15 @@
                 $("#item_" + row).next().find('.select2-selection').removeClass('is-invalid');
 
                 var actual_current_stock = parseFloat($("#actual_current_stock_" + row).val());
+
+                if($("#actual_supplier_count").val() != null && $("#actual_supplier_count").val() != '') {
+                    for (var j = 1; j <= $("#actual_supplier_count").val(); j++) {
+                        if($("#item_id_" + j).val() == $("#item_id_" + row).val()) {
+                            actual_current_stock = parseFloat($("#actual_current_stock_" + j).val());
+                        }
+                    }
+                }
+
                 var current_quantity = 0;
 
                 for (var i = 1; i <= count; i++) {                    
@@ -337,9 +360,9 @@
                         type: 'warning',
                         title: 'Opps!',
                         html:   'Issue quantity can not be greater than current stock</br>' +
-                                'Current actual <span style="font-weight: bold;">' + $("#item_"+ row +" option:selected").text() + '</span> stock is <span style="font-weight: bold;">' + actual_current_stock + '</span>',
+                                'Current issuable <span style="font-weight: bold;">' + $("#item_"+ row +" option:selected").text() + '</span> stock for today is <span style="font-weight: bold;">' + actual_current_stock + '</span>',
                     });
-                    $("#no_units_" + row).val(actual_current_stock - current_quantity + row_unit);  
+                    $("#no_units_" + row).val( (actual_current_stock - current_quantity + row_unit) > 0 ? (actual_current_stock - current_quantity + row_unit) : 0 );  
                 }
             }
             else {

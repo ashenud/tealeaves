@@ -56,7 +56,7 @@ class DailyIssueController extends Controller {
                             AND tdi.deleted_at IS NULL
                             AND tdis.deleted_at IS NULL
                     ), 0 ) AS 'usedStock',
-                    CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', @cuurentStock-@usedStock) AS value
+                    CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', IF((@cuurentStock-@usedStock)>0,(@cuurentStock-@usedStock),0)) AS value
                 FROM
                     items ti
                         INNER JOIN 
@@ -131,7 +131,7 @@ class DailyIssueController extends Controller {
                                         AND tdi.deleted_at IS NULL
                                         AND tdis.deleted_at IS NULL
                                 ), 0 ) AS 'usedStock',
-                                CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', @cuurentStock-@usedStock) AS value
+                                CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', IF((@cuurentStock-@usedStock)>0,(@cuurentStock-@usedStock),0)) AS value
                             FROM
                                 items ti
                                     INNER JOIN 
@@ -203,7 +203,6 @@ class DailyIssueController extends Controller {
             $data['issue_id'] = $issue_id;
             $data['daily_total_value'] = $issue[0]->daily_total_value;
 
-            $not_in = config('application.tealeaves_type').','.config('application.fertilizer_type');
             $query="SELECT
                         tdis.id,
                         LPAD(ts.id,4,0) AS sup_id,
@@ -240,7 +239,7 @@ class DailyIssueController extends Controller {
                                 AND tdis2.deleted_at IS NULL
                                 AND tdi2.id != $issue_id
                         ), 0 ) AS 'usedStock',
-                        (@cuurentStock-@usedStock) AS actual_current_stock
+                        IF((@cuurentStock-@usedStock)>0,(@cuurentStock-@usedStock),0) AS actual_current_stock
                         FROM
                             items ti
                                 INNER JOIN 
