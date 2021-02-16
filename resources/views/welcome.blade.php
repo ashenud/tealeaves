@@ -68,6 +68,13 @@
     <script>
         !function(e){navigator.userAgent.toLowerCase().indexOf("chrome")>=0&&e("input, select").on("change focus",function(t){setTimeout(function(){e.each(document.querySelectorAll("*:-webkit-autofill"),function(){var t=e(this).clone(!0,!0);e(this).after(t).remove(),n()})},300)}).change();var n=function(){};n()}(jQuery);
         
+        $('#password').keypress(function (e) {
+            if (e.which == 13) {
+                $('#submit-user').trigger( "click" );
+                return false;    // same as calling e.preventDefault and e.stopPropagation
+            }
+        });
+
         $("#submit-user").click(function(e) {
         
             if ( $("#username").val().length !== 0 && $("#password").val().length !== 0 ){
