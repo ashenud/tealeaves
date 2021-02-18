@@ -5,7 +5,7 @@
                 <th width="5%" height="25"></th>
                 <th width="15%">Supplier ID</th>
                 <th width="20%">Supplier Name</th>
-                <th width="18%">Item Name</th>
+                <th width="18%">Item ID</th>
                 <th width="9%">C.Price(Rs.)</th>
                 <th width="8%">C.Stock</th>
                 <th width="8%">No. of Units</th>
@@ -42,7 +42,7 @@
                     <td>
                         <div class="form-group readonly-div">
                             <select class="form-control item-name readonly-select" id="item_{{ $key+1 }}" readonly>
-                                <option value="{{ $supplier->item_id }}">{{ $supplier->item_name }}</option>
+                                <option value="{{ $supplier->item_id }}">{{ $supplier->item_code }}</option>
                             </select>                                    
                             <input type="hidden" id="item_id_{{ $key+1 }}" value="{{ $supplier->item_id }}">                                             
                             <input type="hidden" id="item_type_{{ $key+1 }}" value="{{ $supplier->item_type }}">                                             

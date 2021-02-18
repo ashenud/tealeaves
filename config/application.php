@@ -66,6 +66,7 @@ return [
 
     'supplier_str_pad' => env('SUPPLIER_STR_PAD', 4),
     'number_str_pad' => env('NUMBER_STR_PAD', 6),
+    'code_str_pad' => env('CODE_STR_PAD', 3),
     
 
     /*
@@ -80,5 +81,21 @@ return [
     'advanced_no' => env('ADVANCED_NO', 1),
     'loan_no' => env('LOAN_NO', 2),
     'grn_no' => env('GRN_NO', 3),
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prefix Types
+    |--------------------------------------------------------------------------
+    |
+    | Use to create auto increment numbers 
+    |
+    */
+
+    'advanced_prefix' => env('ADVANCED_PREFIX', 'ADV'),
+    'loan_prefix' => env('LOAN_PREFIX', 'LON'),
+    'grn_prefix' => env('GRN_PREFIX', 'GRN'),
+    'fertilizer_prefix' => env('FERTILIZER_PREFIX', 'FER'),
+    'chemical_prefix' => env('CHEMICAL_PREFIX', 'CHE'),
 
 ];

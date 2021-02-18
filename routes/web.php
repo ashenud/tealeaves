@@ -40,6 +40,7 @@ Route::post('/admin/supplier-reactivate', 'App\Http\Controllers\Admin\SupplierCo
 Route::get('/admin/items', 'App\Http\Controllers\Admin\ItemController@items')->name('items')->middleware('admin');
 Route::get('/admin/item-get-data', 'App\Http\Controllers\Admin\ItemController@itemGetData')->name('item-get-data')->middleware('admin');
 Route::get('/admin/items-datatable', 'App\Http\Controllers\Admin\ItemController@itemsDatatable')->name('items-datatable')->middleware('admin');
+Route::get('/admin/item-code-generate', 'App\Http\Controllers\Admin\ItemController@itemCodeGenerate')->middleware('admin');
 Route::post('/admin/item-insert', 'App\Http\Controllers\Admin\ItemController@itemInsert')->middleware('admin');
 Route::post('/admin/item-edit', 'App\Http\Controllers\Admin\ItemController@itemEdit')->middleware('admin');
 Route::post('/admin/item-delete', 'App\Http\Controllers\Admin\ItemController@itemDelete')->middleware('admin');

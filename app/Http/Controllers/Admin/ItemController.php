@@ -7,12 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use App\Traits\NumberGenerate;
 
 use App\Models\ItemType;
 use App\Models\Item;
 
-class ItemController extends Controller
-{
+class ItemController extends Controller {
+
+    use NumberGenerate;
+
     public function items() {
 
         $user_id = Auth::user()->user_id;
@@ -75,33 +79,59 @@ class ItemController extends Controller
         return view('Admin.items');
     }
 
+    public function itemCodeGenerate(Request $request ) {
+
+        $item_type = $request->selected_type;
+
+        $item_code = $this->genereteItemCode($item_type);
+
+        return response()->json([
+            'result' => true,
+            'code' => $item_code
+        ]);
+        
+    }
+
     public function itemInsert(Request $request ) {
 
-        try {
+        $validator = Validator::make($request->all(), [
+            'item_code' => 'required|unique:items',
+        ]);
 
-            DB::beginTransaction();
-
-            $item = new item();
-            $item->item_code = $request->item_code;
-            $item->item_name = $request->item_name;
-            $item->item_type = $request->item_type;
-            $item->unit_price = $request->unit_price;
-            $item->save();    
-            
-            DB::commit();
-            return response()->json([
-                'result' => true,
-                'message' => 'Item data successfully inserted',
-                'add_class' => 'alert-success',
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollback();    
+        if ($validator->fails()) {
             return response()->json([
                 'result' => false,
-                'message' => 'Item data not successfully inserted',
-                'add_class' => 'alert-danger',
+                'message' => 'Item Code is already exist. please retry !',
             ]);
+        }
+        else {
+
+            try {
+
+                DB::beginTransaction();
+
+                $item = new item();
+                $item->item_code = $request->item_code;
+                $item->item_name = $request->item_name;
+                $item->item_type = $request->item_type;
+                $item->unit_price = $request->unit_price;
+                $item->save();    
+                
+                DB::commit();
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Item data successfully inserted',
+                    'add_class' => 'alert-success',
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();    
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Item data not successfully inserted',
+                    'add_class' => 'alert-danger',
+                ]);
+            }
         }
     }
 

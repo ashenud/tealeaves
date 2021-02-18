@@ -52,17 +52,10 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-area">
-                            <div class="form-outline mb-4">
-                                <input type="text" id="item_code" name="item_code" class="form-control" required/>
-                                <label class="form-label" for="item_code">Item Code</label>
-                            </div>
-                            <div class="form-outline mb-4">
-                                <input type="text" id="item_name" name="item_name" class="form-control" required/>
-                                <label class="form-label" for="item_name">Item Name</label>
-                            </div>
                             <div class="mb-4">
                                 <label class="select2-label" for="item_type">Select Type</label> 
-                                <select class="form-control" id="item_type" name="item_type">
+                                <select class="form-control" id="item_type" name="item_type" onchange="generateCode()">
+                                    <option value="">Select Type</option>
                                     @if (isset($data['item_types']))
                                         @foreach ($data['item_types'] as $type)
                                             @if ($type->id != config('application.tealeaves_type') && $type->id != config('application.teabag_type') && $type->id != config('application.dolamite_type'))
@@ -71,6 +64,14 @@
                                         @endforeach
                                     @endif
                                 </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" id="item_code" name="item_code" class="form-control" readonly required/>
+                                <label class="form-label" for="item_code" id="label_code">Item Code</label>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" id="item_name" name="item_name" class="form-control" required/>
+                                <label class="form-label" for="item_name">Item Name</label>
                             </div>
                             <div class="form-outline mb-3">
                                 <input type="number" id="unit_price" name="unit_price" min="0" class="form-control" required/>
@@ -98,14 +99,6 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-area">
-                            <div class="form-outline mb-4">
-                                <input type="text" id="item_code1" name="item_code1" class="form-control" readonly/>
-                                <label class="form-label" for="item_code1">Item Code</label>
-                            </div>
-                            <div class="form-outline mb-4">
-                                <input type="text" id="item_name1" name="item_name1" class="form-control" readonly/>
-                                <label class="form-label" for="item_name1">Item Name</label>
-                            </div>
                             <div class="mb-4">
                                 <label class="select2-label" for="item_type1">Select Type</label> 
                                 <select class="form-control" id="item_type1" name="item_type1" disabled>
@@ -115,6 +108,14 @@
                                         @endforeach
                                     @endif
                                 </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" id="item_code1" name="item_code1" class="form-control" readonly/>
+                                <label class="form-label" for="item_code1">Item Code</label>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" id="item_name1" name="item_name1" class="form-control" readonly/>
+                                <label class="form-label" for="item_name1">Item Name</label>
                             </div>
                             <div class="form-outline mb-3">
                                 <input type="number" id="unit_price1" name="unit_price1" min="0" class="form-control" readonly/>
@@ -137,7 +138,7 @@
                     <div class="modal-body">
                         <div class="form-area">
                             <div class="form-outline mb-4">
-                                <input type="text" id="item_code2" name="item_code2" class="form-control" required/>
+                                <input type="text" id="item_code2" name="item_code2" class="form-control" readonly required/>
                                 <label class="form-label" for="item_code2">Item Code</label>
                             </div>
                             <div class="form-outline mb-4">
@@ -259,6 +260,34 @@
         }
     }
 
+    function generateCode() {
+
+        var selected_type = $("#item_type").val();
+
+        if (selected_type != '') {
+            $.ajax({
+                url: '{{url("/admin/item-code-generate")}}',
+                type: 'GET',
+                data: {
+                    selected_type:selected_type
+                },
+                dataType: 'JSON',
+                success: function (data) { 
+                    if(data.result == true) {
+                        // console.log(data);
+                        $("#item_code").val(data.code);
+                        $("#label_code").trigger("click");
+                        $("#item_name").focus();
+                    }
+                    else {
+                        swal("Opps !", "Something went wrong", "error");
+                    }                      
+                }
+            });
+        }
+
+    }
+
     function sendDataToViewModel(id){
         // console.log(id);
         $.ajax({
@@ -293,15 +322,15 @@
                     if(data.result == true) {
                         // console.log(data);
                         if(data.data.item_type === 1 || data.data.item_type === 2 || data.data.item_type === 3) {
-                            $("#item_code2").val(data.data.item_code).attr('readonly', true);
-                            $("#item_name2").val(data.data.item_name).attr('readonly', true);
+                            $("#item_code2").val(data.data.item_code);
+                            $("#item_name2").val(data.data.item_name);
                             $("#unit_price2").val(data.data.unit_price);
                             $("#item_id").val(data.data.id);
                             $('#edit_model').modal('toggle');
                         }
                         else {
-                            $("#item_code2").val(data.data.item_code).attr('readonly', false);
-                            $("#item_name2").val(data.data.item_name).attr('readonly', false);
+                            $("#item_code2").val(data.data.item_code);
+                            $("#item_name2").val(data.data.item_name);
                             $("#unit_price2").val(data.data.unit_price);
                             $("#item_id").val(data.data.id);
                             $('#edit_model').modal('toggle');

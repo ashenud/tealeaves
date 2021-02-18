@@ -8,3 +8,28 @@
 .data-table td:nth-child(4) {
     text-align: center;
 }
+
+.select2-container .select2-selection--single {
+    height: 35px;
+    padding-top: 2px;
+    outline: none;
+}
+
+.form-control:disabled, 
+.form-control[readonly] {
+    background-color: #f5ffef !important;
+    cursor: not-allowed !important;
+}
+
+/* Hide Input Number Arrows */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+} 

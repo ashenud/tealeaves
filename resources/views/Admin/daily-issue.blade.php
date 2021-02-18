@@ -215,7 +215,7 @@
                                                 '<option value="">Select Item</option>'+
                                                 '@if (isset($data["items"]))'+
                                                     '@foreach ($data["items"] as $item)'+
-                                                        '<option value="{{ $item->value }}">{{ $item->item_name }}</option>'+
+                                                        '<option value="{{ $item->value }}">{{ $item->item_code }}</option>'+
                                                     '@endforeach'+
                                                 '@endif'+
                                             '</select>'+                                  

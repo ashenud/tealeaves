@@ -11,7 +11,7 @@
             <tr>
                 <th width="15%">Supplier ID</th>
                 <th width="30%">Supplier Name</th>
-                <th width="20%">Item Name</th>
+                <th width="20%">Item ID</th>
                 <th width="10%">C.Price(Rs.)</th>
                 <th width="10%">No. of Units</th>
                 <th width="15%">Amount(Rs.)</th>
@@ -33,7 +33,7 @@
                         </td>
                         <td>
                             <div class="form-group">
-                                <input type="text" class="form-control" value="{{ $supplier->item_name }}" readonly>
+                                <input type="text" class="form-control" value="{{ $supplier->item_code }}" readonly>
                             </div>
                         </td>
                         <td>

@@ -32,6 +32,7 @@ class DailyIssueController extends Controller {
         $not_in = config('application.tealeaves_type').','.config('application.fertilizer_type');
         $query="SELECT
                     ti.item_name,
+                    ti.item_code,
                     @cuurentStock := IFNULL(
                         (
                         SELECT
@@ -107,6 +108,7 @@ class DailyIssueController extends Controller {
                     $not_in = config('application.tealeaves_type').','.config('application.fertilizer_type');
                     $query="SELECT
                                 ti.item_name,
+                                ti.item_code,
                                 @cuurentStock := IFNULL(
                                     (
                                     SELECT
@@ -170,7 +172,7 @@ class DailyIssueController extends Controller {
                                         ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
                                         ->join('suppliers AS ts','ts.id','tdis.supplier_id')
                                         ->join('items AS ti','ti.id','tdis.item_id')
-                                        ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','ti.item_name','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
+                                        ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','ti.item_name','ti.item_code','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
                                         ->where('tdi.id',$issue_id)
                                         ->whereNull('tdis.deleted_at')
                                         ->whereNull('tdi.deleted_at')
@@ -209,6 +211,7 @@ class DailyIssueController extends Controller {
                         ts.sup_name,
                         tdis.supplier_id,
                         ti.item_name,
+                        ti.item_code,
                         tdis.item_type,
                         tdis.item_id,
                         tdis.number_of_units,

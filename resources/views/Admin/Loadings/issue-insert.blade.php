@@ -5,7 +5,7 @@
                 <th width="5%" height="25"></th>
                 <th width="15%">Supplier ID</th>
                 <th width="20%">Supplier Name</th>
-                <th width="18%">Item Name</th>
+                <th width="18%">Item ID</th>
                 <th width="9%">C.Price(Rs.)</th>
                 <th width="8%">C.Stock</th>
                 <th width="8%">No. of Units</th>
@@ -44,7 +44,7 @@
                             <option value="">Select Item</option>
                             @if (isset($data['items']))
                                 @foreach ($data['items'] as $item)
-                                    <option value="{{ $item->value }}">{{ $item->item_name }}</option>
+                                    <option value="{{ $item->value }}">{{ $item->item_code }}</option>
                                 @endforeach
                             @endif
                         </select>                                    
