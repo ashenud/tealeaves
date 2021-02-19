@@ -58,7 +58,7 @@
         if (typeof xhr.responseJSON === 'undefined')   {            
             $('#supplier_1').select2();
             $('#item_1').select2();
-            count = $('#count').val();
+            count = parseFloat($('#count').val());
             if( ($("#count").val() !== 0) && (typeof $("#count").val() !== 'undefined') ) {
                 for (var i = 1; i <= count; i++) {
                     $("#payment_frequency_" + i).select2();

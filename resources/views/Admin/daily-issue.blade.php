@@ -58,7 +58,7 @@
         if (typeof xhr.responseJSON === 'undefined')   {            
             $('#supplier_1').select2();
             $('#item_1').select2();
-            count = $('#count').val();
+            count = parseFloat($('#count').val());
             // console.log(count);
         }
         else {
