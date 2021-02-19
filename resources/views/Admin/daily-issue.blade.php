@@ -132,7 +132,7 @@
             for (var i = 1; i <= count; i++) {
                 if(i!=row) {
                     if($("#supplier_id_" + i).val() != null && $("#supplier_id_" + i).val() != '') {
-                        if($("#item_id_" + i).val() == values[1]) {
+                        if($("#item_id_" + i).val() == values[1] && $("#no_units_" + i).val() !== '') {
                             current_quantity += parseFloat($("#no_units_" + i).val());
                         }
                         var value = $("#supplier_id_" + i).val()+','+$("#item_id_" + i).val();
