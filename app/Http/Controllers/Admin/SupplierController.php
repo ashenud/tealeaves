@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
 use App\Models\Route;
 use App\Models\Supplier;
 
@@ -28,7 +31,7 @@ class SupplierController extends Controller
     public function supplierDatatable(Request $request ) {
 
         if ($request->ajax()) {
-            $data = Supplier::withTrashed()->select('id',DB::raw('LPAD(id,4,0) AS supplier_id'),'sup_name','sup_address','sup_contact','route_id','deleted_at');
+            $data = Supplier::withTrashed()->select('id',DB::raw('LPAD(id,4,0) AS supplier_id'),'sup_name','sup_no','sup_address','sup_contact','route_id','deleted_at');
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($data){
@@ -51,7 +54,7 @@ class SupplierController extends Controller
                         if ($request->has('search') && ! is_null($request->get('search')['value']) ) {
                             $regex = $request->get('search')['value'];
                             return $query->where(function($queryNew) use($regex){
-                                $queryNew->where('id', 'like', '%' . $regex . '%')
+                                $queryNew->where('sup_no', 'like', '%' . $regex . '%')
                                     ->orWhere('sup_name', 'like', '%' . $regex . '%')
                                     ->orWhere('sup_address', 'like', '%' . $regex . '%')
                                     ->orWhere('sup_contact', 'like', '%' . $regex . '%');
@@ -67,31 +70,46 @@ class SupplierController extends Controller
 
     public function supplierInsert(Request $request ) {
 
-        try {
+        $validator = Validator::make($request->all(), [
+            'supplier_no' => 'required|unique:suppliers,sup_no',
+            'supplier_name' => 'regex:/^[\pL\s\-]+$/u|max:255',
+        ]);
 
-            DB::beginTransaction();
-
-            $supplier = new Supplier();
-            $supplier->sup_name = $request->supplier_name;
-            $supplier->sup_address = $request->supplier_address;
-            $supplier->sup_contact = $request->supplier_contact;
-            $supplier->route_id = $request->supplier_route;
-            $supplier->save();    
-            
-            DB::commit();
-            return response()->json([
-                'result' => true,
-                'message' => 'Supplier data successfully inserted',
-                'add_class' => 'alert-success',
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollback();    
+        if ($validator->fails()) {
             return response()->json([
                 'result' => false,
-                'message' => 'Supplier data not successfully inserted',
-                'add_class' => 'alert-danger',
+                'message' => $validator->errors()
             ]);
+        }
+        else {
+
+            try {
+
+                DB::beginTransaction();
+
+                $supplier = new Supplier();
+                $supplier->sup_no = $request->supplier_no;
+                $supplier->sup_name = $request->supplier_name;
+                $supplier->sup_address = $request->supplier_address;
+                $supplier->sup_contact = $request->supplier_contact;
+                $supplier->route_id = $request->supplier_route;
+                $supplier->save();    
+                
+                DB::commit();
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Supplier data successfully inserted',
+                    'add_class' => 'alert-success',
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();    
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Supplier data not successfully inserted',
+                    'add_class' => 'alert-danger',
+                ]);
+            }
         }
     }
 
@@ -116,31 +134,44 @@ class SupplierController extends Controller
 
     public function supplierEdit(Request $request ) {
 
-        try {
+        $validator =Validator::make($request->all(), [
+            'supplier_name' => 'regex:/^[\pL\s\-]+$/u|max:255',
+            'supplier_no' => Rule::unique('suppliers', 'sup_no')->ignore($request->supplier_id)
+        ]);
 
-            DB::beginTransaction();
-
-            $supplier = Supplier::find($request->supplier_id);
-            $supplier->sup_name = $request->supplier_name;
-            $supplier->sup_address = $request->supplier_address;
-            $supplier->sup_contact = $request->supplier_contact;
-            $supplier->route_id = $request->supplier_route;
-            $supplier->save();    
-            
-            DB::commit();
-            return response()->json([
-                'result' => true,
-                'message' => 'Supplier data successfully edited',
-                'add_class' => 'alert-success',
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollback();    
+        if ($validator->fails()) {
             return response()->json([
                 'result' => false,
-                'message' => 'Supplier data not successfully edited',
-                'add_class' => 'alert-danger',
+                'message' => $validator->errors()
             ]);
+        }
+        else {
+
+            try {
+
+                DB::beginTransaction();
+
+                $supplier = Supplier::find($request->supplier_id);
+                $supplier->sup_no = $request->supplier_no;
+                $supplier->sup_name = $request->supplier_name;
+                $supplier->sup_address = $request->supplier_address;
+                $supplier->sup_contact = $request->supplier_contact;
+                $supplier->route_id = $request->supplier_route;
+                $supplier->save();    
+                
+                DB::commit();
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Supplier data successfully edited',
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();    
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Supplier data not successfully edited',
+                ]);
+            }
         }
     }
 

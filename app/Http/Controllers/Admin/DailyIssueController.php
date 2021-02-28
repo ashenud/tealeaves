@@ -24,7 +24,7 @@ class DailyIssueController extends Controller {
         $data['page_title'] = 'Daily Issue';
 
         $suppliers = DB::table('suppliers AS ts')
-                       ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
+                       ->select('sup_no as sup_id',DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
                        ->whereNull('ts.deleted_at')
                        ->get();
         $data['suppliers'] = $suppliers;
@@ -100,7 +100,7 @@ class DailyIssueController extends Controller {
                     $data = array();
 
                     $suppliers = DB::table('suppliers AS ts')
-                                ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
+                                ->select('sup_no as sup_id',DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
                                 ->whereNull('ts.deleted_at')
                                 ->get();
                     $data['suppliers'] = $suppliers;
@@ -172,7 +172,7 @@ class DailyIssueController extends Controller {
                                         ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
                                         ->join('suppliers AS ts','ts.id','tdis.supplier_id')
                                         ->join('items AS ti','ti.id','tdis.item_id')
-                                        ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','ti.item_name','ti.item_code','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
+                                        ->select('sup_no as sup_id','ts.sup_name','ti.item_name','ti.item_code','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
                                         ->where('tdi.id',$issue_id)
                                         ->whereNull('tdis.deleted_at')
                                         ->whereNull('tdi.deleted_at')
@@ -207,7 +207,7 @@ class DailyIssueController extends Controller {
 
             $query="SELECT
                         tdis.id,
-                        LPAD(ts.id,4,0) AS sup_id,
+                        ts.sup_no AS sup_id,
                         ts.sup_name,
                         tdis.supplier_id,
                         ti.item_name,
@@ -266,7 +266,7 @@ class DailyIssueController extends Controller {
                                       ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
                                       ->join('suppliers AS ts','ts.id','tdis.supplier_id')
                                       ->join('items AS ti','ti.id','tdis.item_id')
-                                      ->select('tdis.id',DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','tdis.supplier_id','ti.item_name','tdis.item_type','tdis.item_id','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
+                                      ->select('tdis.id','sup_no as sup_id','ts.sup_name','tdis.supplier_id','ti.item_name','tdis.item_type','tdis.item_id','tdis.number_of_units','tdis.current_units_price','tdis.daily_value')
                                       ->where('tdi.id',$issue_id)
                                       ->whereNull('tdis.deleted_at')
                                       ->whereNull('tdi.deleted_at')

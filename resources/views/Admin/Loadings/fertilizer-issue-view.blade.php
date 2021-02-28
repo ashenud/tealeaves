@@ -34,7 +34,7 @@
                         </td>
                         <td>
                             <div class="form-group">
-                                <input type="text" class="form-control" value="{{ $supplier->item_name }}" readonly>
+                                <input type="text" class="form-control" value="{{ $supplier->item_code }}" readonly>
                             </div>
                         </td>
                         <td>

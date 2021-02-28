@@ -122,8 +122,13 @@
         $("#item_id_" + row).val(values[1]);
         $("#item_type_" + row).val(values[0]);
         $("#current_price_" + row).val(values[2]);
+        $("#actual_current_stock_" + row).val(values[3]);
         $("#payment_frequency_" + row).val('').trigger("change");
-        $("#no_units_" + row).val('').keyup();
+        $("#no_units_" + row).val('');
+        $("#daily_value_" + row).val('0.00');
+        load_net_total_amt();
+
+        var current_quantity = 0;
 
         valid = true;
         if($("#supplier_id_" + row).val() != null && $("#supplier_id_" + row).val() != '' && $("#item_id_" + row).val() != '') {
@@ -133,10 +138,29 @@
             for (var i = 1; i <= count; i++) {
                 if(i!=row) {
                     if($("#supplier_id_" + i).val() != null && $("#supplier_id_" + i).val() != '') {
+                        if($("#item_id_" + i).val() == values[1] && $("#no_units_" + i).val() !== '') {
+                            current_quantity += parseFloat($("#no_units_" + i).val());
+                        }
                         var value = $("#supplier_id_" + i).val()+','+$("#item_id_" + i).val();
                         suppliers.push(value);
                     }
                 }
+            }
+
+            var editable_actual_stock = values[3];
+
+            if($("#actual_supplier_count").val() != null && $("#actual_supplier_count").val() != '') {
+                for (var j = 1; j <= $("#actual_supplier_count").val(); j++) {
+                    if($("#item_id_" + j).val() == values[1]) {
+                            editable_actual_stock = parseFloat($("#actual_current_stock_" + j).val());
+                    }
+                }
+
+                $("#current_stock_" + row).val( (editable_actual_stock-current_quantity) > 0 ? (editable_actual_stock-current_quantity) : 0 );
+
+            }
+            else {
+                $("#current_stock_" + row).val(values[3]-current_quantity);
             }
 
             if(suppliers.indexOf(current_row_value) !== -1){
@@ -152,6 +176,8 @@
             $("#current_price_" + row).val('0.00');
             $("#item_id_" + row).val('');
             $("#item_type_" + row).val('');
+            $("#current_stock_" + row).val('');
+            $("#actual_current_stock_" + row).val('');
             $("#no_units_" + row).val('');
             $("#daily_value_" + row).val('0.00');
             $("#item_" + row).next().find('.select2-selection').addClass('is-invalid');
@@ -196,7 +222,7 @@
                                                 '<option value="">Select Fertilizer</option>'+
                                                 '@if (isset($data["items"]))'+
                                                     '@foreach ($data["items"] as $item)'+
-                                                        '<option value="{{ $item->value }}">{{ $item->item_name }}</option>'+
+                                                        '<option value="{{ $item->value }}">{{ $item->item_code }}</option>'+
                                                     '@endforeach'+
                                                 '@endif'+
                                             '</select>'+                                  
@@ -217,6 +243,12 @@
                                     '<td>'+
                                         '<div class="form-group">'+
                                             '<input type="text" id="current_price_' + (row + 1) + '" class="form-control text-right" value="0.00" readonly>'+
+                                        '</div>'+
+                                    '</td>'+
+                                    '<td>'+
+                                        '<div class="form-group">'+
+                                            '<input type="number" id="current_stock_' + (row + 1) + '" class="form-control text-right" readonly>'+
+                                            '<input type="hidden" id="actual_current_stock_' + (row + 1) + '">'+
                                         '</div>'+
                                     '</td>'+
                                     '<td>'+
@@ -287,25 +319,78 @@
     function cal_total(row) {
 
         if( ($("#supplier_id_" + row).val() != "") && (typeof $("#supplier_id_" + row).val() !== 'undefined') ) {
+            $("#supplier_" + row).next().find('.select2-selection').removeClass('is-invalid');
+            
+                // console.log($("#current_stock_" + row).val());
+                // console.log($("#no_units_" + row).val());
+            if( ($("#item_id_" + row).val() != "") && (typeof $("#item_id_" + row).val() !== 'undefined') ) {
+                $("#item_" + row).next().find('.select2-selection').removeClass('is-invalid');
 
-            $("#supplier_id_" + row).next().find('.select2-selection').removeClass('is-invalid');
-            var no_of_units = $("#no_units_" + row).val();        
-            var unit_price = $("#current_price_" + row).val();
+                var actual_current_stock = parseFloat($("#actual_current_stock_" + row).val());
 
-            var sum = 0;
-
-            $("#daily_value_" + row).val(parseFloat(no_of_units*unit_price).toFixed(2));
-
-            for (var i = 1; i <= count; i++) {
-                if ($("#daily_value_" + i).val() != "" && ($("#daily_value_" + i).val() != null)) {
-
-                    sum += parseFloat($("#daily_value_" + i).val());
-                    $("#daily_total_value").val(sum.toFixed(2));
+                if($("#actual_supplier_count").val() != null && $("#actual_supplier_count").val() != '') {
+                    for (var j = 1; j <= $("#actual_supplier_count").val(); j++) {
+                        if($("#item_id_" + j).val() == $("#item_id_" + row).val()) {
+                            actual_current_stock = parseFloat($("#actual_current_stock_" + j).val());
+                        }
+                    }
                 }
-            } 
+
+                var current_quantity = 0;
+
+                for (var i = 1; i <= count; i++) {                    
+                    if($("#item_id_" + i).val() == $("#item_id_" + row).val()) {
+
+                        var units = 0
+                        if( ($("#no_units_" + i).val() != "") ) {
+                            units = parseFloat($("#no_units_" + i).val());
+                        }
+                        current_quantity += units;
+                    }
+                }
+
+                if( actual_current_stock >= current_quantity ) {
+                    
+                    $("#no_units_" + row).removeClass('is-invalid');
+                    var no_of_units = $("#no_units_" + row).val();        
+                    var unit_price = $("#current_price_" + row).val();
+
+                    var sum = 0;
+
+                    $("#daily_value_" + row).val(parseFloat(no_of_units*unit_price).toFixed(2));
+
+                    for (var i = 1; i <= count; i++) {
+                        if ($("#daily_value_" + i).val() != "" && ($("#daily_value_" + i).val() != null)) {
+
+                            sum += parseFloat($("#daily_value_" + i).val());
+                            $("#daily_total_value").val(sum.toFixed(2));
+                        }
+                    } 
+                }
+                else {
+                    var row_unit = 0;
+                    if( ($("#no_units_" + row).val() != "") ) {
+                        row_unit = parseFloat($("#no_units_" + row).val());
+                    }
+                    $("#no_units_" + row).addClass('is-invalid');
+                    Swal({
+                        type: 'warning',
+                        title: 'Opps!',
+                        html:   'Issue quantity can not be greater than current stock</br>' +
+                                'Current issuable <span style="font-weight: bold;">' + $("#item_"+ row +" option:selected").text() + '</span> stock for today is <span style="font-weight: bold;">' + actual_current_stock + '</span>',
+                    });
+                    $("#no_units_" + row).val( (actual_current_stock - current_quantity + row_unit) > 0 ? (actual_current_stock - current_quantity + row_unit) : 0 );  
+                }
+            }
+            else {
+                $("#item_" + row).next().find('.select2-selection').addClass('is-invalid');
+                swal("Retry!", "Please select a fertilizer first", "error");
+                $("#no_units_" + row).val('');  
+            }
+
         }
         else {
-            $("#supplier_id_" + row).next().find('.select2-selection').addClass('is-invalid');
+            $("#supplier_" + row).next().find('.select2-selection').addClass('is-invalid');
             swal("Retry!", "Please select a supplier first", "error");
             $("#no_units_" + row).val('');  
         }

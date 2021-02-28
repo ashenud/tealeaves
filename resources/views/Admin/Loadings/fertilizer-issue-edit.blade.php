@@ -2,14 +2,15 @@
     <table width="100%" class="table" align="center">
         <thead>
             <tr>
-                <th width="5%" height="25"></th>
+                <th width="4%" height="25"></th>
                 <th width="15%">Supplier ID</th>
-                <th width="23%">Supplier Name</th>
-                <th width="15%">Fertilizer Name</th>
-                <th width="14%">Payment Frequency</th>
+                <th width="21%">Supplier Name</th>
+                <th width="14%">Fertilizer ID</th>
+                <th width="12%">Payment Frequency</th>
                 <th width="8%">C.Price(Rs.)</th>
+                <th width="8%">C.Stock</th>
                 <th width="8%">No. of Units</th>
-                <th width="12%">Amount(Rs.)</th>
+                <th width="10%">Amount(Rs.)</th>
             </tr>
         </thead>
         <tbody id="item_tbl">
@@ -42,7 +43,7 @@
                     <td>
                         <div class="form-group readonly-div">
                             <select class="form-control item-name readonly-select" id="item_{{ $key+1 }}" readonly>
-                                <option value="{{ $supplier->item_id }}">{{ $supplier->item_name }}</option>
+                                <option value="{{ $supplier->item_id }}">{{ $supplier->item_code }}</option>
                             </select>                                    
                             <input type="hidden" id="item_id_{{ $key+1 }}" value="{{ $supplier->item_id }}">                                             
                             <input type="hidden" id="item_type_{{ $key+1 }}" value="{{ $supplier->item_type }}">                                             
@@ -65,6 +66,12 @@
                     </td>
                     <td>
                         <div class="form-group">
+                            <input type="number" id="current_stock_{{ $key+1 }}" class="form-control text-right" value="{{ $supplier->actual_current_stock }}" readonly>
+                            <input type="hidden" id="actual_current_stock_{{ $key+1 }}" value="{{ $supplier->actual_current_stock }}">                            
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
                             <input type="number" id="no_units_{{ $key+1 }}" class="form-control text-right" min="1" value="{{ $supplier->number_of_units }}" autocomplete="off" onkeypress="return event.charCode >= 48" onkeyup="cal_total({{ $key+1 }})">
                         </div>
                     </td>
@@ -82,7 +89,7 @@
             <input id="actual_supplier_count" type="hidden" value="{{ $data['actual_supplier_count'] }}">
             <!--Display Daily Total-->
             <tr>
-                <td colspan="7" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="8" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="{{ $data['daily_total_value'] }}" readonly> </b>
@@ -90,7 +97,7 @@
                 </td>
             </tr>
             <tr class="submit-button-row">
-                <td colspan="8" align="right">
+                <td colspan="9" align="right">
                     <input id="fertilizer_issue_id" type="hidden" value="{{ $data['fertilizer_issue_id'] }}">
                     <button class="btn btn-primary-custom submit-btn" onclick="cancelSubmition()">CANCEL</button>
                     <button class="btn btn-primary-custom submit-btn" onclick="submit_edited_data_to_db()">SUBMIT FERTILIZER ISSUE DATA</button>

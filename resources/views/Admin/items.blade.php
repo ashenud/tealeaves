@@ -54,7 +54,7 @@
                         <div class="form-area">
                             <div class="mb-4">
                                 <label class="select2-label" for="item_type">Select Type</label> 
-                                <select class="form-control" id="item_type" name="item_type" onchange="generateCode()">
+                                <select class="form-control" id="item_type" name="item_type" {{-- onchange="generateCode()" --}}>
                                     <option value="">Select Type</option>
                                     @if (isset($data['item_types']))
                                         @foreach ($data['item_types'] as $type)
@@ -66,7 +66,7 @@
                                 </select>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="text" id="item_code" name="item_code" class="form-control" readonly required/>
+                                <input type="text" id="item_code" name="item_code" class="form-control" required/>
                                 <label class="form-label" for="item_code" id="label_code">Item Code</label>
                             </div>
                             <div class="form-outline mb-4">
@@ -138,7 +138,7 @@
                     <div class="modal-body">
                         <div class="form-area">
                             <div class="form-outline mb-4">
-                                <input type="text" id="item_code2" name="item_code2" class="form-control" readonly required/>
+                                <input type="text" id="item_code2" name="item_code2" class="form-control"/>
                                 <label class="form-label" for="item_code2">Item Code</label>
                             </div>
                             <div class="form-outline mb-4">
@@ -321,16 +321,16 @@
                 success: function (data) { 
                     if(data.result == true) {
                         // console.log(data);
-                        if(data.data.item_type === 1 || data.data.item_type === 2 || data.data.item_type === 3) {
-                            $("#item_code2").val(data.data.item_code);
-                            $("#item_name2").val(data.data.item_name);
+                        if( data.data.item_type === {{config('application.tealeaves_type')}} || data.data.item_type === {{config('application.teabag_type')}} || data.data.item_type === {{config('application.dolamite_type')}} ) {
+                            $("#item_code2").val(data.data.item_code).prop('readonly', true);
+                            $("#item_name2").val(data.data.item_name).prop('readonly', true);
                             $("#unit_price2").val(data.data.unit_price);
                             $("#item_id").val(data.data.id);
                             $('#edit_model').modal('toggle');
                         }
                         else {
-                            $("#item_code2").val(data.data.item_code);
-                            $("#item_name2").val(data.data.item_name);
+                            $("#item_code2").val(data.data.item_code).prop('readonly', false);
+                            $("#item_name2").val(data.data.item_name).prop('readonly', false);
                             $("#unit_price2").val(data.data.unit_price);
                             $("#item_id").val(data.data.id);
                             $('#edit_model').modal('toggle');

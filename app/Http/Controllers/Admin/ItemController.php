@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use App\Traits\NumberGenerate;
 
 use App\Models\ItemType;
@@ -101,7 +102,7 @@ class ItemController extends Controller {
         if ($validator->fails()) {
             return response()->json([
                 'result' => false,
-                'message' => 'Item Code is already exist. please retry !',
+                'message' => 'The item code has already been taken.',
             ]);
         }
         else {
@@ -156,30 +157,43 @@ class ItemController extends Controller {
 
     public function itemEdit(Request $request ) {
 
-        try {
+        $validator =Validator::make($request->all(), [
+            'item_code' => Rule::unique('items')->ignore($request->item_id)
+        ]);
 
-            DB::beginTransaction();
-
-            $item = Item::find($request->item_id);
-            $item->item_code = $request->item_code;
-            $item->item_name = $request->item_name;
-            $item->unit_price = $request->unit_price;
-            $item->save();    
-            
-            DB::commit();
-            return response()->json([
-                'result' => true,
-                'message' => 'Item data successfully edited',
-                'add_class' => 'alert-success',
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollback();    
+        if ($validator->fails()) {
             return response()->json([
                 'result' => false,
-                'message' => 'Item data not successfully edited',
-                'add_class' => 'alert-danger',
+                'message' => 'The item code has already been taken.'
             ]);
+        }
+        else {
+
+            try {
+
+                DB::beginTransaction();
+
+                $item = Item::find($request->item_id);
+                $item->item_code = $request->item_code;
+                $item->item_name = $request->item_name;
+                $item->unit_price = $request->unit_price;
+                $item->save();    
+                
+                DB::commit();
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Item data successfully edited',
+                    'add_class' => 'alert-success',
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();    
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Item data not successfully edited',
+                    'add_class' => 'alert-danger',
+                ]);
+            }
         }
     }
 

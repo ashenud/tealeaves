@@ -26,7 +26,7 @@
             <table class="table data-table table-hover">
                 <thead>
                     <tr>
-                        <th width="15%" scope="col">Supplier ID</th>
+                        <th width="15%" scope="col">Supplier NO</th>
                         <th width="25%" scope="col">Supplier Name</th>
                         <th width="25%" scope="col">Supplier Address</th>
                         <th width="15%"scope="col">Supplier Contact</th>
@@ -52,6 +52,11 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-area">
+                            <div class="form-outline mb-4">
+                                <input type="text" id="supplier_no" name="supplier_no" class="form-control" required/>
+                                <label class="form-label" for="supplier_no">Supplier NO</label>
+                            </div>
+
                             <div class="form-outline mb-4">
                                 <input type="text" id="supplier_name" name="supplier_name" class="form-control" required/>
                                 <label class="form-label" for="supplier_name">Supplier Name</label>
@@ -100,6 +105,11 @@
                     <div class="modal-body">
                         <div class="form-area">
                             <div class="form-outline mb-4">
+                                <input type="text" id="supplier_no1" name="supplier_no1" class="form-control" disabled/>
+                                <label class="form-label" for="supplier_no1">Supplier NO</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
                                 <input type="text" id="supplier_name1" name="supplier_name1" class="form-control" disabled/>
                                 <label class="form-label" for="supplier_name1">Supplier Name</label>
                             </div>
@@ -140,6 +150,11 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-area">
+                            <div class="form-outline mb-4">
+                                <input type="text" id="supplier_no2" name="supplier_no2" class="form-control" required/>
+                                <label class="form-label" for="supplier_no2">Supplier NO</label>
+                            </div>
+
                             <div class="form-outline mb-4">
                                 <input type="text" id="supplier_name2" name="supplier_name2" class="form-control" required/>
                                 <label class="form-label" for="supplier_name2">Supplier Name</label>
@@ -213,7 +228,7 @@
         serverSide: true,
         ajax: "{{ url('admin/suppliers-datatable') }}",
         columns: [
-                { data:'supplier_id', name:'supplier_id'},
+                { data:'sup_no', name:'sup_no'},
                 { data:'sup_name', name:'sup_name'},
                 { data:'sup_address', name:'sup_address'},
                 { data:'sup_contact', name:'sup_contact'},
@@ -223,7 +238,10 @@
     }
 
     function insertSupplier() {
-        if ( $("#supplier_name").val().length === 0 ){
+        if ( $("#supplier_no").val().length === 0 ){
+            swal("Opps !", "Please enter supplier no", "error");
+        }
+        else if ( $("#supplier_name").val().length === 0 ){
             swal("Opps !", "Please enter supplier name", "error");
         }
         else if ($("#supplier_address").val().length === 0) {
@@ -237,6 +255,7 @@
         }
         else {
 
+            var supplier_no = $("#supplier_no").val();
             var supplier_name = $("#supplier_name").val();
             var supplier_address = $("#supplier_address").val();
             var supplier_contact = $("#supplier_contact").val();
@@ -251,6 +270,7 @@
                 url: '{{url("/admin/supplier-insert")}}',
                 type: 'POST',
                 data: {
+                    supplier_no:supplier_no,
                     supplier_name:supplier_name,
                     supplier_address:supplier_address,
                     supplier_contact:supplier_contact,
@@ -258,9 +278,10 @@
                 },
                 dataType: 'JSON',
                 success: function (data) { 
+                    console.log(data);
                     if(data.result == true) {
-                        console.log(data);
                         swal("Good Job !", data.message, "success");
+                        $("#supplier_no").val('');
                         $("#supplier_name").val('');
                         $("#supplier_address").val('');
                         $("#supplier_contact").val('');
@@ -269,8 +290,16 @@
                         supplierTable.ajax.reload();
                     }
                     else {
-                        swal("Opps !", data.message, "error");
-                    }                      
+                        if(data.message.hasOwnProperty('supplier_no')){
+                            swal("Opps !", data.message.supplier_no[0], "error");
+                        }
+                        else if(data.message.hasOwnProperty('supplier_name')){
+                            swal("Opps !", data.message.supplier_name[0], "error");
+                        }
+                        else {
+                            swal("Opps !", "Somthing went wrong !", "error");
+                        }
+                    }                       
                 }
             });
 
@@ -287,6 +316,7 @@
                 success: function (data) { 
                     if(data.result == true) {
                         // console.log(data);
+                        $("#supplier_no1").val(data.data.sup_no);
                         $("#supplier_name1").val(data.data.sup_name);
                         $("#supplier_address1").val(data.data.sup_address);
                         $("#supplier_contact1").val(data.data.sup_contact);
@@ -310,6 +340,7 @@
                 success: function (data) { 
                     if(data.result == true) {
                         // console.log(data);
+                        $("#supplier_no2").val(data.data.sup_no);
                         $("#supplier_name2").val(data.data.sup_name);
                         $("#supplier_address2").val(data.data.sup_address);
                         $("#supplier_contact2").val(data.data.sup_contact);
@@ -325,7 +356,10 @@
     }
 
     function editSupplier() {
-        if ( $("#supplier_name2").val().length === 0 ){
+        if ( $("#supplier_no2").val().length === 0 ){
+            swal("Opps !", "Please enter supplier no", "error");
+        }
+        else if ( $("#supplier_name2").val().length === 0 ){
             swal("Opps !", "Please enter supplier name", "error");
         }
         else if ($("#supplier_address2").val().length === 0) {
@@ -340,6 +374,7 @@
         else {
 
             var supplier_id = $("#supplier_id2").val();
+            var supplier_no = $("#supplier_no2").val();
             var supplier_name = $("#supplier_name2").val();
             var supplier_address = $("#supplier_address2").val();
             var supplier_contact = $("#supplier_contact2").val();
@@ -355,6 +390,7 @@
                 type: 'POST',
                 data: {
                     supplier_id:supplier_id,
+                    supplier_no:supplier_no,
                     supplier_name:supplier_name,
                     supplier_address:supplier_address,
                     supplier_contact:supplier_contact,
@@ -362,14 +398,22 @@
                 },
                 dataType: 'JSON',
                 success: function (data) { 
+                    console.log(data);
                     if(data.result == true) {
-                        console.log(data);
                         supplierTable.ajax.reload();
                         $('#edit_model').modal('toggle');
                         swal("Good Job !", data.message, "success");
                     }
                     else {
-                        swal("Opps !", data.message, "error");
+                        if(data.message.hasOwnProperty('supplier_no')){
+                            swal("Opps !", data.message.supplier_no[0], "error");
+                        }
+                        else if(data.message.hasOwnProperty('supplier_name')){
+                            swal("Opps !", data.message.supplier_name[0], "error");
+                        }
+                        else {
+                            swal("Opps !", "Somthing went wrong !", "error");
+                        }
                     }                      
                 }
             });

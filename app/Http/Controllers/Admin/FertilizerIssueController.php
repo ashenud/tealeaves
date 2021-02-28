@@ -25,18 +25,53 @@ class FertilizerIssueController extends Controller {
         $data['page_title'] = 'Fertilizer Issue';
 
         $suppliers = DB::table('suppliers AS ts')
-                       ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
+                       ->select('sup_no as sup_id',DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
                        ->whereNull('ts.deleted_at')
                        ->get();
         $data['suppliers'] = $suppliers;
 
-        $items = DB::table('items AS ti')
-                        ->join('item_types AS tit','tit.id','ti.item_type')
-                        ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                        ->whereIn('tit.id', [config('application.fertilizer_type')])
-                        ->whereNull('ti.deleted_at')
-                        ->whereNull('tit.deleted_at')
-                        ->get();
+        $in = config('application.fertilizer_type');
+        $query="SELECT
+                    ti.item_name,
+                    ti.item_code,
+                    @cuurentStock := IFNULL(
+                        (
+                        SELECT
+                            SUM(tcs.current_quantity)
+                        FROM
+                            current_stocks tcs
+                        WHERE
+                            tcs.item_id = ti.id
+                            AND tcs.deleted_at IS NULL
+                    ), 0 ) AS 'cuurentStock',
+                    @usedStock := IFNULL(
+                        (
+                        SELECT
+                            SUM(tfis.number_of_units)
+                        FROM
+                            fertilizer_issues_suppliers tfis
+                                INNER JOIN
+                            fertilizer_issues tfi ON tfi.id = tfis.fertilizer_issue_id
+                        WHERE
+                            tfis.item_id = ti.id
+                            AND tfi.confirm_status = 0
+                            AND tfi.deleted_at IS NULL
+                            AND tfis.deleted_at IS NULL
+                    ), 0 ) AS 'usedStock',
+                    CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', IF((@cuurentStock-@usedStock)>0,(@cuurentStock-@usedStock),0)) AS value
+                FROM
+                    items ti
+                        INNER JOIN 
+                    item_types tit ON tit.id = ti.item_type
+                WHERE
+                    ti.deleted_at IS NULL
+                    AND tit.deleted_at IS NULL
+                    AND tit.id = '$in'
+                ORDER BY
+                    ti.id";
+        
+        $items = DB::select(DB::raw($query));
+
         $data['items'] = $items;
 
         // dd($data);
@@ -66,18 +101,53 @@ class FertilizerIssueController extends Controller {
                     $data = array();
 
                     $suppliers = DB::table('suppliers AS ts')
-                                ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
+                                ->select('sup_no as sup_id',DB::raw('CONCAT(ts.id, ",", ts.sup_name) AS value'))
                                 ->whereNull('ts.deleted_at')
                                 ->get();
                     $data['suppliers'] = $suppliers;
 
-                    $items = DB::table('items AS ti')
-                                ->join('item_types AS tit','tit.id','ti.item_type')
-                                ->select(DB::raw('CONCAT(ti.item_type, ",", ti.id, ",", ti.unit_price) AS value'),'ti.item_name')
-                                ->whereIn('tit.id', [config('application.fertilizer_type')])
-                                ->whereNull('ti.deleted_at')
-                                ->whereNull('tit.deleted_at')
-                                ->get();
+                    $in = config('application.fertilizer_type');
+                    $query="SELECT
+                                ti.item_name,
+                                ti.item_code,
+                                @cuurentStock := IFNULL(
+                                    (
+                                    SELECT
+                                        SUM(tcs.current_quantity)
+                                    FROM
+                                        current_stocks tcs
+                                    WHERE
+                                        tcs.item_id = ti.id
+                                        AND tcs.deleted_at IS NULL
+                                ), 0 ) AS 'cuurentStock',
+                                @usedStock := IFNULL(
+                                    (
+                                    SELECT
+                                        SUM(tfis.number_of_units)
+                                    FROM
+                                        fertilizer_issues_suppliers tfis
+                                            INNER JOIN
+                                        fertilizer_issues tfi ON tfi.id = tfis.fertilizer_issue_id
+                                    WHERE
+                                        tfis.item_id = ti.id
+                                        AND tfi.confirm_status = 0
+                                        AND tfi.deleted_at IS NULL
+                                        AND tfis.deleted_at IS NULL
+                                ), 0 ) AS 'usedStock',
+                                CONCAT(ti.item_type, ',', ti.id, ',', ti.unit_price, ',', IF((@cuurentStock-@usedStock)>0,(@cuurentStock-@usedStock),0)) AS value
+                            FROM
+                                items ti
+                                    INNER JOIN 
+                                item_types tit ON tit.id = ti.item_type
+                            WHERE
+                                ti.deleted_at IS NULL
+                                AND tit.deleted_at IS NULL
+                                AND tit.id = '$in'
+                            ORDER BY
+                                ti.id";
+                    
+                    $items = DB::select(DB::raw($query));
+
                     $data['items'] = $items;
 
                     // dd($current_issue_month);
@@ -103,7 +173,7 @@ class FertilizerIssueController extends Controller {
                                         ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
                                         ->join('suppliers AS ts','ts.id','tfis.supplier_id')
                                         ->join('items AS ti','ti.id','tfis.item_id')
-                                        ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','ti.item_name','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency')
+                                        ->select('sup_no as sup_id','ts.sup_name','ti.item_name','ti.item_code','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency')
                                         ->where('tfi.id',$fertilizer_issue_id)
                                         ->whereNull('tfis.deleted_at')
                                         ->whereNull('tfi.deleted_at')
@@ -135,18 +205,78 @@ class FertilizerIssueController extends Controller {
             $data['fertilizer_issue_id'] = $fertilizer_issue_id;
             $data['daily_total_value'] = $fertilizer_issue[0]->daily_total_value;
 
-            $supplier_issue = DB::table('fertilizer_issues_suppliers AS tfis')
+            $query="SELECT
+                        tfis.id,
+                        ts.sup_no AS sup_id,
+                        ts.sup_name,
+                        tfis.supplier_id,
+                        ti.item_name,
+                        ti.item_code,
+                        tfis.item_type,
+                        tfis.item_id,
+                        tfis.number_of_units,
+                        tfis.current_units_price,
+                        tfis.daily_value,
+                        tfis.payment_frequency,
+                        IF(tfis.payment_frequency=1, 'One Month', IF(tfis.payment_frequency=2, 'Two Months', IF(tfis.payment_frequency=3, 'Three Months', '-'))) AS frequency,
+                        @cuurentStock := IFNULL(
+                            (
+                            SELECT
+                                SUM(tcs.current_quantity)
+                            FROM
+                                current_stocks tcs
+                            WHERE
+                                tcs.item_id = ti.id
+                                AND tcs.deleted_at IS NULL
+                        ), 0 ) AS 'cuurentStock',
+                        @usedStock := IFNULL(
+                            (
+                            SELECT
+                                SUM(tfis2.number_of_units)
+                            FROM
+                                fertilizer_issues_suppliers tfis2
+                                    INNER JOIN
+                                fertilizer_issues tfi2 ON tfi2.id = tfis2.fertilizer_issue_id
+                            WHERE
+                                tfis2.item_id = ti.id
+                                AND tfi2.confirm_status = 0
+                                AND tfi2.deleted_at IS NULL
+                                AND tfis2.deleted_at IS NULL
+                                AND tfi2.id != $fertilizer_issue_id
+                        ), 0 ) AS 'usedStock',
+                        IF((@cuurentStock-@usedStock)>0,(@cuurentStock-@usedStock),0) AS actual_current_stock
+                        FROM
+                            items ti
+                                INNER JOIN 
+                            fertilizer_issues_suppliers tfis ON tfis.item_id = ti.id
+                                INNER JOIN
+                            fertilizer_issues tfi ON tfi.id = tfis.fertilizer_issue_id
+                                INNER JOIN
+                            suppliers ts ON ts.id = tfis.supplier_id
+                        WHERE
+                            ti.deleted_at IS NULL
+                            AND tfis.deleted_at IS NULL
+                            AND tfi.deleted_at IS NULL
+                            AND ts.deleted_at IS NULL
+                            AND tfi.id = $fertilizer_issue_id
+                        ORDER BY
+                            ti.id";
+            
+            $supplier_issue = DB::select(DB::raw($query));
+
+            /* $supplier_issue = DB::table('fertilizer_issues_suppliers AS tfis')
                                       ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
                                       ->join('suppliers AS ts','ts.id','tfis.supplier_id')
                                       ->join('items AS ti','ti.id','tfis.item_id')
-                                      ->select('tfis.id',DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','tfis.supplier_id','ti.item_name','tfis.item_type','tfis.item_id','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency',
+                                      ->select('tfis.id','sup_no as sup_id','ts.sup_name','tfis.supplier_id','ti.item_name','tfis.item_type','tfis.item_id','tfis.number_of_units','tfis.current_units_price','tfis.daily_value','tfis.payment_frequency',
                                                 DB::raw('IF(tfis.payment_frequency=1, "One Month", IF(tfis.payment_frequency=2, "Two Months", IF(tfis.payment_frequency=3, "Three Months", "-"))) AS frequency'))
                                       ->where('tfi.id',$fertilizer_issue_id)
                                       ->whereNull('tfis.deleted_at')
                                       ->whereNull('tfi.deleted_at')
                                       ->whereNull('ts.deleted_at')
                                       ->whereNull('ti.deleted_at')
-                                      ->get();
+                                      ->get(); */
+
             $data['fertilizer_supplier_issues'] = $supplier_issue;
             $data['actual_supplier_count'] = count($supplier_issue);
 
