@@ -93,6 +93,8 @@
         }).then((result) => {
             if (result.value) {
 
+                $('button.swal2-confirm').hide();
+
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -107,14 +109,10 @@
                         console.log(data);
                         if(data.result == true) {
                             monthEndTable.ajax.reload();
-                            swal(data.message, {
-                                icon: "success",
-                            });
+                            swal("Good Job !", data.message, "success");
                         }
                         else {
-                            swal(data.message, {
-                                icon: "error",
-                            });
+                            swal("Opps!", data.message, "error");
                         }                      
                     }
                 });

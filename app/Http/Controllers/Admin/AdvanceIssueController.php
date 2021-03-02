@@ -23,7 +23,7 @@ class AdvanceIssueController extends Controller {
 
         $suppliers = DB::table('suppliers AS ts')
                        ->join('routes AS tr','tr.id','ts.route_id')
-                       ->select('ts.sup_name','ts.id')
+                       ->select('ts.sup_name','ts.sup_no','ts.id')
                        ->whereNull('ts.deleted_at')
                        ->whereNull('tr.deleted_at')
                        ->get();
@@ -38,7 +38,7 @@ class AdvanceIssueController extends Controller {
         if ($request->ajax()) {
             $data = DB::table('advance_issues AS tai')
                         ->join('suppliers AS ts','ts.id','tai.supplier_id')
-                        ->select(DB::raw('LPAD(ts.id,4,0) AS supplier_id'),'ts.sup_name AS supplier_name','tai.date AS advance_date',DB::raw('IFNULL(tai.remarks,"") AS remarks'),'tai.amount AS amount')
+                        ->select('ts.sup_no AS supplier_id','ts.sup_name AS supplier_name','tai.date AS advance_date',DB::raw('IFNULL(tai.remarks,"") AS remarks'),'tai.amount AS amount')
                         ->whereNull('tai.deleted_at')
                         ->whereNull('ts.deleted_at');
             return Datatables::of($data)
@@ -46,7 +46,7 @@ class AdvanceIssueController extends Controller {
                         if ($request->has('search') && ! is_null($request->get('search')['value']) ) {
                             $regex = $request->get('search')['value'];
                             return $query->where(function($queryNew) use($regex){
-                                $queryNew->where('ts.id', 'like', '%' . $regex . '%')
+                                $queryNew->where('ts.sup_no', 'like', '%' . $regex . '%')
                                     ->orWhere('ts.sup_name', 'like', '%' . $regex . '%')
                                     ->orWhere('tai.date', 'like', '%' . $regex . '%')
                                     ->orWhere('tai.remarks', 'like', '%' . $regex . '%');

@@ -43,7 +43,7 @@
         </a>
 
         <!-- Insert Modal -->
-        <div class="modal fade" id="insert_model" tabindex="-1" aria-labelledby="insert_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+        <div class="modal fade" id="insert_model" aria-labelledby="insert_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
             <div class="modal-dialog .modal-side .modal-top-right">
                 <div class="modal-content custom-modal-content">
                     <div class="modal-header">
@@ -90,7 +90,7 @@
         </div>
 
         <!-- View Modal -->
-        <div class="modal fade" id="view_model" tabindex="-1" aria-labelledby="view_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+        <div class="modal fade" id="view_model" aria-labelledby="view_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
             <div class="modal-dialog .modal-side .modal-top-right">
                 <div class="modal-content custom-modal-content">
                     <div class="modal-header">
@@ -128,7 +128,7 @@
         </div>
 
         <!-- Edit Modal -->
-        <div class="modal fade" id="edit_model" tabindex="-1" aria-labelledby="edit_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+        <div class="modal fade" id="edit_model" aria-labelledby="edit_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
             <div class="modal-dialog .modal-side .modal-top-right">
                 <div class="modal-content custom-modal-content">
                     <div class="modal-header">

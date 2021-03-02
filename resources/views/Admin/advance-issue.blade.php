@@ -43,7 +43,7 @@
         </a>
 
         <!-- Insert Modal -->
-        <div class="modal fade" id="insert_model" tabindex="-1" aria-labelledby="insert_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+        <div class="modal fade" id="insert_model" aria-labelledby="insert_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
             <div class="modal-dialog .modal-side .modal-top-right">
                 <div class="modal-content custom-modal-content">
                     <div class="modal-header">
@@ -71,7 +71,7 @@
                                             <option value="">Select Supplier</option>
                                             @if (isset($data['suppliers']))
                                                 @foreach ($data['suppliers'] as $supplier)
-                                                    <option value="{{ $supplier->id }}">{{ $supplier->sup_name }}</option>
+                                                    <option value="{{ $supplier->id }}">{{ $supplier->sup_no }}</option>
                                                 @endforeach
                                             @endif
                                         </select>   
@@ -186,6 +186,8 @@
                 confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.value) {
+
+                    $('button.swal2-confirm').hide();
 
                     $.ajaxSetup({
                         headers: {

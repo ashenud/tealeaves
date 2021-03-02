@@ -26,7 +26,7 @@ class DailyCollectController extends Controller
 
         $suppliers = DB::table('suppliers AS ts')
                        ->join('routes AS tr','tr.id','ts.route_id')
-                       ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", tr.delivery_cost, ",", ts.sup_name) AS value'))
+                       ->select('ts.sup_no AS sup_id',DB::raw('CONCAT(ts.id, ",", tr.delivery_cost, ",", ts.sup_name) AS value'))
                        ->whereNull('ts.deleted_at')
                        ->whereNull('tr.deleted_at')
                        ->get();
@@ -65,7 +65,7 @@ class DailyCollectController extends Controller
 
                     $suppliers = DB::table('suppliers AS ts')
                                 ->join('routes AS tr','tr.id','ts.route_id')
-                                ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),DB::raw('CONCAT(ts.id, ",", tr.delivery_cost, ",", ts.sup_name) AS value'))
+                                ->select('ts.sup_no AS sup_id',DB::raw('CONCAT(ts.id, ",", tr.delivery_cost, ",", ts.sup_name) AS value'))
                                 ->whereNull('ts.deleted_at')
                                 ->whereNull('tr.deleted_at')
                                 ->get();
@@ -99,7 +99,7 @@ class DailyCollectController extends Controller
                                         ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
                                         ->join('suppliers AS ts','ts.id','tdcs.supplier_id')
                                         ->join('items AS ti','ti.id','tdcs.item_id')
-                                        ->select(DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','ti.item_name','tdcs.number_of_units','tdcs.current_units_price','tdcs.delivery_cost','tdcs.daily_value')
+                                        ->select('ts.sup_no AS sup_id','ts.sup_name','ti.item_name','tdcs.number_of_units','tdcs.current_units_price','tdcs.delivery_cost','tdcs.daily_value')
                                         ->where('tdc.id',$collection_id)
                                         ->whereNull('tdcs.deleted_at')
                                         ->whereNull('tdc.deleted_at')
@@ -137,7 +137,7 @@ class DailyCollectController extends Controller
                                       ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
                                       ->join('suppliers AS ts','ts.id','tdcs.supplier_id')
                                       ->join('items AS ti','ti.id','tdcs.item_id')
-                                      ->select('tdcs.id',DB::raw('LPAD(ts.id,4,0) AS sup_id'),'ts.sup_name','tdcs.supplier_id','ti.item_name','tdcs.item_id','tdcs.number_of_units','tdcs.current_units_price','tdcs.delivery_cost_per_unit','tdcs.delivery_cost','tdcs.daily_amount','tdcs.daily_value')
+                                      ->select('tdcs.id','ts.sup_no AS sup_id','ts.sup_name','tdcs.supplier_id','ti.item_name','tdcs.item_id','tdcs.number_of_units','tdcs.current_units_price','tdcs.delivery_cost_per_unit','tdcs.delivery_cost','tdcs.daily_amount','tdcs.daily_value')
                                       ->where('tdc.id',$collection_id)
                                       ->whereNull('tdcs.deleted_at')
                                       ->whereNull('tdc.deleted_at')

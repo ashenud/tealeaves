@@ -21,6 +21,7 @@ use App\Models\FertilizerIssuesSupplier;
 use App\Models\MonthlyInstallment;
 use App\Models\DebtorDetails;
 use App\Models\Supplier;
+use App\Models\CurrentStock;
 
 class MonthEndController extends Controller {
 
@@ -105,10 +106,80 @@ class MonthEndController extends Controller {
                                ->where(['confirm_status' => 0])
                               ->update(['confirm_status' => 1]);
 
+                /* UPDATE CURRENT ITEM STOCK */
+                $sup_issue_items =DB::table('daily_issues_suppliers AS tdis')
+                                        ->join('daily_issues AS tdi','tdi.id','tdis.issue_id')
+                                        ->select('tdis.item_id',DB::raw('IFNULL(SUM(tdis.number_of_units),0) AS issued_qty'))
+                                        ->where(DB::raw('DATE_FORMAT(tdi.date, "%Y-%m")'),'=',$ending_month)
+                                        ->where('tdi.confirm_status', '=', 0)
+                                        ->whereNull('tdis.deleted_at')
+                                        ->whereNull('tdi.deleted_at')
+                                        ->groupBy('tdis.item_id')
+                                        ->get();
+
+                foreach ($sup_issue_items as $item) {
+
+                    $issued_qty = $item->issued_qty;
+
+                    $current_stock = CurrentStock::where('item_id', $item->item_id)->get();
+
+                    foreach ($current_stock as $stock) {
+                        if($issued_qty > 0){
+                            if($stock->current_quantity >= $issued_qty){
+                                CurrentStock::where('id',$stock->id)
+                                            ->decrement('current_quantity' , $issued_qty);
+                                $issued_qty=0;
+                            }else if($stock->current_quantity < $issued_qty){
+                                CurrentStock::where('id',$stock->id)
+                                            ->update(['current_quantity' => 0]);
+                                $issued_qty -= $stock->current_quantity;
+                            }
+                        }else{
+                            break;
+                        }
+                    }
+
+                }
+
                 /* CONFIRM ALL DAILY ISSUES */
                 DailyIssues::where(DB::raw('DATE_FORMAT(date, "%Y-%m")'),'=',$ending_month)
                            ->where(['confirm_status' => 0])
                           ->update(['confirm_status' => 1]);
+
+                 /* UPDATE CURRENT FERTILIZER STOCK */
+                $sup_issue_fertilizers =DB::table('fertilizer_issues_suppliers AS tfis')
+                                            ->join('fertilizer_issues AS tfi','tfi.id','tfis.fertilizer_issue_id')
+                                            ->select('tfis.item_id',DB::raw('IFNULL(SUM(tfis.number_of_units),0) AS issued_qty'))
+                                            ->where(DB::raw('DATE_FORMAT(tfi.date, "%Y-%m")'),'=',$ending_month)
+                                            ->where('tfi.confirm_status', '=', 0)
+                                            ->whereNull('tfis.deleted_at')
+                                            ->whereNull('tfi.deleted_at')
+                                            ->groupBy('tfis.item_id')
+                                            ->get();
+
+                foreach ($sup_issue_fertilizers as $fertilizer) {
+
+                    $issued_qty = $fertilizer->issued_qty;
+
+                    $current_stock = CurrentStock::where('item_id', $fertilizer->item_id)->get();
+
+                    foreach ($current_stock as $stock) {
+                        if($issued_qty > 0){
+                            if($stock->current_quantity >= $issued_qty){
+                                CurrentStock::where('id',$stock->id)
+                                            ->decrement('current_quantity' , $issued_qty);
+                                $issued_qty=0;
+                            }else if($stock->current_quantity < $issued_qty){
+                                CurrentStock::where('id',$stock->id)
+                                            ->update(['current_quantity' => 0]);
+                                $issued_qty -= $stock->current_quantity;
+                            }
+                        }else{
+                            break;
+                        }
+                    }
+
+                }
 
                 /* CONFIRM ALL FERTILIZER ISSUES */
                 $month = array();
