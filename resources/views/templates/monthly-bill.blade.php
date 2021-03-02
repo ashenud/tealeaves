@@ -69,8 +69,8 @@
                     <th align="center" width="5%"><h2> : </h2></th>
                     <th align="left" width="10%">
                         <h2>
-                        @if (isset($supplier['supplier_id']))
-                            {{ str_pad($supplier['supplier_id'], config('application.supplier_str_pad',4), '0', STR_PAD_LEFT) }}                                        
+                        @if (isset($supplier['supplier_no']))
+                            {{ $supplier['supplier_no'] }}                                        
                         @else
                             
                         @endif

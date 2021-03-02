@@ -396,7 +396,7 @@ class MonthEndController extends Controller {
                             ->join('month_ends AS tme','tme.id','tmes.month_end_id')
                             ->join('suppliers AS ts','ts.id','tmes.supplier_id')
                             ->join('routes AS tr','tr.id','ts.route_id')
-                            ->select('ts.id','ts.sup_name','tr.route_name',DB::raw('IFNULL(tmes.total_cost,0) AS total_cost'),DB::raw('IFNULL(tmes.total_installment,0) AS total_installment'),DB::raw('IFNULL(tmes.forwarded_credit,0) AS forwarded_credit'),DB::raw('IFNULL(tmes.current_income,0) AS current_income'),DB::raw('IFNULL(tmes.current_credit,0) AS current_credit'))
+                            ->select('ts.id','ts.sup_name','ts.sup_no','tr.route_name',DB::raw('IFNULL(tmes.total_cost,0) AS total_cost'),DB::raw('IFNULL(tmes.total_installment,0) AS total_installment'),DB::raw('IFNULL(tmes.forwarded_credit,0) AS forwarded_credit'),DB::raw('IFNULL(tmes.current_income,0) AS current_income'),DB::raw('IFNULL(tmes.current_credit,0) AS current_credit'))
                             ->where('tme.id','=',$month_end_id)
                             ->where('tme.ended_status', '=', 1)
                             ->whereNull('tmes.deleted_at')
@@ -409,6 +409,7 @@ class MonthEndController extends Controller {
 
                 foreach ($supplier_info as $supplier) {
                     $data['supplier_data'][$supplier->id]['supplier_id'] = $supplier->id;
+                    $data['supplier_data'][$supplier->id]['supplier_no'] = $supplier->sup_no;
                     $data['supplier_data'][$supplier->id]['supplier_name'] = $supplier->sup_name;
                     $data['supplier_data'][$supplier->id]['route_name'] = $supplier->route_name;
                     $data['supplier_data'][$supplier->id]['total_issues'] = $supplier->total_cost;
