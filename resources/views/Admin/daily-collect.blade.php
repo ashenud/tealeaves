@@ -369,6 +369,8 @@
                     }).then((result) => {
                         if (result.value) {
 
+                            $('button.swal2-confirm').hide();
+
                             $.ajaxSetup({
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -521,6 +523,8 @@
                     }).then((result) => {
                         if (result.value) {
 
+                            $('button.swal2-confirm').hide();
+
                             $.ajaxSetup({
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -584,6 +588,8 @@
             confirmButtonText: 'Yes'
         }).then((result) => {
             if (result.value) {
+
+                $('button.swal2-confirm').hide();
 
                 $.ajaxSetup({
                     headers: {
