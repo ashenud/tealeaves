@@ -83,3 +83,6 @@ Route::get('/admin/print-bulk-bills/{id}', 'App\Http\Controllers\Admin\MonthEndC
 Route::get('/admin/stock', 'App\Http\Controllers\Admin\StockController@index')->name('stock')->middleware('admin');
 Route::get('/admin/stock-datatable', 'App\Http\Controllers\Admin\StockController@stockDatatable')->name('stock-datatable')->middleware('admin');
 Route::post('/admin/insert-grn', 'App\Http\Controllers\Admin\StockController@insertGrn')->middleware('admin'); // insert issues action
+
+Route::get('/admin/audit-trail', 'App\Http\Controllers\Admin\ReportController@auditTrail')->name('audit-trail')->middleware('admin');
+Route::get('/admin/load-audit-trail-table/{month}', 'App\Http\Controllers\Admin\ReportController@auditTrailTable')->name('load-audit-trail-table')->middleware('admin');

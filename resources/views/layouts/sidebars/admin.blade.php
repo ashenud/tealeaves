@@ -50,6 +50,11 @@
                 <i class="now-ui-icons files_single-copy-04"></i> Month End
             </a>
         </li>
+        <li class="side-item">
+            <a class="side-link li-audit-trail" href="{{ url('admin/audit-trail') }}">
+                <i class="now-ui-icons design_bullet-list-67"></i> Audit Trail
+            </a>
+        </li>
     </ul>
 </div>
 <div class="sidebar-overlay open-sidebar" id="sidebar-overlay"></div>
