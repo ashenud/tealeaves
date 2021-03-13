@@ -1,0 +1,37 @@
+.audit-trail-area {
+    margin: 0 15px;
+    overflow-x: scroll;
+}
+
+.audit-table {    
+    margin: 15px;
+}
+
+.audit-table td {    
+    padding: 18px 2px;
+    line-height: 0;
+    vertical-align: middle;
+}
+
+.audit-table thead tr {    
+    background-color: #f0ffe5;
+}
+
+.audit-table th {    
+    padding: 10px 2px;
+}
+
+tbody, td, tfoot, th, thead, tr {
+    border: 1px solid;
+    border-color: inherit;
+}
+
+.audit-table th:nth-child(1),
+.audit-table th:nth-child(2),
+.audit-table th:nth-child(3),
+.audit-table th:nth-child(4),
+.audit-table th:nth-child(5),
+.audit-table th:nth-child(6),
+.audit-table td:nth-child(1) {
+    text-align: center;
+}

@@ -55,6 +55,11 @@
                 <i class="now-ui-icons design_bullet-list-67"></i> Audit Trail
             </a>
         </li>
+        <li class="side-item">
+            <a class="side-link li-sales-report" href="{{ url('admin/sales-report') }}">
+                <i class="now-ui-icons files_single-copy-04"></i> Sales Report
+            </a>
+        </li>
     </ul>
 </div>
 <div class="sidebar-overlay open-sidebar" id="sidebar-overlay"></div>
