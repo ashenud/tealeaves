@@ -1,4 +1,8 @@
 
+<div class="btn-edit-area">
+    <button class="btn btn-primary-custom top-button edit-btn" onclick="printAuditTrail('{{ $data['audit_month'] }}')">PRINT</button>
+</div>
+
 <table style="width: 1600px" class="audit-table">
     <thead>
         <tr>

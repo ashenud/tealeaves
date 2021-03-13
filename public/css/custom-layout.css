@@ -92,7 +92,8 @@ body {
     height: calc(100vh - 105px);
     z-index: 100;
     transition: left 0.4s linear;
-    border-right: 1px solid #e0e0e0
+    border-right: 1px solid #e0e0e0;
+    overflow-y: auto;
 }
 
 .side-bar.open-sidebar {
@@ -167,7 +168,7 @@ body {
     font-weight: bold;
 }
 
-.side-item:not(:last-child) {
+.side-item {
     margin-bottom: 5px;
 }
 
@@ -268,10 +269,30 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
-
 /* @@ deafult css @@ */
 .text-right {
     text-align: right;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 6px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }
 
 /* @@ sweet alert css @@ */

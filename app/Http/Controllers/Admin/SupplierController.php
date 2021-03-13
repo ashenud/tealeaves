@@ -135,7 +135,7 @@ class SupplierController extends Controller
     public function supplierEdit(Request $request ) {
 
         $validator =Validator::make($request->all(), [
-            'supplier_name' => 'regex:/^[\pL\s\-]+$/u|max:255',
+            'supplier_name' => 'regex:/^[a-zA-Z\s\.]+$/u|max:255',
             'supplier_no' => Rule::unique('suppliers', 'sup_no')->ignore($request->supplier_id)
         ]);
 

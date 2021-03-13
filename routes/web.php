@@ -86,3 +86,4 @@ Route::post('/admin/insert-grn', 'App\Http\Controllers\Admin\StockController@ins
 
 Route::get('/admin/audit-trail', 'App\Http\Controllers\Admin\ReportController@auditTrail')->name('audit-trail')->middleware('admin');
 Route::get('/admin/load-audit-trail-table/{month}', 'App\Http\Controllers\Admin\ReportController@auditTrailTable')->name('load-audit-trail-table')->middleware('admin');
+Route::get('/admin/print-audit-trail/{month}', 'App\Http\Controllers\Admin\ReportController@printAuditTrail')->middleware('admin');

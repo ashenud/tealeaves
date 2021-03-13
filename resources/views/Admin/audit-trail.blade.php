@@ -71,6 +71,11 @@
 
     }
 
+    function printAuditTrail(audit_month) {
+        var pageURL = baseURL+'admin/print-audit-trail/'+audit_month;
+        window.open(pageURL, '_blank');
+    }
+
 </script>
 
 @endsection
