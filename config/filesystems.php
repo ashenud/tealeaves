@@ -54,8 +54,7 @@ return [
 
         'one_drive' => [
             'driver' => 'local',
-            'root' => 'C:\Users\Ashen Udithamal\OneDrive',
-            // 'root' => 'D:/',
+            'root' => env('LOCAL_ONE_DRIVE_PATH'),
         ],
 
     ],
