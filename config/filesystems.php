@@ -52,6 +52,12 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        'one_drive' => [
+            'driver' => 'local',
+            'root' => 'C:\Users\Ashen Udithamal\OneDrive',
+            // 'root' => 'D:/',
+        ],
+
     ],
 
     /*
