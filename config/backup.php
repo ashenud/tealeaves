@@ -116,7 +116,7 @@ return [
              * The disk names on which the backups will be stored.
              */
             'disks' => [
-                'local','one_drive',
+                'one_drive',
             ],
         ],
 
