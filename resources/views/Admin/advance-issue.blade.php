@@ -56,7 +56,7 @@
                                 <tr>
                                     <td>Date</td>
                                     <td> : </td>
-                                    <td><input type="date" id="date" class="form-control" min="{{ date('Y-m-d',strtotime('-15 days')) }}" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"></td>
+                                    <td><input type="date" id="date" class="form-control" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"></td>
                                 </tr>
                                 <tr>
                                     <td>Advance No.</td>
