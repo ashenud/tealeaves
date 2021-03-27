@@ -23,12 +23,12 @@
     <div class="container">
 
         <div class="data-table-area">
-            <table class="table data-table table-hover">
+            <table width="98%" class="table data-table table-hover">
                 <thead>
                     <tr>
                         <th width="15%" scope="col">Supplier NO</th>
                         <th width="25%" scope="col">Supplier Name</th>
-                        <th width="25%" scope="col">Supplier Address</th>
+                        <th width="23%" scope="col">Supplier Address</th>
                         <th width="15%"scope="col">Supplier Contact</th>
                         <th width="20%"scope="col">Actions</th>
                     </tr>

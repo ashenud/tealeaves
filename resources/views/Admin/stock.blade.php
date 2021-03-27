@@ -23,11 +23,11 @@
     <div class="container">
 
         <div class="data-table-area">
-            <table class="table data-table table-hover">
+            <table width="98%" class="table data-table table-hover">
                 <thead>
                     <tr>
                         <th width="20%" scope="col">Item Code</th>
-                        <th width="30%" scope="col">Item Name</th>
+                        <th width="28%" scope="col">Item Name</th>
                         <th width="20%" scope="col">Item Type</th>
                         <th width="15%"scope="col">Item Price</th>
                         <th width="15%"scope="col">Current Stock</th>
