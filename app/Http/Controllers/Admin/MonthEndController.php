@@ -549,7 +549,7 @@ class MonthEndController extends Controller {
                 //     'message' => 'This month end has allready created',
                 //     'data' => $data,
                 // ]);
-                
+                // dd($data);
                 $pdfname = date('YM',strtotime($requested_month));
                 $pdfname = strtoupper($pdfname);
                 $pdfname .= "-MONTHLY-BILL.pdf";
