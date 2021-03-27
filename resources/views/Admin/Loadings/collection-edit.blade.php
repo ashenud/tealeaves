@@ -13,7 +13,15 @@
             </tr>
         </thead>
         <tbody id="item_tbl">
+            @php
+                $daily_total_qty =0;
+            @endphp
             @foreach ($data['suppliers'] as $key => $supplier)
+
+                @php
+                    $daily_total_qty += $supplier->number_of_units;
+                @endphp
+
                 <tr id="tr_{{ $key+1 }}">
                     <td>
                         <div class="form-group">
@@ -76,7 +84,12 @@
             <input id="actual_supplier_count" type="hidden" value="{{ $data['actual_supplier_count'] }}">
             <!--Display Daily Total-->
             <tr>
-                <td colspan="7" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="6" style="text-align: center">TOTAL &nbsp;</td>
+                <td>
+                    <div class="form-group">
+                        <b> <input id="daily_total_qty" class="form-control daily-total" value="{{ $daily_total_qty }}" readonly> </b>
+                    </div> 
+                </td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="{{ $data['daily_total_value'] }}" readonly> </b>

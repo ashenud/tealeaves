@@ -1,13 +1,13 @@
 
-<table style="width: 1200px" class="audit-table">
+<table style="width: 98%" class="audit-table">
     <thead>
         <tr>
-            <th style="width: 160px">Supplier ID</th>
-            <th style="width: 240px">Supplier Name</th>
-            <th style="width: 200px">Total Collected</br>Tea (KG)</th>
-            <th style="width: 200px">Total Tea Leaves Value</br>(KG * U.Price)</th>
-            <th style="width: 200px">Total Deduction</br>(Delivery Cost, Dolamite,Fertilizer, Chemicals,Tea Bags, Advance,Other)</th>
-            <th style="width: 200px">Payable Amount</br>(Total Tea Leave Value - Total Deduction)</th>
+            <th style="width: 12%">Supplier ID</th>
+            <th style="width: 25%">Supplier Name</th>
+            <th style="width: 15%">Total Collected</br>Tea (KG)</th>
+            <th style="width: 15%">Total Tea Leaves Value</br>(KG * U.Price)</th>
+            <th style="width: 16%">Total Deduction</br>(Delivery Cost, Dolamite,Fertilizer, Chemicals,Tea Bags, Advance,Other)</th>
+            <th style="width: 16%">Payable Amount</br>(Total Tea Leave Value - Total Deduction)</th>
         </tr>
     </thead>
     <tbody>

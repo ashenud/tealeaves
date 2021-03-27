@@ -20,7 +20,15 @@
         </thead>
         <tbody id="item_tbl">
             @if (isset($data['suppliers']))
+                @php
+                    $daily_total_qty =0;
+                @endphp
                 @foreach ($data['suppliers'] as $supplier)
+
+                    @php
+                        $daily_total_qty += $supplier->number_of_units;
+                    @endphp
+
                     <tr id="tr" style="height: 30px">
                         <td>
                             <div class="form-group">
@@ -67,7 +75,12 @@
             
             <!--Display Daily Total-->
             <tr>
-                <td colspan="6" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="5" style="text-align: center">TOTAL &nbsp;</td>
+                <td>
+                    <div class="form-group">
+                        <b> <input id="daily_total_qty" class="form-control daily-total" value="{{ $daily_total_qty }}" readonly> </b>
+                    </div> 
+                </td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="{{ $data['daily_total_value'] }}" readonly> </b>

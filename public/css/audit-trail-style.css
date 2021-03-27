@@ -1,14 +1,9 @@
-.audit-trail-area {
-    margin: 0 15px;
-    overflow-x: scroll;
-}
-
 .audit-table {    
     margin: 15px;
 }
 
 .audit-table td {    
-    padding: 25px 2px;
+    padding: 15px 2px;
     line-height: 0;
     vertical-align: middle;
 }

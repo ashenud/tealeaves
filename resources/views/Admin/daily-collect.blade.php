@@ -99,6 +99,9 @@
         $("#supplier_id_" + row).val(values[0]);
         $("#delivery_cost_per_unit_" + row).val(values[1]);
         $("#supplier_name_" + row).val(values[2]);
+        $("#no_units_" + row).val('');
+        $("#daily_value_" + row).val('0.00');
+        load_net_total_amt();
 
         valid = true;
         if($("#supplier_id_" + row).val() != null && $("#supplier_id_" + row).val() != '' ) {
@@ -126,8 +129,11 @@
             $("#delivery_cost_per_unit_" + row).val('');
             $("#supplier_name_" + row).val('');
             $("#supplier_" + row).val('').trigger("change");
+            $("#no_units_" + row).val('');
+            $("#daily_value_" + row).val('0.00');
             $("#supplier_" + row).next().find('.select2-selection').addClass('is-invalid');
             swal("Error!", "Can not add same supplier twice", "error");
+            load_net_total_amt();
         }
         else {
             $("#supplier_" + row).next().find('.select2-selection').removeClass('is-invalid');
@@ -206,6 +212,7 @@
     function remove_item(row) {
 
         var sum = 0;
+        var qty_sum = 0;
 
         if( ($("#actual_supplier_count").val() != "") && (typeof $("#actual_supplier_count").val() !== 'undefined') ) {
             var actual_count = $("#actual_supplier_count").val();
@@ -224,8 +231,12 @@
 
             if (($("#daily_value_" + i).val() != '') && ($("#daily_value_" + i).val() != null)) {
                 sum += parseFloat($("#daily_value_" + i).val());
+            }            
+            if (($("#no_units_" + i).val() != '') && ($("#no_units_" + i).val() != null)) {
+                qty_sum += parseFloat($("#no_units_" + i).val());
             }
             $("#daily_total_value").val(sum.toFixed(2));
+            $('#daily_total_qty').val(qty_sum);
         }
 
         // console.log(remove_suppliers);
@@ -234,12 +245,17 @@
 
     function load_net_total_amt() {
         var sum = 0;
+        var qty_sum = 0;
         for (var i = 1; i <= count; i++) {
             if (($("#daily_value_" + i).val() != '') && ($("#daily_value_" + i).val() != null)) {
                 sum += parseFloat($("#daily_value_" + i).val());
             }
+            if (($("#no_units_" + i).val() != '') && ($("#no_units_" + i).val() != null)) {
+                qty_sum += parseFloat($("#no_units_" + i).val());
+            }
         }
         $('#daily_total_value').val(parseFloat(sum).toFixed(2));
+        $('#daily_total_qty').val(qty_sum);
 
     }
 
@@ -253,6 +269,7 @@
             var delivery_cost_per_unit = $("#delivery_cost_per_unit_" + row).val();
 
             var sum = 0;
+            var qty_sum = 0;
 
             $("#delivery_cost_" + row).val(parseFloat(no_of_units*delivery_cost_per_unit).toFixed(2));
             $("#daily_amount_" + row).val(parseFloat(no_of_units*unit_price).toFixed(2));
@@ -260,10 +277,14 @@
 
             for (var i = 1; i <= count; i++) {
                 if ($("#daily_value_" + i).val() != "" && ($("#daily_value_" + i).val() != null)) {
-
                     sum += parseFloat($("#daily_value_" + i).val());
                     $("#daily_total_value").val(sum.toFixed(2));
+                }                
+                if (($("#no_units_" + i).val() != '') && ($("#no_units_" + i).val() != null)) {
+                    qty_sum += parseFloat($("#no_units_" + i).val());
                 }
+
+                $('#daily_total_qty').val(qty_sum);
             } 
         }
         else {

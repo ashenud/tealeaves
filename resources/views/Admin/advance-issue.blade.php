@@ -23,14 +23,13 @@
     <div class="container">
 
         <div class="data-table-area">
-            <table class="table data-table table-hover">
+            <table width="98%" class="table data-table table-hover">
                 <thead>
                     <tr>
-                        <th width="15%" scope="col">Supplier ID</th>
-                        <th width="30%" scope="col">Supplier Name</th>
-                        <th width="15%" scope="col">Advanced Date</th>
-                        <th width="25%" scope="col">Remarks</th>
-                        <th width="15%" scope="col">Amount</th>
+                        <th width="20%" scope="col">Supplier ID</th>
+                        <th width="38%" scope="col">Supplier Name</th>
+                        <th width="20%" scope="col">Advanced Date</th>
+                        <th width="20%" scope="col">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,7 +136,6 @@
                     { data:'supplier_id', name:'supplier_id'},
                     { data:'supplier_name', name:'supplier_name'},
                     { data:'advance_date', name:'advance_date'},
-                    { data:'remarks', name:'remarks', orderable: false},
                     { data:'amount', name:'amount', orderable: false, searchable: false},
             ],
             order: [ 2, 'desc' ]

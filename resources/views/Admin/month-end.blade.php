@@ -23,12 +23,12 @@
     <div class="container">
 
         <div class="data-table-area">
-            <table class="table data-table table-hover">
+            <table width="98%" class="table data-table table-hover">
                 <thead>
                     <tr>
                         <th width="25%" scope="col">Month</th>
                         <th width="25%" scope="col">Ended Date</th>
-                        <th width="30%" scope="col">Create Month End</th>
+                        <th width="28%" scope="col">Create Month End</th>
                         <th width="25%"scope="col">Print Bill</th>
                     </tr>
                 </thead>

@@ -74,7 +74,12 @@
             
             <!--Display Daily Total-->
             <tr>
-                <td colspan="7" style="text-align: right">TOTAL VALUE (RS.) &nbsp;</td>
+                <td colspan="6" style="text-align: center">TOTAL &nbsp;</td>
+                <td>
+                    <div class="form-group">
+                        <b> <input id="daily_total_qty" class="form-control daily-total" value="0" readonly> </b>
+                    </div> 
+                </td>
                 <td>
                     <div class="form-group">
                         <b> <input id="daily_total_value" class="form-control daily-total" value="0.00" readonly> </b>
