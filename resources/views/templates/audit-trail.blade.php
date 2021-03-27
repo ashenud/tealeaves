@@ -47,6 +47,7 @@
             .audit-table td {                
                 border: 1px solid;
                 border-collapse: collapse;
+                font-size: 10px;
             }
 
             .audit-table th {                
