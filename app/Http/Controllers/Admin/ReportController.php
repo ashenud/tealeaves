@@ -67,11 +67,15 @@ class ReportController extends Controller {
                         }                    
                     }
                 }
-
-                ksort($data['supplier_data']);
-
-                // dd($data);
-                return view('Admin.Loadings.audit-trail-table')->with('data',$data);
+                if(isset($data['supplier_data'])) {
+                    ksort($data['supplier_data']);
+    
+                    // dd($data);
+                    return view('Admin.Loadings.audit-trail-table')->with('data',$data);
+                }
+                else {
+                    return view('Admin.Loadings.no-data');
+                }
             }
             else {
                 return view('Admin.Loadings.no-data');
