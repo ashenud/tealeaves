@@ -5,8 +5,8 @@
             <th style="width: 160px">Supplier ID</th>
             <th style="width: 240px">Supplier Name</th>
             <th style="width: 200px">Total Collected</br>Tea (KG)</th>
-            <th style="width: 200px">Total Tea Leap Value</br>(KG * U.Price) - Delivery Cost</th>
-            <th style="width: 200px">Total Deduction</br>(Dolamite,Fertilizer, Chemicals,Tea Bags, Advance,Other)</th>
+            <th style="width: 200px">Total Tea Leaves Value</br>(KG * U.Price)</th>
+            <th style="width: 200px">Total Deduction</br>(Delivery Cost, Dolamite,Fertilizer, Chemicals,Tea Bags, Advance,Other)</th>
             <th style="width: 200px">Payable Amount</br>(Total Tea Leave Value - Total Deduction)</th>
         </tr>
     </thead>
@@ -24,8 +24,8 @@
                     <td> {{ $supplier['supplier_no'] }} </td>
                     <td> {{ $supplier['supplier_name'] }} </td>
                     <td align="center"> {{ $supplier['number_of_units'],2 }} </td>
-                    <td align="right" style="padding-right: 10px;"> {{ number_format((ceil($supplier['total_earnings'] / 10) * 10),2) }} </td>
-                    <td align="right" style="padding-right: 10px;"> {{ number_format((ceil($supplier['total_deduction'] / 10) * 10),2) }} </td>
+                    <td align="right" style="padding-right: 10px;"> {{ number_format($supplier['total_earnings'],2) }} </td>
+                    <td align="right" style="padding-right: 10px;"> {{ number_format($supplier['total_deduction'],2) }} </td>
                     <td align="right" style="padding-right: 10px;"> {{ number_format((ceil($supplier['current_income'] / 10) * 10),2) }} </td>
                 </tr>
             @endforeach
