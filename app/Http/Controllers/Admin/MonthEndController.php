@@ -555,7 +555,7 @@ class MonthEndController extends Controller {
                 $pdfname = strtoupper($pdfname);
                 $pdfname .= "-MONTHLY-BILL.pdf";
                 $pdf = app('dompdf.wrapper')->loadView('templates.monthly-bill', ['data' => $data])->setPaper([0, 0, 396, 612], 'landscape');
-                return $pdf->stream($pdfname);
+                return $pdf->download($pdfname);
 
             }
         else {

@@ -57,10 +57,10 @@ ini_set('max_execution_time', 0);
                             <h2> R4391 </h2>
                         </td>
                         <td width="10%"> </td>
-                        <th align="right" width="15%"><h2>USER ID</h2></th>
-                        <th align="center" width="5%"><h2> : </h2></th>
+                        <th align="right" width="15%"><h2 style="margin-bottom: -10px; font-size: 20px;">USER ID</h2></th>
+                        <th align="center" width="5%"><h2 style="margin-bottom: -10px; font-size: 20px;"> : </h2></th>
                         <th align="left" width="10%">
-                            <h2>
+                            <h2 style="margin-bottom: -10px; font-size: 20px;">
                             @if (isset($supplier['supplier_no']))
                                 {{ $supplier['supplier_no'] }}                                        
                             @else
@@ -127,9 +127,9 @@ ini_set('max_execution_time', 0);
                         <td width="30%" style="vertical-align: top;">
                             <table width="100%">
                                 <tr>
-                                    <th align="left">RATE</th>
-                                    <th align="center"> : </th>
-                                    <th align="left">
+                                    <th align="left" style="margin-bottom: -10px; font-size: 12px;">RATE</th>
+                                    <th align="center" style="margin-bottom: -10px; font-size: 12px;"> : </th>
+                                    <th align="left" style="margin-bottom: -10px; font-size: 12px;">
                                         @if (isset($supplier['current_units_price']))
                                             {{ number_format($supplier['current_units_price'],2) }}                                        
                                         @else
@@ -575,7 +575,7 @@ ini_set('max_execution_time', 0);
                 <table width="800px">
                     <tr>
                         <td width="30%">
-                            <table width="100%">
+                            <table style="margin-bottom: -10px; margin-top: -2px;" width="100%">
                                 <tbody>
                                     <tr>
                                         <th width="50%" align="left">CREDITS</th>
@@ -611,7 +611,7 @@ ini_set('max_execution_time', 0);
                         </td>
                         <td width="28%"></td>
                         <td width="42%"  style="vertical-align: top;">
-                            <table width="100%">
+                            <table style="margin-bottom: -10px; margin-top: -2px;" width="100%">
                                 <tbody>
                                     <tr>
                                         <th width="50%" align="left">DEDUCTION TOTAL</th>
@@ -701,7 +701,7 @@ ini_set('max_execution_time', 0);
 
             </main>
 
-            {{-- @php if($m == 5) { break;  } @endphp --}}
+            @php if($m == 5) { break;  } @endphp
 
             <p></p>
 
