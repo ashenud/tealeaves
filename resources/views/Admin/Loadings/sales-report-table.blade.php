@@ -26,7 +26,7 @@
                     <td align="center"> {{ $supplier['number_of_units'],2 }} </td>
                     <td align="right" style="padding-right: 10px;"> {{ number_format($supplier['total_earnings'],2) }} </td>
                     <td align="right" style="padding-right: 10px;"> {{ number_format($supplier['total_deduction'],2) }} </td>
-                    <td align="right" style="padding-right: 10px;"> {{ number_format((ceil($supplier['current_income'] / 10) * 10),2) }} </td>
+                    <td align="right" style="padding-right: 10px;"> {{ number_format((floor($supplier['current_income'] / 10) * 10),2) }} </td>
                 </tr>
             @endforeach
         @endif  

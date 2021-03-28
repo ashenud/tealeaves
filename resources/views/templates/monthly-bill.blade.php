@@ -617,7 +617,7 @@ ini_set('max_execution_time', 0);
                                     <th align="left">CARRIED</th>
                                     <th align="center"> : </th>
                                     <th align="right">
-                                        {{ number_format((ceil($supplier['current_income'] / 10) * 10) - $supplier['current_income'],2) }}
+                                        {{ number_format( $supplier['current_income'] - (floor($supplier['current_income'] / 10) * 10) ,2) }}
                                     </th>
                                 </tr>
                             </tbody>                        
@@ -639,7 +639,7 @@ ini_set('max_execution_time', 0);
                                     <th align="left" style="font-size: 14px; padding-top: 15px;">PAYABLE AMOUNT</th>
                                     <th align="center" style="padding-top: 15px;"> : </th>
                                     <th align="right" style="border-bottom: 2px solid; padding-top: 15px;">&nbsp;&nbsp;&nbsp;
-                                        {{ number_format(ceil($supplier['current_income'] / 10) * 10 ,2)}}
+                                        {{ number_format(floor($supplier['current_income'] / 10) * 10 ,2)}}
                                     </th>
                                     <td width="10%" align="left" style="padding-top: 15px;">&nbsp;</td>
                                 </tr>

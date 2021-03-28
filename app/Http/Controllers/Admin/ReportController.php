@@ -227,7 +227,7 @@ class ReportController extends Controller {
                     $grand_deduction += $total_deduction;
                     $data['supplier_data'][$sale->supplier_id]['total_deduction'] = $total_deduction;
                     $data['supplier_data'][$sale->supplier_id]['current_income'] = $sale->current_income;
-                    $grand_income += (ceil($sale->current_income / 10) * 10);                    
+                    $grand_income += (floor($sale->current_income / 10) * 10);                    
                 }
 
                 if(isset($data['supplier_data'])) {
@@ -399,7 +399,7 @@ class ReportController extends Controller {
 
                         if($total_outstanding >= 0) {
                             $current_income = $total_outstanding;
-                            $grand_income += (ceil($total_outstanding / 10) * 10);   
+                            $grand_income += (floor($total_outstanding / 10) * 10);   
                         }
                         else {
                             $current_income = 0;
