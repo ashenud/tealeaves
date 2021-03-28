@@ -190,7 +190,7 @@ class ReportController extends Controller {
                                         ->whereNull('tmes.deleted_at')
                                         ->whereNull('ts.deleted_at')
                                         ->whereNull('tme.deleted_at')
-                                        ->orderBy('ts.id')
+                                        ->orderBy('ts.sup_no')
                                         ->get();
                 
                 $grand_colection = 0;
@@ -231,7 +231,6 @@ class ReportController extends Controller {
                 }
 
                 if(isset($data['supplier_data'])) {
-                    ksort($data['supplier_data']);
 
                     $data['grand_colection'] = $grand_colection;
                     $data['grand_earnings'] = $grand_earnings;
@@ -257,6 +256,7 @@ class ReportController extends Controller {
                                     ->whereNull('tdc.deleted_at')
                                     ->whereNull('ts.deleted_at')
                                     ->groupBy('tdcs.supplier_id')
+                                    ->orderBy('ts.sup_no')
                                     ->get();
 
                 foreach ($monthly_colection as $collection) {
@@ -277,6 +277,7 @@ class ReportController extends Controller {
                                     ->whereNull('tdi.deleted_at')
                                     ->whereNull('ts.deleted_at')
                                     ->groupBy('tdis.supplier_id')
+                                    ->orderBy('ts.sup_no')
                                     ->get();
 
                 foreach ($monthly_issues as $issues) {
@@ -300,6 +301,7 @@ class ReportController extends Controller {
                                     ->whereNull('ts.deleted_at')
                                     ->whereNull('tfi.deleted_at')
                                     ->groupBy('tfis.supplier_id')
+                                    ->orderBy('ts.sup_no')
                                     ->get();
 
                 foreach ($sup_fertilizer_issues as $issue) {
@@ -317,6 +319,7 @@ class ReportController extends Controller {
                                     ->whereNull('tmi.deleted_at')
                                     ->whereNull('ts.deleted_at')
                                     ->groupBy('tmi.supplier_id')
+                                    ->orderBy('ts.sup_no')
                                     ->get();
 
                 foreach ($monthly_installments as $installment) {
@@ -333,6 +336,7 @@ class ReportController extends Controller {
                                     ->whereNull('tdd.deleted_at')
                                     ->whereNull('ts.deleted_at')
                                     ->groupBy('tdd.supplier_id')
+                                    ->orderBy('ts.sup_no')
                                     ->get();
 
                 foreach ($debtor_details as $debtors) {
@@ -408,8 +412,6 @@ class ReportController extends Controller {
                         $data['supplier_data'][$supplier_id]['current_income'] = $current_income;
 
                     }
-
-                    ksort($data['supplier_data']);
 
                 }
 
