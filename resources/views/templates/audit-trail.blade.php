@@ -6,7 +6,7 @@
 
         <style>
             @page {
-                margin: 25px 10px 20px 10px;
+                margin: 25px 20px 20px 20px;
             }
 
             /* header {
@@ -47,7 +47,7 @@
             .audit-table td {                
                 border: 1px solid;
                 border-collapse: collapse;
-                font-size: 9px;
+                font-size: 8px;
             }
 
             .audit-table th {                
