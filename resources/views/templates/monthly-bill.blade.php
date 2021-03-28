@@ -12,7 +12,7 @@ ini_set('max_execution_time', 0);
 
         <style>
             @page {
-                margin: 25px 25px 20px 25px;
+                margin: 5px 10px 5px 10px;
             }
 
             /* header {
@@ -44,11 +44,11 @@ ini_set('max_execution_time', 0);
             font-family: Verdana, Arial, sans-serif;
             }
             table{
-                font-size: x-small;
+                font-size: 9px;
             }
             tfoot tr td{
                 font-weight: bold;
-                font-size: x-small;
+                font-size: 8px;
             }
             .gray {
                 background-color: lightgray
@@ -59,10 +59,15 @@ ini_set('max_execution_time', 0);
     <body>
         {{-- <header></header>
         <footer></footer> --}}
-
+		@php
+		$m = 0;
+		@endphp
         @foreach ($data['supplier_data'] as $supplier)
+		@php
+		$m ++;
+		@endphp
         <main>
-            <table width="1008px">
+            <table width="808px">
                 <tr>
                     <td width="50%">
                         <h1 style="margin-bottom: -10px; font-size: 30px;">INDRA Leaf Collectors</h1>
@@ -90,13 +95,13 @@ ini_set('max_execution_time', 0);
                 </tr>
             </table>
            
-            <table width="1008px">
+            <table width="808px">
                 <tr>
-                    <td style="height: 20px;"><hr></td>
+                    <td style="height: 10px;"><hr></td>
                 </tr>
             </table>
 
-            <table width="1008px">
+            <table width="808px">
                 <tr>
                     <td width="40%">
                         <table width="100%">
@@ -180,13 +185,13 @@ ini_set('max_execution_time', 0);
                 </tr>
             </table>
 
-            <table width="1008px">
+            <table width="808px">
                 <tr>
-                    <td style="height: 15px;"><hr></td>
+                    <td style="height: 5px;"><hr></td>
                 </tr>
             </table>        
 
-            <table width="1008px">
+            <table width="808px">
                 <tr>
                     <td width="12%">
                         <table width="100%">
@@ -580,13 +585,13 @@ ini_set('max_execution_time', 0);
                 </tr>
             </table>
 
-            <table width="1008px">
+            <table width="808px">
                 <tr>
-                    <td style="height: 15px;"><hr></td>
+                    <td style="height: 5px;"><hr></td>
                 </tr>
             </table>           
 
-            <table width="1008px">
+            <table width="808px">
                 <tr>
                     <td width="30%">
                         <table width="100%">
@@ -655,13 +660,13 @@ ini_set('max_execution_time', 0);
                 </tr>
             </table> 
 
-            <table width="1008px">
+            <table width="808px">
                 <tr>
-                    <td style="height: 15px;"><hr></td>
+                    <td style="height: 5px;"><hr></td>
                 </tr>
             </table>       
 
-            <table width="1008px">
+            <table width="808px">
                 <tr>
                     <td width="50%">
                         <table>
@@ -714,6 +719,11 @@ ini_set('max_execution_time', 0);
             </table> 
 
         </main>
+		@php
+		if($m == 5) {
+			break;
+		}
+		@endphp
         <p></p>
         @endforeach
 
