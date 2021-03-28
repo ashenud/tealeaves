@@ -3,24 +3,24 @@
     line-height: 0;
     vertical-align: middle;
 }
-
+/* 
 .data-table td {
     padding: 17px 2px;
-}
+} */
 
 .data-table th:nth-child(1),
 .data-table td:nth-child(1),
 .data-table th:nth-child(3),
 .data-table td:nth-child(3),
 .data-table th:nth-child(4),
-.data-table td:nth-child(4),
+.data-table td:nth-child(5),
 .data-table th:nth-child(5) {
     text-align: center;
 }
 
-.data-table td:nth-child(5) {
+.data-table td:nth-child(4) {
     text-align: right;
-    padding-right: 90px;
+    padding-right: 70px;
 }
 
 .table.insert-table td {

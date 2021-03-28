@@ -19,85 +19,18 @@
 
 @section('content')
 <div class="content">
-
+   
     <div class="container">
 
-        <div class="data-table-area">
-            <table width="98%" class="table data-table table-hover">
-                <thead>
-                    <tr>
-                        <th width="20%" scope="col">Supplier ID</th>
-                        <th width="38%" scope="col">Supplier Name</th>
-                        <th width="20%" scope="col">Advanced Date</th>
-                        <th width="20%" scope="col">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <a class="btn btn-add-floating btn-primary btn-lg btn-floating" data-mdb-toggle="modal" data-mdb-target="#insert_model" type="button">
-            <i class="fas fa-plus"></i>
-        </a>
-
-        <!-- Insert Modal -->
-        <div class="modal fade" id="insert_model" aria-labelledby="insert_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
-            <div class="modal-dialog .modal-side .modal-top-right">
-                <div class="modal-content custom-modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="insert_model_Label">INSERT ADVANCE DETAILS</h5>
-                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-area">
-                            <table class="table insert-table">
-                                <tr>
-                                    <td>Date</td>
-                                    <td> : </td>
-                                    <td><input type="date" id="date" class="form-control" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"></td>
-                                </tr>
-                                <tr>
-                                    <td>Advance No.</td>
-                                    <td> : </td>
-                                    <td><input type="text" id="advance_no" class="form-control" readonly></td>
-                                </tr>
-                                <tr>
-                                    <td>Supplier</td>
-                                    <td> : </td>
-                                    <td>
-                                        <select class="form-control supplier-name" id="supplier">
-                                            <option value="">Select Supplier</option>
-                                            @if (isset($data['suppliers']))
-                                                @foreach ($data['suppliers'] as $supplier)
-                                                    <option value="{{ $supplier->id }}">{{ $supplier->sup_no }}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>   
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Amount</td>
-                                    <td> : </td>
-                                    <td><input type="number" min="0" id="amount" class="form-control" onblur="formant_money(this)"></td>
-                                </tr>
-                                <tr>
-                                    <td>Remarks</td>
-                                    <td> : </td>
-                                    <td><input type="text" id="remarks" class="form-control"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-secondory-custom" data-mdb-dismiss="modal">
-                            CANCEL
-                        </button>
-                        <button type="button" id="submit-data" onclick="submit_data_to_db()" class="btn btn-primary-custom float-right">APPROVE</button>
-                    </div>
-                </div>
+        <div class="row common-area">
+            <div class="col-md-3">
+            <input class="form-control advance-month" type="month" max="{{ date('Y-m') }}" value="{{ date('Y-m', strtotime('first day of last month')) }}" id="advance_month" onchange="loadMonthlyAdvance()">
             </div>
-        </div>
+        </div> 
+
+        <div class="row advance-area" id="advance-area">
+            
+        </div>        
 
     </div>
 
@@ -122,24 +55,32 @@
 
     $(document).ready(function() {
         $('.side-link.li-advance').addClass('active');
-        $('#supplier').select2();
-        advanceDatatable();
+        $('#advance_month').trigger("change");
+    });
+    
+    $(document).ajaxComplete(function ( event, xhr, settings ) {      
+        if (typeof xhr.responseJSON === 'undefined')   {  
+            $('#supplier').select2();
+            advanceDatatable();
+        }
+        else {
+            // console.log(xhr.responseJSON.result);
+        }        
     });
 
-    function advanceDatatable() {
+    function loadMonthlyAdvance() {
 
-        advanceTable = $('.data-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('admin/advance-datatable') }}",
-            columns: [
-                    { data:'supplier_id', name:'supplier_id'},
-                    { data:'supplier_name', name:'supplier_name'},
-                    { data:'advance_date', name:'advance_date'},
-                    { data:'amount', name:'amount', orderable: false, searchable: false},
-            ],
-            order: [ 2, 'desc' ]
-        });
+        var advance_month = $('#advance_month').val();
+        var regEx = /^\d{4}-\d{2}$/;
+        if(advance_month.match(regEx)) {
+            var apiURL = baseURL+'admin/load-monthly-advance/'+advance_month;
+            // console.log(apiURL);
+            $('#advance-area').html('<p style="display: flex; justify-content: center; margin-top: 75px;"><img src="{{asset("img/loading.gif")}}" /></p>');        
+            $('#advance-area').load(apiURL);
+        }
+        else {
+            swal("Retry!", "Please select a valid date", "error");
+        }        
 
     }
 

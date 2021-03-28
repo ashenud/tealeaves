@@ -65,7 +65,6 @@ class SupplierController extends Controller
                     ->make(true);
         }
         
-        return view('Admin.suppliers');
     }
 
     public function supplierInsert(Request $request ) {

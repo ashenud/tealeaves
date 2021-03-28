@@ -21,26 +21,70 @@ class AdvanceIssueController extends Controller {
         $data = array();
         $data['page_title'] = 'Advance Issue';
 
-        $suppliers = DB::table('suppliers AS ts')
-                       ->join('routes AS tr','tr.id','ts.route_id')
-                       ->select('ts.sup_name','ts.sup_no','ts.id')
-                       ->whereNull('ts.deleted_at')
-                       ->whereNull('tr.deleted_at')
-                       ->get();
-        $data['suppliers'] = $suppliers;
-
         // dd($data);
         return view('Admin.advance-issue')->with('data',$data);
+    }    
+
+    public function loadMonthlyAdvance($month) {
+
+        $user_id = Auth::user()->id;
+        $requested_month = $month;
+
+        $start_month = date("Y-m", strtotime(config('application.start_date')));
+
+        if($start_month <= $requested_month) {
+
+            $data = array();            
+            $data['advance_month'] = $requested_month;            
+
+            $suppliers = DB::table('suppliers AS ts')
+                        ->join('routes AS tr','tr.id','ts.route_id')
+                        ->select('ts.sup_name','ts.sup_no','ts.id')
+                        ->whereNull('ts.deleted_at')
+                        ->whereNull('tr.deleted_at')
+                        ->get();
+            $data['suppliers'] = $suppliers;
+                        
+            $month_end = MonthEnd::where('month',$requested_month)->where('ended_status',1)->limit(1)->get();
+            
+            if(count($month_end) > 0) {
+                         
+                $data['month_end'] = 1;
+
+                // dd($data);
+                return view('Admin.Loadings.advance-issue-view')->with('data',$data);
+                
+            }
+            else {
+
+                $data['month_end'] = 0;
+
+                // dd($data);
+                return view('Admin.Loadings.advance-issue-view')->with('data',$data);
+            }
+
+        }
+        else {
+            return view('Admin.Loadings.no-data');
+        }
+
     }
 
     public function advanceDatatable(Request $request ) {
 
         if ($request->ajax()) {
+
+            $advance_month = $request->get('advance_month');
+            $month_end = MonthEnd::where('month',$advance_month)->where('ended_status',1)->limit(1)->get();
+            if(count($month_end) > 0) {}
+
             $data = DB::table('advance_issues AS tai')
                         ->join('suppliers AS ts','ts.id','tai.supplier_id')
-                        ->select('ts.sup_no AS supplier_id','ts.sup_name AS supplier_name','tai.date AS advance_date',DB::raw('IFNULL(tai.remarks,"") AS remarks'),'tai.amount AS amount')
+                        ->select('tai.id AS advance_id','ts.sup_no AS supplier_id','ts.sup_name AS supplier_name','tai.date AS advance_date',DB::raw('IFNULL(tai.remarks,"") AS remarks'),'tai.amount AS amount')
+                        ->where(DB::raw('DATE_FORMAT(tai.date, "%Y-%m")'),'=',$advance_month)
                         ->whereNull('tai.deleted_at')
                         ->whereNull('ts.deleted_at');
+
             return Datatables::of($data)
                     ->filter(function ($query) use ($request) {
                         if ($request->has('search') && ! is_null($request->get('search')['value']) ) {
@@ -52,6 +96,14 @@ class AdvanceIssueController extends Controller {
                                     ->orWhere('tai.remarks', 'like', '%' . $regex . '%');
                             });
                         }
+                    })
+                    ->addColumn('action', function($data){
+
+                        $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->advance_id.')" data-mdb-toggle="modal" data-mdb-target="#edit_model" type="button"><i class="far fa-edit"></i></a>
+                                <a class="btn btn-sheding btn-sm" onclick="removeAdvance('.$data->advance_id.')" type="button"><i class="far fa-trash-alt"></i></a>';
+                        
+                        return $btn;
+                            
                     })
                     ->order(function ($query) use ($request) {
                         if ($request->has('order') && ! is_null($request->get('order')[0]['column']) && ! is_null($request->get('order')[0]['dir']) ) {
@@ -72,7 +124,6 @@ class AdvanceIssueController extends Controller {
                     ->make(true);
         }
         
-        return view('Admin.items');
     }
 
     public function insertAdvance(Request $request) {

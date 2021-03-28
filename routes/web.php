@@ -68,8 +68,9 @@ Route::post('/admin/edit-fertilizer-issues', 'App\Http\Controllers\Admin\Fertili
 Route::post('/admin/confirm-fertilizer-issues', 'App\Http\Controllers\Admin\FertilizerIssueController@confirmFertilizerIssues')->middleware('admin'); // confirm fertilizer action
 
 Route::get('/admin/advance-issue', 'App\Http\Controllers\Admin\AdvanceIssueController@index')->name('advance-issue')->middleware('admin');
-Route::post('/admin/insert-advance', 'App\Http\Controllers\Admin\AdvanceIssueController@insertAdvance')->middleware('admin'); // insert advance action
+Route::get('/admin/load-monthly-advance/{month}', 'App\Http\Controllers\Admin\AdvanceIssueController@loadMonthlyAdvance')->name('load-monthly-advance')->middleware('admin');
 Route::get('/admin/advance-datatable', 'App\Http\Controllers\Admin\AdvanceIssueController@advanceDatatable')->name('advance-datatable')->middleware('admin');
+Route::post('/admin/insert-advance', 'App\Http\Controllers\Admin\AdvanceIssueController@insertAdvance')->middleware('admin'); // insert advance action
 
 Route::get('/admin/loan-issue', 'App\Http\Controllers\Admin\LoanIssueController@index')->name('loan-issue')->middleware('admin');
 Route::post('/admin/insert-loan', 'App\Http\Controllers\Admin\LoanIssueController@insertLoan')->middleware('admin'); // insert loan action
