@@ -403,6 +403,7 @@ class MonthEndController extends Controller {
                             ->whereNull('tme.deleted_at')
                             ->whereNull('ts.deleted_at')
                             ->whereNull('tr.deleted_at')
+                            ->orderBy('ts.sup_no')
                             ->get();
             
             if(count($supplier_info) > 0) {
