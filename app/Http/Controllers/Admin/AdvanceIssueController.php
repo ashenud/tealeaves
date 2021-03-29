@@ -39,9 +39,11 @@ class AdvanceIssueController extends Controller {
 
             $suppliers = DB::table('suppliers AS ts')
                         ->join('routes AS tr','tr.id','ts.route_id')
-                        ->select('ts.sup_name','ts.sup_no','ts.id')
+                        ->select('ts.sup_name','ts.sup_no','ts.id',DB::raw('CONCAT(ts.id, "_", ts.sup_name) AS value'))
                         ->whereNull('ts.deleted_at')
                         ->whereNull('tr.deleted_at')
+                        ->where('ts.sup_no', '<>' ,'')
+                        ->orderBy('ts.sup_no')
                         ->get();
             $data['suppliers'] = $suppliers;
                         
@@ -75,14 +77,15 @@ class AdvanceIssueController extends Controller {
         if ($request->ajax()) {
 
             $advance_month = $request->get('advance_month');
-            $month_end = MonthEnd::where('month',$advance_month)->where('ended_status',1)->limit(1)->get();
-            if(count($month_end) > 0) {}
 
             $data = DB::table('advance_issues AS tai')
+                        ->join('monthly_installments AS tmi','tmi.reference','tai.id')
                         ->join('suppliers AS ts','ts.id','tai.supplier_id')
-                        ->select('tai.id AS advance_id','ts.sup_no AS supplier_id','ts.sup_name AS supplier_name','tai.date AS advance_date',DB::raw('IFNULL(tai.remarks,"") AS remarks'),'tai.amount AS amount')
+                        ->select('tai.id AS advance_id','tmi.id AS instalment_id','ts.sup_no AS supplier_id','ts.sup_name AS supplier_name','tai.date AS advance_date',DB::raw('IFNULL(tai.remarks,"") AS remarks'),'tai.amount AS amount')
                         ->where(DB::raw('DATE_FORMAT(tai.date, "%Y-%m")'),'=',$advance_month)
+                        ->where('tmi.remarks','=','advance')
                         ->whereNull('tai.deleted_at')
+                        ->whereNull('tmi.deleted_at')
                         ->whereNull('ts.deleted_at');
 
             return Datatables::of($data)
@@ -97,10 +100,17 @@ class AdvanceIssueController extends Controller {
                             });
                         }
                     })
-                    ->addColumn('action', function($data){
+                    ->addColumn('action', function($data) use ($request){
 
-                        $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->advance_id.')" data-mdb-toggle="modal" data-mdb-target="#edit_model" type="button"><i class="far fa-edit"></i></a>
-                                <a class="btn btn-sheding btn-sm" onclick="removeAdvance('.$data->advance_id.')" type="button"><i class="far fa-trash-alt"></i></a>';
+                        $month_end = MonthEnd::where('month',$request->get('advance_month'))->where('ended_status',1)->limit(1)->get();
+                        if(count($month_end) > 0) {
+                            $btn = '<a class="btn btn-disabled btn-sm" type="button"><i class="far fa-edit"></i></a>
+                                    <a class="btn btn-disabled btn-sm" type="button"><i class="far fa-trash-alt"></i></a>';
+                        }
+                        else {
+                            $btn = '<a class="btn btn-sheding btn-sm" onclick="sendDataToEditModel('.$data->advance_id.')" data-mdb-toggle="modal" data-mdb-target="#edit_model" type="button"><i class="far fa-edit"></i></a>
+                                    <a class="btn btn-sheding btn-sm" onclick="removeAdvance('.$data->advance_id.','.$data->instalment_id.')" type="button"><i class="far fa-trash-alt"></i></a>';
+                        }                        
                         
                         return $btn;
                             
@@ -121,9 +131,31 @@ class AdvanceIssueController extends Controller {
                             }
                         }
                     })
+                    ->with('total', number_format($data->sum('amount'),2))
                     ->make(true);
         }
         
+    }
+
+    public function getAdvanceData(Request $request ) {
+
+        $advance = DB::table('advance_issues AS tai')
+                     ->join('monthly_installments AS tmi','tmi.reference','tai.id')
+                     ->join('suppliers AS ts','ts.id','tai.supplier_id')
+                     ->select('tai.id AS advance_id','tmi.id AS instalment_id','ts.sup_no AS supplier_no','ts.sup_name AS supplier_name','tai.date AS advance_date',DB::raw('IFNULL(tai.remarks,"") AS remarks'),'tai.amount AS amount')
+                     ->where('tai.id','=',$request->id)
+                     ->where('tmi.remarks','=','advance')
+                     ->whereNull('tai.deleted_at')
+                     ->whereNull('tmi.deleted_at')
+                     ->whereNull('ts.deleted_at')
+                     ->groupBy('tai.id')
+                     ->get();
+
+        return response()->json([
+            'result' => true,
+            'data' => $advance
+        ]);
+
     }
 
     public function insertAdvance(Request $request) {
@@ -186,6 +218,87 @@ class AdvanceIssueController extends Controller {
                 'message' => 'Month you selected is allready ended',
             ]);
         }
+    }
+
+    public function editAdvance(Request $request) {
+
+        $user_id = Auth::user()->id;
+        $requested_date = $request->date;
+        
+        $requested_month = date("Y-m", strtotime($requested_date));
+
+        $month_end = MonthEnd::where('month',$requested_month)->where('ended_status',0)->limit(1)->get();
+        
+        if(count($month_end) > 0) {
+
+            try {
+
+                DB::beginTransaction();
+
+                $advance = AdvanceIssues::find($request->advance_id);
+                $advance->date = $request->date;
+                $advance->amount = $request->amount;
+                $advance->remarks = $request->remarks;
+                $advance->save();   
+                
+                $timestamp = strtotime($request->date);
+                $installment_month = date("Y-m", $timestamp);
+
+                $monthly_installment = MonthlyInstallment::find($request->instalment_id);
+                $monthly_installment->month = $installment_month;
+                $monthly_installment->installment = $request->amount;
+                $monthly_installment->save(); 
+                
+                DB::commit();
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Advance amount successfully edited',
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();    
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Advance amount not successfully edited',
+                    'error' => $e,
+                ]);
+            }
+        }
+        else {
+            return response()->json([
+                'result' => false,
+                'message' => 'Month you selected is allready ended',
+            ]);
+        }
+    }
+
+    public function deleteAdvance(Request $request) {        
+
+        try {
+
+            DB::beginTransaction();
+
+            $advance = AdvanceIssues::find($request->advance_id);
+            $advance->delete();  
+
+            $monthly_installment = MonthlyInstallment::find($request->instalment_id);
+            $monthly_installment->delete();  
+            
+            DB::commit();
+            return response()->json([
+                'result' => true,
+                'message' => 'Advance amount successfully deleted',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();    
+            return response()->json([
+                'result' => false,
+                'message' => 'Advance amount not successfully deleted',
+                'error' => $e,
+            ]);
+        }
+        
     }
 
 }

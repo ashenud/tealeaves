@@ -15,6 +15,13 @@
                 </thead>
                 <tbody>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2"></th>
+                        <th style="text-align: right" colspan="2">Monthly Advance Total</th>
+                        <th id="grand_total">0.00</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 
@@ -41,23 +48,24 @@
                                     <td><input type="date" id="date" class="form-control" min="{{ date('Y-m-01',strtotime($data['advance_month'])) }}" max="{{ date('Y-m-t',strtotime($data['advance_month'])) }}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Advance No.</td>
-                                    <td> : </td>
-                                    <td><input type="text" id="advance_no" class="form-control" readonly></td>
-                                </tr>
-                                <tr>
-                                    <td>Supplier</td>
+                                    <td>Supplier No.</td>
                                     <td> : </td>
                                     <td>
-                                        <select class="form-control supplier-name" id="supplier">
+                                        <select class="form-control supplier-name" id="supplier_values" onchange="getSupplierValues()">
                                             <option value="">Select Supplier</option>
                                             @if (isset($data['suppliers']))
                                                 @foreach ($data['suppliers'] as $supplier)
-                                                    <option value="{{ $supplier->id }}">{{ $supplier->sup_no }}</option>
+                                                    <option value="{{ $supplier->value }}">{{ $supplier->sup_no }}</option>
                                                 @endforeach
                                             @endif
-                                        </select>   
+                                        </select> 
+                                        <input type="hidden" id="supplier">
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td>Supplier Name</td>
+                                    <td> : </td>
+                                    <td><input type="text" min="0" id="supplier_name" class="form-control" disabled></td>
                                 </tr>
                                 <tr>
                                     <td>Amount</td>
@@ -82,6 +90,94 @@
             </div>
         </div>
 
+        <!-- Edit Modal -->
+        <div class="modal fade" id="edit_model" aria-labelledby="edit_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+            <div class="modal-dialog .modal-side .modal-top-right">
+                <div class="modal-content custom-modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit_model_Label">INSERT ADVANCE DETAILS</h5>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-area">
+                            <table class="table insert-table">
+                                <tr>
+                                    <td>Date</td>
+                                    <td> : </td>
+                                    <td><input type="date" id="date2" class="form-control" min="{{ date('Y-m-01',strtotime($data['advance_month'])) }}" max="{{ date('Y-m-t',strtotime($data['advance_month'])) }}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Supplier No.</td>
+                                    <td> : </td>
+                                    <td>
+                                        <input type="text" id="supplier_no2" class="form-control" disabled>
+                                        <input type="hidden" id="advance_id">
+                                        <input type="hidden" id="instalment_id">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Supplier Name</td>
+                                    <td> : </td>
+                                    <td><input type="text" min="0" id="supplier_name2" class="form-control" disabled></td>
+                                </tr>
+                                <tr>
+                                    <td>Amount</td>
+                                    <td> : </td>
+                                    <td><input type="number" min="0" id="amount2" class="form-control" onblur="formant_money(this)"></td>
+                                </tr>
+                                <tr>
+                                    <td>Remarks</td>
+                                    <td> : </td>
+                                    <td><input type="text" id="remarks2" class="form-control"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-secondory-custom" data-mdb-dismiss="modal">
+                            CANCEL
+                        </button>
+                        <button type="button" id="submit-data" onclick="submit_edited_data_to_db()" class="btn btn-primary-custom float-right">CONFIRM</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="edit_model" aria-labelledby="edit_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
+            <div class="modal-dialog .modal-side .modal-top-right">
+                <div class="modal-content custom-modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit_model_Label">EDIT ITEM DETAILS</h5>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-area">
+                            <div class="form-outline mb-4">
+                                <input type="text" id="item_code2" name="item_code2" class="form-control"/>
+                                <label class="form-label" for="item_code2">Item Code</label>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" id="item_name2" name="item_name2" class="form-control" required/>
+                                <label class="form-label" for="item_name2">Item Name</label>
+                            </div>
+                            <div class="form-outline mb-3">
+                                <input type="number" id="unit_price2" name="unit_price2" min="0" class="form-control" required/>
+                                <label class="form-label" for="unit_price2">Unit Price</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="item_id" name="item_id"/>
+                        <button type="button" class="btn btn-secondary btn-secondory-custom" data-mdb-dismiss="modal">
+                            CANCEL
+                        </button>
+                        <button type="button" id="submit-data" onclick="editItem()" class="btn btn-primary-custom float-right">EDIT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @endif
 
     </div>
@@ -96,13 +192,12 @@
         var regEx = /^\d{4}-\d{2}$/;
         if(advance_month.match(regEx)) {
             var apiURL = baseURL+'admin/advance-datatable/'+advance_month;
-            console.log(apiURL);
+            // console.log(apiURL);
         }
 
         advanceTable = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
-            // ajax: "{{ url('admin/advance-datatable/') }}",
             ajax: {
                 url: "{{ url('admin/advance-datatable/') }}",
                 method: "GET",
@@ -117,7 +212,13 @@
                     { data:'amount', name:'amount', orderable: false, searchable: false},
                     { data:'action', name:'action', orderable: false, searchable: false},
             ],
-            order: [ 2, 'desc' ]
+            order: [ 2, 'desc' ],            
+            "footerCallback": function() {                
+                var api = this.api()
+                var json = api.ajax.json();
+                // console.log(json);
+                $('#grand_total').html(json.total);
+            }
         });
 
     }

@@ -26,6 +26,11 @@
     float: right;
 }
 
+tfoot th{
+    font-weight: bold !important;
+    text-transform: uppercase;
+}
+
 .dataTables_filter input[type=search] {
     height: calc(1.5em + .35rem + 2px);
     padding: .375rem .75rem;
