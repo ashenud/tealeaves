@@ -290,12 +290,16 @@ class MonthEndController extends Controller {
                     foreach ($supplier_data as $supplier_id => $sup_data) {
 
                         $total_earnings = 0;
+                        $actual_earnings = 0;
                         $total_cost = 0;
                         $total_installment = 0;
                         $forwarded_credit = 0;
 
                         if(isset($sup_data['net_earnings'])) {
                             $total_earnings = $sup_data['net_earnings'];
+                        }
+                        if(isset($sup_data['total_earnings'])) {
+                            $actual_earnings = $sup_data['total_earnings'];
                         }
                         if(isset($sup_data['item_cost'])) {
                             $total_cost = $sup_data['item_cost'];
@@ -334,6 +338,7 @@ class MonthEndController extends Controller {
                         $month_end_supplier->month_end_id = $month_end_id;
                         $month_end_supplier->supplier_id = $supplier_id;
                         $month_end_supplier->total_earnings = $total_earnings;
+                        $month_end_supplier->actual_earnings = $actual_earnings;
                         $month_end_supplier->total_cost = $total_cost;
                         $month_end_supplier->total_installment = $total_installment;
                         $month_end_supplier->forwarded_credit = $forwarded_credit;
