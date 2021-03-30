@@ -22,82 +22,15 @@
 
         <div class="container">
 
-            <div class="data-table-area">
-                <table width="98%" class="table data-table table-hover">
-                    <thead>
-                        <tr>
-                            <th width="20%" scope="col">Supplier ID</th>
-                            <th width="38%" scope="col">Supplier Name</th>
-                            <th width="20%" scope="col">Loan Date</th>
-                            <th width="20%" scope="col">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-    
-            <a class="btn btn-add-floating btn-primary btn-lg btn-floating" data-mdb-toggle="modal" data-mdb-target="#insert_model" type="button">
-                <i class="fas fa-plus"></i>
-            </a>
-    
-            <!-- Insert Modal -->
-            <div class="modal fade" id="insert_model" aria-labelledby="insert_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
-                <div class="modal-dialog .modal-side .modal-top-right">
-                    <div class="modal-content custom-modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="insert_model_Label">INSERT LOAN DETAILS</h5>
-                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-area">
-                                <table class="table insert-table">
-                                    <tr>
-                                        <td>Date</td>
-                                        <td> : </td>
-                                        <td><input type="date" id="date" class="form-control" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Loan No.</td>
-                                        <td> : </td>
-                                        <td><input type="text" id="loan_no" class="form-control" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Supplier</td>
-                                        <td> : </td>
-                                        <td>
-                                            <select class="form-control supplier-name" id="supplier">
-                                                <option value="">Select Supplier</option>
-                                                @if (isset($data['suppliers']))
-                                                    @foreach ($data['suppliers'] as $supplier)
-                                                        <option value="{{ $supplier->id }}">{{ $supplier->sup_no }}</option>
-                                                    @endforeach
-                                                @endif
-                                            </select>   
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Amount</td>
-                                        <td> : </td>
-                                        <td><input type="number" min="0" id="amount" class="form-control" onblur="formant_money(this)"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Remarks</td>
-                                        <td> : </td>
-                                        <td><input type="text" id="remarks" class="form-control"></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-secondory-custom" data-mdb-dismiss="modal">
-                                CANCEL
-                            </button>
-                            <button type="button" id="submit-data" onclick="submit_data_to_db()" class="btn btn-primary-custom float-right">APPROVE</button>
-                        </div>
-                    </div>
+            <div class="row common-area">
+                <div class="col-md-3">
+                <input class="form-control loan-month" type="month" max="{{ date('Y-m') }}" value="{{ date('Y-m', strtotime('first day of last month')) }}" id="loan_month" onchange="loadMonthlyLoan()">
                 </div>
-            </div>
+            </div> 
+    
+            <div class="row loan-area" id="loan-area">
+                
+            </div>              
 
         </div>
 
@@ -122,25 +55,68 @@
 
     $(document).ready(function() {
         $('.side-link.li-loan').addClass('active');
-        $('#supplier').select2();
-        loanDatatable();
+        $('#loan_month').trigger("change");
+    });
+    
+    $(document).ajaxComplete(function ( event, xhr, settings ) {      
+        if (typeof xhr.responseJSON === 'undefined')   {  
+            $('#supplier_values').select2();
+            loanDatatable();
+        }
+        else {
+            // console.log(xhr.responseJSON.result);
+        }        
     });
 
-    function loanDatatable() {
+    function loadMonthlyLoan() {
 
-        loanTable = $('.data-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('admin/loan-datatable') }}",
-            columns: [
-                    { data:'supplier_id', name:'supplier_id'},
-                    { data:'supplier_name', name:'supplier_name'},
-                    { data:'loan_date', name:'loan_date'},
-                    { data:'amount', name:'amount', orderable: false, searchable: false},
-            ],
-            order: [ 2, 'desc' ]
+        var loan_month = $('#loan_month').val();
+        var regEx = /^\d{4}-\d{2}$/;
+        if(loan_month.match(regEx)) {
+            var apiURL = baseURL+'admin/load-monthly-loan/'+loan_month;
+            // console.log(apiURL);
+            $('#loan-area').html('<p style="display: flex; justify-content: center; margin-top: 75px;"><img src="{{asset("img/loading.gif")}}" /></p>');        
+            $('#loan-area').load(apiURL);
+        }
+        else {
+            swal("Retry!", "Please select a valid date", "error");
+        }        
+
+    }
+
+    function getSupplierValues() {
+
+        var values =  $("#supplier_values").val().split("_");
+        // console.log(values);
+        $("#supplier").val(values[0]);
+        $("#supplier_name").val(values[1]);
+
+    }     
+
+    function sendDataToEditModel(id){
+        console.log(id);
+        $.ajax({
+            url: '{{url("/admin/get-loan-data")}}',
+            type: 'GET',
+            data: {id:id},
+            dataType: 'JSON',
+            success: function (data) { 
+                if(data.result == true) {
+                    // console.log(data.data[0]['loan_id']);                        
+                    $("#loan_id").val(data.data[0]['loan_id']);
+                    $("#instalment_id").val(data.data[0]['instalment_id']);
+                    $("#date2").val(data.data[0]['loan_date']);
+                    $("#supplier_no2").val(data.data[0]['supplier_no']);
+                    $("#supplier_name2").val(data.data[0]['supplier_name']);
+                    $("#amount2").val(data.data[0]['amount']);
+                    $("#remarks2").val(data.data[0]['remarks']);
+                    $('#edit_model').modal('toggle');
+                }
+                else {
+                    swal("Opps !", data.message, "error");
+                }                      
+            }
         });
-
     }
 
     function formant_money(caller) {
@@ -155,12 +131,12 @@
         }
         else if ($('#supplier').val() === "") {            
             $("#date").removeClass('is-invalid');
-            $("#supplier").next().find('.select2-selection').addClass('is-invalid');
+            $("#supplier_values").next().find('.select2-selection').addClass('is-invalid');
             swal("Retry!", "Please select a supplier", "error");
-            $('#supplier').focus();
+            $('#supplier_values').focus();
         }
         else if ($('#amount').val() === "" || $('#amount').val() <= 0) {
-            $("#supplier").next().find('.select2-selection').removeClass('is-invalid');
+            $("#supplier_values").next().find('.select2-selection').removeClass('is-invalid');
             $("#amount").addClass('is-invalid');
             swal("Retry!", "Please enter a amount", "error");
             $('#amount').focus();
@@ -172,7 +148,6 @@
             var supplier = $('#supplier').val();
             var amount = $('#amount').val();
             var remarks = $('#remarks').val();
-            var loan_no = $('#loan_no').val();
 
             swal({
                 title: 'Are you sure?',
@@ -201,7 +176,6 @@
                             supplier: supplier,
                             amount: amount,
                             remarks: remarks,
-                            loan_no: loan_no,
 
                         },
                         success: function (data) {
@@ -209,10 +183,10 @@
                             console.log(data);
                             if(data.result===true){
                                 swal("Good Job !", data.message, "success");
-                                $("#supplier").val('').trigger('change');
+                                $("#supplier_values").val('').trigger('change');
+                                $("#supplier").val('');
                                 $("#amount").val('');
                                 $("#remarks").val('');
-                                $("#advance_no").val('');
                                 $('#insert_model').modal('toggle');
                                 loanTable.ajax.reload();
                             }
@@ -228,6 +202,130 @@
             })
 
         }
+
+    }
+
+    function submit_edited_data_to_db() {
+        if ($('#date2').val() === "") {
+            $("#date2").addClass('is-invalid');
+            swal("Retry!", "Please select a date", "error");
+            $('#date2').focus();
+        }
+        else if ($('#amount2').val() === "" || $('#amount2').val() <= 0) {
+            $("#date2").removeClass('is-invalid');
+            $("#amount2").addClass('is-invalid');
+            swal("Retry!", "Please enter a amount", "error");
+            $('#amount2').focus();
+        }
+        else  {
+            
+            $("#amount2").removeClass('is-invalid');
+            var loan_id = $('#loan_id').val();
+            var instalment_id = $('#instalment_id').val();
+            var date = $('#date2').val();
+            var amount = $('#amount2').val();
+            var remarks = $('#remarks2').val();
+
+            swal({
+                title: 'Are you sure to edit this record?',
+                text: "You are going to add " + amount + " loan amount !",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+
+                    $('button.swal2-confirm').hide();
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: '{{url("/admin/edit-loan")}}',
+                        type: "POST",
+                        data: {
+
+                            loan_id: loan_id,
+                            instalment_id: instalment_id,
+                            date: date,
+                            amount: amount,
+                            remarks: remarks,
+
+                        },
+                        success: function (data) {
+                            // var data = JSON.parse(data);
+                            console.log(data);
+                            if(data.result===true){
+                                swal("Good Job !", data.message, "success");
+                                $("#loan_id").val('');
+                                $("#instalment_id").val('');
+                                $("#date2").val('');
+                                $("#supplier_no2").val('');
+                                $("#supplier_name2").val('');
+                                $("#amount2").val('');
+                                $("#remarks2").val('');
+                                $('#edit_model').modal('toggle');
+                                loanTable.ajax.reload();
+                            }
+                            else{
+                                swal("Opps!", data.message, "error")
+                            }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            swal("Opps!", "Please try again", "error");
+                        }
+                    });
+                }
+            })
+
+        }
+
+    }    
+
+    function removeLoan(loan_id,instalment_id) {
+        
+        swal({
+            title: 'Are you sure?',
+            text: "You are going to delete this loan data !",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{url("/admin/delete-loan")}}',
+                    type: 'POST',
+                    data: {
+                        loan_id:loan_id,
+                        instalment_id:instalment_id
+                    },
+                    dataType: 'JSON',
+                    success: function (data) { 
+                        if(data.result == true) {
+                            console.log(data);
+                            loanTable.ajax.reload();
+                            swal("Done!", data.message, "success")
+                        }
+                        else {
+                            swal("Opps!", data.message, "error")
+                        }                      
+                    }
+                });
+
+            }
+        })
 
     }
 

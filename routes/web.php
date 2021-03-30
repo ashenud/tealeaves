@@ -76,8 +76,12 @@ Route::post('/admin/edit-advance', 'App\Http\Controllers\Admin\AdvanceIssueContr
 Route::post('/admin/delete-advance', 'App\Http\Controllers\Admin\AdvanceIssueController@deleteAdvance')->middleware('admin'); // delete advance action
 
 Route::get('/admin/loan-issue', 'App\Http\Controllers\Admin\LoanIssueController@index')->name('loan-issue')->middleware('admin');
-Route::post('/admin/insert-loan', 'App\Http\Controllers\Admin\LoanIssueController@insertLoan')->middleware('admin'); // insert loan action
+Route::get('/admin/load-monthly-loan/{month}', 'App\Http\Controllers\Admin\LoanIssueController@loadMonthlyLoan')->name('load-monthly-loan')->middleware('admin');
 Route::get('/admin/loan-datatable', 'App\Http\Controllers\Admin\LoanIssueController@loanDatatable')->name('loan-datatable')->middleware('admin');
+Route::get('/admin/get-loan-data', 'App\Http\Controllers\Admin\LoanIssueController@getLoanData')->name('get-loan-data')->middleware('admin');
+Route::post('/admin/insert-loan', 'App\Http\Controllers\Admin\LoanIssueController@insertLoan')->middleware('admin'); // insert loan action
+Route::post('/admin/edit-loan', 'App\Http\Controllers\Admin\LoanIssueController@editLoan')->middleware('admin'); // edit loan action
+Route::post('/admin/delete-loan', 'App\Http\Controllers\Admin\LoanIssueController@deleteLoan')->middleware('admin'); // delete loan action
 
 Route::get('/admin/month-end', 'App\Http\Controllers\Admin\MonthEndController@index')->name('month-end')->middleware('admin');
 Route::get('/admin/month-end-datatable', 'App\Http\Controllers\Admin\MonthEndController@monthEndDatatable')->name('month-end-datatable')->middleware('admin');
