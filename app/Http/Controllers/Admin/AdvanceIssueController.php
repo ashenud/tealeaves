@@ -175,7 +175,6 @@ class AdvanceIssueController extends Controller {
 
                 $advance = new AdvanceIssues();
                 $advance->date = $request->date;
-                $advance->advance_no = $request->advance_no;
                 $advance->supplier_id = $request->supplier;
                 $advance->amount = $request->amount;
                 $advance->remarks = $request->remarks;
