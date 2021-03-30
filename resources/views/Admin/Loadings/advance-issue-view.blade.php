@@ -143,41 +143,6 @@
             </div>
         </div>
 
-        <!-- Edit Modal -->
-        <div class="modal fade" id="edit_model" aria-labelledby="edit_model_Label" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true">
-            <div class="modal-dialog .modal-side .modal-top-right">
-                <div class="modal-content custom-modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="edit_model_Label">EDIT ITEM DETAILS</h5>
-                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-area">
-                            <div class="form-outline mb-4">
-                                <input type="text" id="item_code2" name="item_code2" class="form-control"/>
-                                <label class="form-label" for="item_code2">Item Code</label>
-                            </div>
-                            <div class="form-outline mb-4">
-                                <input type="text" id="item_name2" name="item_name2" class="form-control" required/>
-                                <label class="form-label" for="item_name2">Item Name</label>
-                            </div>
-                            <div class="form-outline mb-3">
-                                <input type="number" id="unit_price2" name="unit_price2" min="0" class="form-control" required/>
-                                <label class="form-label" for="unit_price2">Unit Price</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="hidden" id="item_id" name="item_id"/>
-                        <button type="button" class="btn btn-secondary btn-secondory-custom" data-mdb-dismiss="modal">
-                            CANCEL
-                        </button>
-                        <button type="button" id="submit-data" onclick="editItem()" class="btn btn-primary-custom float-right">EDIT</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         @endif
 
     </div>
