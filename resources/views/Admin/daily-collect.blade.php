@@ -138,6 +138,10 @@
         else {
             $("#supplier_" + row).next().find('.select2-selection').removeClass('is-invalid');
         }
+        
+        setTimeout(function() { 
+            $("#no_units_" + row).focus();
+        }, 1);
     }
     
     function add_item(row) {
