@@ -71,7 +71,7 @@ class SupplierController extends Controller
 
         $validator = Validator::make($request->all(), [
             'supplier_no' => 'required|unique:suppliers,sup_no',
-            'supplier_name' => 'regex:/^[\pL\s\-]+$/u|max:255',
+            'supplier_name' => 'regex:/^[a-zA-Z\s\.]+$/u|max:255',
         ]);
 
         if ($validator->fails()) {
