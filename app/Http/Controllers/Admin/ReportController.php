@@ -78,7 +78,45 @@ class ReportController extends Controller {
                 }
             }
             else {
-                return view('Admin.Loadings.no-data');
+
+                $daily_colection =DB::table('daily_collection_suppliers AS tdcs')
+                                        ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
+                                        ->join('suppliers AS ts','ts.id','tdcs.supplier_id')
+                                        ->select('tdc.date','ts.sup_name','ts.sup_no','tdcs.supplier_id','tdcs.number_of_units')
+                                        ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'=',$requested_month)
+                                        ->where('tdc.confirm_status', '=', 0)
+                                        ->whereNull('tdcs.deleted_at')
+                                        ->whereNull('ts.deleted_at')
+                                        ->whereNull('tdc.deleted_at')
+                                        ->orderBy('ts.id')
+                                        ->get();
+
+                $start    = new DateTime(date('Y-m-01',strtotime($requested_month)));
+                $end      = new DateTime(date('Y-m-t',strtotime($requested_month)));
+                $end->modify('first day of next month');
+                $interval = DateInterval::createFromDateString('1 day');
+                $period   = new DatePeriod($start, $interval, $end);
+
+                foreach ($period as $dt) {                    
+                    foreach ($daily_colection as $collection) {
+                        if($collection->date == $dt->format("Y-m-d")) {
+                            $data['supplier_data'][$collection->supplier_id]['supplier_name'] = $collection->sup_name;
+                            $data['supplier_data'][$collection->supplier_id]['supplier_no'] = $collection->sup_no;
+                            $data['supplier_data'][$collection->supplier_id]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
+                        }                    
+                    }
+                }
+                if(isset($data['supplier_data'])) {
+                    ksort($data['supplier_data']);
+
+                    $data['is_month_end'] = 0;
+                        
+                    // dd($data);
+                    return view('Admin.Loadings.audit-trail-table')->with('data',$data);
+                }
+                else {
+                    return view('Admin.Loadings.no-data');
+                }
             }
 
         }
@@ -349,79 +387,86 @@ class ReportController extends Controller {
                 $grand_earnings = 0;
                 $grand_deduction = 0;
                 $grand_income = 0;
-                if(count($data['supplier_data']) > 0) {
 
-                    foreach ($data['supplier_data'] as $supplier_id => $sup_data) {
+                if(isset($data['supplier_data'])) {
 
-                        $total_earnings = 0;
-                        $total_delivery_cost = 0;
-                        $total_item_cost = 0;
-                        $total_fertilizer_cost = 0;
-                        $total_installment = 0;
-                        $forwarded_credit = 0;
+                    if(count($data['supplier_data']) > 0) {
 
-                        if(isset($sup_data['number_of_units'])) {
-                            $grand_colection += $sup_data['number_of_units'];
-                        }
-                        else {
-                            $data['supplier_data'][$supplier_id]['number_of_units'] = 0;
+                        foreach ($data['supplier_data'] as $supplier_id => $sup_data) {
+
+                            $total_earnings = 0;
+                            $total_delivery_cost = 0;
+                            $total_item_cost = 0;
+                            $total_fertilizer_cost = 0;
+                            $total_installment = 0;
+                            $forwarded_credit = 0;
+
+                            if(isset($sup_data['number_of_units'])) {
+                                $grand_colection += $sup_data['number_of_units'];
+                            }
+                            else {
+                                $data['supplier_data'][$supplier_id]['number_of_units'] = 0;
+                            }
+
+                            if(isset($sup_data['total_earnings'])) {
+                                $total_earnings = $sup_data['total_earnings'];
+                                $grand_earnings += $sup_data['total_earnings'];
+                            }
+                            else {
+                                $data['supplier_data'][$supplier_id]['total_earnings'] = 0;
+                            }
+
+                            if(isset($sup_data['delivery_cost'])) {
+                                $total_delivery_cost = $sup_data['delivery_cost'];
+                                $grand_deduction += $sup_data['delivery_cost'];
+                            }
+                            if(isset($sup_data['item_cost'])) {
+                                $total_item_cost = $sup_data['item_cost'];
+                                $grand_deduction += $sup_data['item_cost'];
+                            }
+                            if(isset($sup_data['fertilizer_cost'])) {
+                                $total_fertilizer_cost = $sup_data['fertilizer_cost'];
+                                $grand_deduction += $sup_data['fertilizer_cost'];
+                            }
+                            if(isset($sup_data['installments'])) {
+                                $total_installment = $sup_data['installments'];
+                                $grand_deduction += $sup_data['installments'];
+                            }
+                            if(isset($sup_data['forwarded_credit'])) {
+                                $forwarded_credit = $sup_data['forwarded_credit'];
+                                $grand_deduction += $sup_data['forwarded_credit'];
+                            }
+
+                            $total_deduction = ($total_delivery_cost + $total_item_cost + $total_fertilizer_cost + $total_installment + $forwarded_credit);
+                            $data['supplier_data'][$supplier_id]['total_deduction'] = $total_deduction;
+                            
+                            $total_outstanding = $total_earnings - $total_deduction;
+
+                            if($total_outstanding >= 0) {
+                                $current_income = $total_outstanding;
+                                $grand_income += (floor($total_outstanding / 10) * 10);   
+                            }
+                            else {
+                                $current_income = 0;
+                            }
+                            
+                            $data['supplier_data'][$supplier_id]['current_income'] = $current_income;
+
                         }
 
-                        if(isset($sup_data['total_earnings'])) {
-                            $total_earnings = $sup_data['total_earnings'];
-                            $grand_earnings += $sup_data['total_earnings'];
-                        }
-                        else {
-                            $data['supplier_data'][$supplier_id]['total_earnings'] = 0;
-                        }
+                    }                
 
-                        if(isset($sup_data['delivery_cost'])) {
-                            $total_delivery_cost = $sup_data['delivery_cost'];
-                            $grand_deduction += $sup_data['delivery_cost'];
-                        }
-                        if(isset($sup_data['item_cost'])) {
-                            $total_item_cost = $sup_data['item_cost'];
-                            $grand_deduction += $sup_data['item_cost'];
-                        }
-                        if(isset($sup_data['fertilizer_cost'])) {
-                            $total_fertilizer_cost = $sup_data['fertilizer_cost'];
-                            $grand_deduction += $sup_data['fertilizer_cost'];
-                        }
-                        if(isset($sup_data['installments'])) {
-                            $total_installment = $sup_data['installments'];
-                            $grand_deduction += $sup_data['installments'];
-                        }
-                        if(isset($sup_data['forwarded_credit'])) {
-                            $forwarded_credit = $sup_data['forwarded_credit'];
-                            $grand_deduction += $sup_data['forwarded_credit'];
-                        }
-
-                        $total_deduction = ($total_delivery_cost + $total_item_cost + $total_fertilizer_cost + $total_installment + $forwarded_credit);
-                        $data['supplier_data'][$supplier_id]['total_deduction'] = $total_deduction;
-                        
-                        $total_outstanding = $total_earnings - $total_deduction;
-
-                        if($total_outstanding >= 0) {
-                            $current_income = $total_outstanding;
-                            $grand_income += (floor($total_outstanding / 10) * 10);   
-                        }
-                        else {
-                            $current_income = 0;
-                        }
-                        
-                        $data['supplier_data'][$supplier_id]['current_income'] = $current_income;
-
-                    }
-
+                    $data['grand_colection'] = $grand_colection;
+                    $data['grand_earnings'] = $grand_earnings;
+                    $data['grand_deduction'] = $grand_deduction;
+                    $data['grand_income'] = $grand_income;
+    
+                    // dd($data);
+                    return view('Admin.Loadings.sales-report-table')->with('data',$data);
                 }
-
-                $data['grand_colection'] = $grand_colection;
-                $data['grand_earnings'] = $grand_earnings;
-                $data['grand_deduction'] = $grand_deduction;
-                $data['grand_income'] = $grand_income;
-
-                // dd($data);
-                return view('Admin.Loadings.sales-report-table')->with('data',$data);
+                else {
+                    return view('Admin.Loadings.no-data');
+                }
 
             }
 

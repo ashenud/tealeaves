@@ -38,16 +38,14 @@
             font-family: Verdana, Arial, sans-serif;
             }
 
-            table{
-                font-size: x-small;
-            }
-
             .audit-table,
             .audit-table tr,
-            .audit-table td {                
-                border: 1px solid;
+            .audit-table th,
+            .audit-table td {             
                 border-collapse: collapse;
-                font-size: 8px;
+                font-size: 11px;
+                border: none;
+                border-bottom: 0.1rem solid;
             }
 
             .audit-table th {                
@@ -90,7 +88,7 @@
                 <thead>
                     <tr style="background-color: #f0ffe5;">
                         <th style="width: 40px">SUP ID</th>
-                        <th style="width: 140px">Supplier Name</th>
+                        <th style="width: 140px;">Supplier Name</th>
                         @for ($i = 1; $i <= 31; $i++)
                         <th style="width: 24px; text-align: center;">{{ $i }}</th>
                         @endfor
@@ -102,7 +100,7 @@
                         @foreach ($data['supplier_data'] as $supplier)
                             <tr style="height: 30px">
                                 <td align="center"> {{ $supplier['supplier_no'] }} </td>
-                                <td> {{ $supplier['supplier_name'] }} </td>
+                                <td style="padding-left: 5px;"> {{ $supplier['supplier_name'] }} </td>
                                 @php
                                     $all_days =  array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0, 11 => 0, 12 => 0, 13 => 0, 14 => 0, 15 => 0, 16 => 0, 17 => 0, 18 => 0, 19 => 0, 20 => 0, 21 => 0, 22 => 0, 23 => 0, 24 => 0, 25 => 0, 26 => 0, 27 => 0, 28 => 0, 29 => 0, 30 => 0, 31 => 0);
                                     $daily_data = array();

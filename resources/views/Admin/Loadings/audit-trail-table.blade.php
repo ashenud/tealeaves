@@ -1,6 +1,8 @@
 
 <div class="btn-edit-area">
-    <button class="btn btn-primary-custom top-button edit-btn" onclick="printAuditTrail('{{ $data['audit_month'] }}')">PRINT</button>
+    @if (!isset($data['is_month_end']))
+        <button class="btn btn-primary-custom top-button edit-btn" onclick="printAuditTrail('{{ $data['audit_month'] }}')">PRINT</button>        
+    @endif    
 </div>
 
 <table style="width: 98%" class="audit-table">

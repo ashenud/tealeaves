@@ -24,7 +24,7 @@
 
             <div class="row common-area">
                 <div class="col-md-3">
-                <input class="form-control audit-month" type="month" max="{{ date('Y-m', strtotime('first day of last month')) }}" value="{{ date('Y-m', strtotime('first day of last month')) }}" id="audit_month" onchange="loadData()">
+                <input class="form-control audit-month" type="month" max="{{ date('Y-m') }}" value="{{ date('Y-m', strtotime('first day of last month')) }}" id="audit_month" onchange="loadData()">
                 </div>
             </div> 
     
