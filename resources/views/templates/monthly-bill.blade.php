@@ -12,7 +12,7 @@ ini_set('max_execution_time', 0);
 
         <style>
             @page {
-                margin: 5px 0px 5px 10px;
+                margin: 0px 0px -10px 10px;
             }
 
             p {
@@ -26,8 +26,12 @@ ini_set('max_execution_time', 0);
             font-family: Verdana, Arial, sans-serif;
             }
             table{
-                font-size: 0.64rem;
+                font-size: 0.88rem;
                 margin-bottom: -3px;
+                padding: 0;
+            }
+            table tr td{
+                padding: 0;
             }
             tfoot tr td{
                 font-weight: bold;
@@ -48,10 +52,10 @@ ini_set('max_execution_time', 0);
             @php $m ++; @endphp
 
             <main>
-                <table width="800px">
+                <table width="800px" style="margin-top: -10px">
                     <tr>
                         <td width="50%">
-                            <h1 style="margin-bottom: -10px; font-size: 30px;">INDRA Leaf Collectors</h1>
+                            <h1 style="margin-bottom: -20px; margin-top: -14px; font-size: 25px;">INDRA Leaf Collectors</h1>
                         </td>
                         <td width="10%">
                             <h2> R4391 </h2>
@@ -71,18 +75,18 @@ ini_set('max_execution_time', 0);
                     </tr>
                     <tr>
                         <td colspan="6">
-                            <h3 style="margin-bottom: 0px;">"Wikramagiri", Pahalagama, Theppanawa, Kuruwita. 071-8015237 / 045-2261493</h3>
+                            <h3 style="margin-bottom: 0px; margin-top: -10px; font-size: 12px;">"Wikramagiri", Pahalagama, Theppanawa, Kuruwita. 071-8015237 / 045-2261493</h3>
                         </td>
                     </tr>
                 </table>
             
                 <table width="800px">
                     <tr>
-                        <td style="height: 5px;"><hr></td>
+                        <td style="height: 3px;"><hr></td>
                     </tr>
                 </table>
 
-                <table width="800px">
+                <table width="800px" style="margin-top: -10px;">
                     <tr>
                         <td width="40%">
                             <table width="100%">
@@ -124,7 +128,7 @@ ini_set('max_execution_time', 0);
 
                         <td width="10%"></td>
                             
-                        <td width="30%" style="vertical-align: top;">
+                        <td width="40%" style="vertical-align: top;">
                             <table width="100%">
                                 <tr>
                                     <th align="left" style="margin-bottom: -10px; font-size: 12px;">RATE</th>
@@ -162,17 +166,17 @@ ini_set('max_execution_time', 0);
                             </table>
                         </td>
 
-                        <td width="20%"></td>
+                        <td width="10%"></td>
                     </tr>
                 </table>
 
                 <table width="800px">
                     <tr>
-                        <td style="height: 5px;"><hr></td>
+                        <td style="height: 3px;"><hr></td>
                     </tr>
                 </table>        
 
-                <table width="800px">
+                <table width="800px" style="margin-top: -10px">
                     <tr>
                         <td width="12%">
                             <table width="100%">
@@ -452,15 +456,15 @@ ini_set('max_execution_time', 0);
                                 </tbody>                        
                             </table>
                         </td>
-                        <td width="10%"></td>
-                        <td width="42%">
+                        <td width="5%"></td>
+                        <td width="47%">
                             <table width="100%">
                                 <thead>
                                     <tr>
-                                        <th width="50%" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEDUCTIONS</th>
+                                        <th width="55%" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEDUCTIONS</th>
                                         <th width="10%">&nbsp;</th>
                                         <th width="30%">&nbsp;</th>
-                                        <th width="10%">&nbsp;</th>
+                                        <th width="5%">&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -568,11 +572,11 @@ ini_set('max_execution_time', 0);
 
                 <table width="800px">
                     <tr>
-                        <td style="height: 5px;"><hr></td>
+                        <td style="height: 3px;"><hr></td>
                     </tr>
                 </table>           
 
-                <table width="800px">
+                <table width="800px" style="margin-top: -10px" >
                     <tr>
                         <td width="30%">
                             <table style="margin-bottom: -10px; margin-top: -2px;" width="100%">
@@ -609,31 +613,31 @@ ini_set('max_execution_time', 0);
                                 </tbody>                        
                             </table>
                         </td>
-                        <td width="28%"></td>
-                        <td width="42%"  style="vertical-align: top;">
+                        <td width="23%"></td>
+                        <td width="47%"  style="vertical-align: top;">
                             <table style="margin-bottom: -10px; margin-top: -2px;" width="100%">
                                 <tbody>
                                     <tr>
-                                        <th width="50%" align="left">DEDUCTION TOTAL</th>
+                                        <th width="55%" align="left">DEDUCTION TOTAL</th>
                                         <th width="10%" align="center"> : </th>
                                         <td width="30%" align="right">&nbsp;&nbsp;&nbsp;
                                             {{ number_format(($supplier['total_issues'] + $supplier['total_installment'] + $supplier['forwarded_credit'] + (isset($supplier['delivery_cost']) ? $supplier['delivery_cost'] : 0) ),2) }}
                                         </td>
-                                        <td width="10%" align="left">&nbsp;</td>
+                                        <td width="5%" align="left">&nbsp;</td>
                                     </tr>
                                     <tr>
-                                        <th align="left" style="font-size: 14px; padding-top: 15px;">PAYABLE AMOUNT</th>
-                                        <th align="center" style="padding-top: 15px;"> : </th>
-                                        <th align="right" style="font-size: 14px; border-bottom: 2px solid; padding-top: 15px;">&nbsp;&nbsp;&nbsp;
+                                        <th align="left" style="font-size: 18px; padding-top: 15px;">PAYABLE AMOUNT</th>
+                                        <th align="center" style="font-size: 18px; padding-top: 15px;"> : </th>
+                                        <th align="right" style="font-size: 18px; border-bottom: 2px solid; padding-top: 15px;">&nbsp;&nbsp;&nbsp;
                                             {{ number_format(floor($supplier['current_income'] / 10) * 10 ,2)}}
                                         </th>
-                                        <td width="10%" align="left" style="padding-top: 15px;">&nbsp;</td>
+                                        <td width="5%" align="left" style="padding-top: 15px;">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <th align="left">&nbsp;</th>
                                         <th align="center">&nbsp;</th>
                                         <td align="right" style="border-top: 1px solid;">&nbsp;</td>
-                                        <td width="10%" align="left">&nbsp;</td>
+                                        <td width="5%" align="left">&nbsp;</td>
                                     </tr>
                                 </tbody>                        
                             </table>
@@ -643,14 +647,14 @@ ini_set('max_execution_time', 0);
 
                 <table width="800px">
                     <tr>
-                        <td style="height: 5px;"><hr></td>
+                        <td style="height: 3px;"><hr></td>
                     </tr>
                 </table>       
 
-                <table width="800px">
+                <table width="800px" style="margin-top: 4px">
                     <tr>
                         <td width="50%">
-                            <table>
+                            <table style="font-size: 10px">
                                 <tbody>
                                     <tr>
                                         <th align="center">1957 No 51 Tea Control Act</th>
