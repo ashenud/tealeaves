@@ -156,7 +156,7 @@
                         <button type="button" class="btn btn-secondary btn-secondory-custom" data-mdb-dismiss="modal">
                             CANCEL
                         </button>
-                        <button type="button" id="submit-data" onclick="editItem()" class="btn btn-primary-custom float-right">EDIT</button>
+                        <button type="button" id="submit-edit-btn" onclick="editItem()" class="btn btn-primary-custom float-right">EDIT</button>
                     </div>
                 </div>
             </div>
@@ -344,6 +344,7 @@
     }
 
     function editItem() {
+
         if ( $("#item_code2").val().length === 0 ){
             swal("Opps !", "Please enter item code", "error");
         }
@@ -355,40 +356,77 @@
         }
         else {
 
+            $("#submit-edit-btn").hide();
+
             var item_id = $("#item_id").val();
             var item_code = $("#item_code2").val();
             var item_name = $("#item_name2").val();
             var unit_price = $("#unit_price2").val();
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url: '{{url("/admin/item-edit")}}',
-                type: 'POST',
-                data: {
-                    item_id:item_id,
-                    item_code:item_code,
-                    item_name:item_name,
-                    unit_price:unit_price
-                },
-                dataType: 'JSON',
-                success: function (data) { 
-                    if(data.result == true) {
-                        console.log(data);
-                        itemTable.ajax.reload();
-                        $('#edit_model').modal('toggle');
-                        swal("Good Job !", data.message, "success");
+            if(parseFloat(item_id) === {{config('application.tealeaves')}} ) {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
-                    else {
-                        console.log(data);
-                        swal("Opps !", data.message, "error");
-                    }                      
-                }
-            });
-                    
+                });
+                $.ajax({
+                    url: '{{url("/admin/tealeave-price-change")}}',
+                    type: 'POST',
+                    data: {
+                        item_id:item_id,
+                        unit_price:unit_price
+                    },
+                    dataType: 'JSON',
+                    success: function (data) { 
+                        if(data.result == true) {
+                            console.log(data);
+                            itemTable.ajax.reload();
+                            $('#edit_model').modal('toggle');
+                            swal("Good Job !", data.message, "success");
+                            $("#submit-edit-btn").show();
+                        }
+                        else {
+                            console.log(data);
+                            swal("Opps !", data.message, "error");
+                        }                      
+                    }
+                });
+
+            }
+            else {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{url("/admin/item-edit")}}',
+                    type: 'POST',
+                    data: {
+                        item_id:item_id,
+                        item_code:item_code,
+                        item_name:item_name,
+                        unit_price:unit_price
+                    },
+                    dataType: 'JSON',
+                    success: function (data) { 
+                        if(data.result == true) {
+                            console.log(data);
+                            itemTable.ajax.reload();
+                            $('#edit_model').modal('toggle');
+                            swal("Good Job !", data.message, "success");
+                            $("#submit-edit-btn").show();
+                        }
+                        else {
+                            console.log(data);
+                            swal("Opps !", data.message, "error");
+                        }                      
+                    }
+                });
+                 
+            }
 
         }
     }

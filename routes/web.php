@@ -43,6 +43,7 @@ Route::get('/admin/items-datatable', 'App\Http\Controllers\Admin\ItemController@
 Route::get('/admin/item-code-generate', 'App\Http\Controllers\Admin\ItemController@itemCodeGenerate')->middleware('admin');
 Route::post('/admin/item-insert', 'App\Http\Controllers\Admin\ItemController@itemInsert')->middleware('admin');
 Route::post('/admin/item-edit', 'App\Http\Controllers\Admin\ItemController@itemEdit')->middleware('admin');
+Route::post('/admin/tealeave-price-change', 'App\Http\Controllers\Admin\ItemController@tealeavePriceChange')->middleware('admin');
 Route::post('/admin/item-delete', 'App\Http\Controllers\Admin\ItemController@itemDelete')->middleware('admin');
 Route::post('/admin/item-reactivate', 'App\Http\Controllers\Admin\ItemController@itemReactivate')->middleware('admin');
 
