@@ -22,6 +22,8 @@
    
     <div class="container">
 
+        <input type="hidden" id="current_tealeave_price" value="@if (isset($data['tealeave_price'])) {{ $data['tealeave_price'] }} @endif" >
+
         <div class="data-table-area">
             <table width="98%" class="table data-table table-hover">
                 <thead>
@@ -82,9 +84,13 @@
 
     function createMonthEnd(id) {
 
+       var current_tealeave_price = $("#current_tealeave_price").val();
+
         swal({
             title: 'Are you sure?',
-            text: "Once you create month end, you can't undo !",
+            html: "Current tealeave price : <span style='font-weight: bold'>Rs."+ current_tealeave_price + "</span>"+
+                   "<br>"+
+                   "Once you create month end, you can't undo !",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

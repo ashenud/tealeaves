@@ -22,6 +22,7 @@ use App\Models\MonthlyInstallment;
 use App\Models\DebtorDetails;
 use App\Models\Supplier;
 use App\Models\CurrentStock;
+use App\Models\Item;
 
 class MonthEndController extends Controller {
 
@@ -30,6 +31,12 @@ class MonthEndController extends Controller {
         $user_id = Auth::user()->user_id;
         $data = array();
         $data['page_title'] = 'Month End';
+
+        $item = Item::select('unit_price')->where('id', config('application.tealeaves'))->first();
+
+        $data['tealeave_price'] = $item->unit_price;
+
+        // dd($data);
 
         return view('Admin.month-end')->with('data',$data);
     }

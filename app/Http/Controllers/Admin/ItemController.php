@@ -201,53 +201,63 @@ class ItemController extends Controller {
 
     public function tealeavePriceChange(Request $request ) {
 
-        DB::beginTransaction();
+        if($request->item_id == config('application.tealeaves')) {
 
-        try {
+            DB::beginTransaction();
 
-            $last_month_end = MonthEnd::select(DB::raw('MAX(month) AS last_ended_month'))
-                                        ->where('ended_status',1)->first();
-            $last_ended_month = $last_month_end->last_ended_month;
-            
-            $new_tealeave_price = $request->unit_price;
+            try {
 
-            $daily_collection =DB::table('daily_collection_suppliers AS tdcs')
-                                    ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
-                                    ->select('tdcs.*')
-                                    ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'>',$last_ended_month)
-                                    ->where('tdc.confirm_status', '=', 0)
-                                    ->get();
+                $last_month_end = MonthEnd::select(DB::raw('MAX(month) AS last_ended_month'))
+                                            ->where('ended_status',1)->first();
+                $last_ended_month = $last_month_end->last_ended_month;
+                
+                $new_tealeave_price = $request->unit_price;
 
-            foreach ($daily_collection as $collection) {
-                $collection_line_id = $collection->id;
-                $number_of_units = $collection->number_of_units;
-                $daily_amount = $number_of_units * $new_tealeave_price;
-                $daily_value = $daily_amount - $collection->delivery_cost;
+                $daily_collection =DB::table('daily_collection_suppliers AS tdcs')
+                                        ->join('daily_collections AS tdc','tdc.id','tdcs.collection_id')
+                                        ->select('tdcs.*')
+                                        ->where(DB::raw('DATE_FORMAT(tdc.date, "%Y-%m")'),'>',$last_ended_month)
+                                        ->where('tdc.confirm_status', '=', 0)
+                                        ->get();
 
-                $collection_line = DailyCollectionSupplier::withTrashed()->find($collection_line_id);
-                $collection_line->current_units_price = $new_tealeave_price;
-                $collection_line->daily_amount = $daily_amount;
-                $collection_line->daily_value = $daily_value;
-                $collection_line->save();
+                foreach ($daily_collection as $collection) {
+                    $collection_line_id = $collection->id;
+                    $number_of_units = $collection->number_of_units;
+                    $daily_amount = $number_of_units * $new_tealeave_price;
+                    $daily_value = $daily_amount - $collection->delivery_cost;
+
+                    $collection_line = DailyCollectionSupplier::withTrashed()->find($collection_line_id);
+                    $collection_line->current_units_price = $new_tealeave_price;
+                    $collection_line->daily_amount = $daily_amount;
+                    $collection_line->daily_value = $daily_value;
+                    $collection_line->save();
+                }
+
+                $item = Item::find($request->item_id);
+                $item->unit_price = $new_tealeave_price;
+                $item->save();    
+                
+                DB::commit();
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Item data successfully edited',
+                    'add_class' => $collection_line_id,
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();    
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Item data not successfully edited',
+                    'add_class' => $collection_line_id,
+                ]);
             }
 
-            $item = Item::find($request->item_id);
-            $item->unit_price = $new_tealeave_price;
-            $item->save();    
-            
-            DB::commit();
-            return response()->json([
-                'result' => true,
-                'message' => 'Item data successfully edited',
-                'add_class' => $collection_line_id,
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollback();    
+        }
+        else {
             return response()->json([
                 'result' => false,
-                'message' => 'Item data not successfully edited',
-                'add_class' => $collection_line_id,
+                'message' => 'Something went wrong !',
             ]);
         }
         
