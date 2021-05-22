@@ -131,9 +131,9 @@ ini_set('max_execution_time', 0);
                         <td width="40%" style="vertical-align: top;">
                             <table width="100%">
                                 <tr>
-                                    <th align="left" style="margin-bottom: -10px; font-size: 12px;">RATE</th>
-                                    <th align="center" style="margin-bottom: -10px; font-size: 12px;"> : </th>
-                                    <th align="left" style="margin-bottom: -10px; font-size: 12px;">
+                                    <th align="left" style="margin-bottom: -10px; font-size: 18px;">RATE</th>
+                                    <th align="center" style="margin-bottom: -10px; font-size: 18px;"> : </th>
+                                    <th align="left" style="margin-bottom: -10px; font-size: 18px;">
                                         @if (isset($supplier['current_units_price']))
                                             {{ number_format($supplier['current_units_price'],2) }}                                        
                                         @else
@@ -645,13 +645,13 @@ ini_set('max_execution_time', 0);
                     </tr>
                 </table> 
 
-                <table width="800px">
+                <table width="800px" style="margin-top: -10px">
                     <tr>
                         <td style="height: 3px;"><hr></td>
                     </tr>
                 </table>       
 
-                <table width="800px" style="margin-top: 4px">
+                <table width="800px" style="margin-top: -6px">
                     <tr>
                         <td width="50%">
                             <table style="font-size: 10px">
@@ -705,7 +705,7 @@ ini_set('max_execution_time', 0);
 
             </main>
 
-            {{-- @php if($m == 5) { break;  } @endphp --}}
+            {{-- @php if($m == 1) { break;  } @endphp --}}
 
             <p></p>
 

@@ -557,12 +557,8 @@ class MonthEndController extends Controller {
                     $data['supplier_data'][$fert_credt->supplier_id]['fert_credt'] = $fert_credt->total_value;
                 }
 
-                // return response()->json([
-                //     'result' => true,
-                //     'message' => 'This month end has allready created',
-                //     'data' => $data,
-                // ]);
-                // dd($data);
+                
+                // return view('templates.monthly-bill', ['data' => $data]);
                 $pdfname = date('YM',strtotime($requested_month));
                 $pdfname = strtoupper($pdfname);
                 $pdfname .= "-MONTHLY-BILL.pdf";
