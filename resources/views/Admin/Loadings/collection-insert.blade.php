@@ -82,7 +82,7 @@
                 </td>
                 <td>
                     <div class="form-group">
-                        <b> <input id="daily_total_value" class="form-control daily-total" value="0.00" readonly> </b>
+                        <b> <input type="hidden" id="daily_total_value" class="form-control daily-total" value="0.00" readonly> </b>
                     </div> 
                 </td>
             </tr>

@@ -92,7 +92,7 @@
                 </td>
                 <td>
                     <div class="form-group">
-                        <b> <input id="daily_total_value" class="form-control daily-total" value="{{ $data['daily_total_value'] }}" readonly> </b>
+                        <b> <input id="daily_total_value" type="hidden" class="form-control daily-total" value="{{ $data['daily_total_value'] }}" readonly> </b>
                     </div> 
                 </td>
             </tr>
