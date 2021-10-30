@@ -14,7 +14,7 @@ An app designed to manage monthly tea leaf collection and material release
 
 ✅ Monthly reports
 
-✅ Print bills
+✅ Print bills (PDF)
 
 ## Author
 
