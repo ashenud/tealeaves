@@ -18,16 +18,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert([
-            'name' => 'System Admin',
-            'username' => 'ashen',
-            'role_id' => md5('1'),
-            'email' => Str::random(10).'@gmail.com',
-            'password' => Hash::make('123'),
-            'status' => 1,
-            'created_at' => Carbon::now(), 
-            'updated_at' => Carbon::now()
-        ]);
 
         DB::table('roles')->insert([
             'id' => md5('1'),
@@ -38,6 +28,17 @@ class DatabaseSeeder extends Seeder
             'delete' => 1,
             'usermanage' => 1,
             'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        
+        DB::table('users')->insert([
+            'name' => 'System Admin',
+            'username' => 'ashen',
+            'role_id' => md5('1'),
+            'email' => Str::random(10).'@gmail.com',
+            'password' => Hash::make('123'),
+            'status' => 1,
+            'created_at' => Carbon::now(), 
             'updated_at' => Carbon::now()
         ]);
 
