@@ -1,11 +1,10 @@
-
 <div class="btn-edit-area">
     @if (!isset($data['is_month_end']))
         <button class="btn btn-primary-custom top-button edit-btn" onclick="printAuditTrail('{{ $data['audit_month'] }}')">PRINT</button>        
     @endif    
 </div>
 
-<table style="width: 98%" class="audit-table">
+<table style="width: 98%" class="audit-table header-fixed">
     <thead>
         <tr>
             <th style="width: 10%">Supplier ID</th>
@@ -18,6 +17,7 @@
     </thead>
     <tbody>
         @if (isset($data['supplier_data']))
+            @php $grand_monthly_total = 0; @endphp
             @foreach ($data['supplier_data'] as $supplier)
                 <tr style="height: 30px">
                     <td> {{ $supplier['supplier_no'] }} </td>
@@ -42,11 +42,16 @@
                                 }
                             }
 
-                        }                                      
+                        }
+                        $grand_monthly_total += $monthly_total;                                
                     @endphp
                     <td align="center"><b> {{ $monthly_total }} </b></td>
                 </tr>
             @endforeach
+            <tr style="font-weight: bold;">
+                <td colspan="33" align="center">MONTHLY GRAND TOTAL</td>
+                <td align="center">{{ $grand_monthly_total }}</td>
+            </tr>
         @endif  
     </tbody>
 </table>

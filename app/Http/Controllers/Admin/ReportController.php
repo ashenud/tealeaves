@@ -61,15 +61,14 @@ class ReportController extends Controller {
                 foreach ($period as $dt) {                    
                     foreach ($daily_colection as $collection) {
                         if($collection->date == $dt->format("Y-m-d")) {
-                            $data['supplier_data'][$collection->supplier_id]['supplier_name'] = $collection->sup_name;
-                            $data['supplier_data'][$collection->supplier_id]['supplier_no'] = $collection->sup_no;
-                            $data['supplier_data'][$collection->supplier_id]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
+                            $data['supplier_data'][intval($collection->sup_no)]['supplier_name'] = $collection->sup_name;
+                            $data['supplier_data'][intval($collection->sup_no)]['supplier_no'] = $collection->sup_no;
+                            $data['supplier_data'][intval($collection->sup_no)]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
                         }                    
                     }
                 }
                 if(isset($data['supplier_data'])) {
                     ksort($data['supplier_data']);
-    
                     // dd($data);
                     return view('Admin.Loadings.audit-trail-table')->with('data',$data);
                 }
@@ -100,17 +99,15 @@ class ReportController extends Controller {
                 foreach ($period as $dt) {                    
                     foreach ($daily_colection as $collection) {
                         if($collection->date == $dt->format("Y-m-d")) {
-                            $data['supplier_data'][$collection->supplier_id]['supplier_name'] = $collection->sup_name;
-                            $data['supplier_data'][$collection->supplier_id]['supplier_no'] = $collection->sup_no;
-                            $data['supplier_data'][$collection->supplier_id]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
+                            $data['supplier_data'][intval($collection->sup_no)]['supplier_name'] = $collection->sup_name;
+                            $data['supplier_data'][intval($collection->sup_no)]['supplier_no'] = $collection->sup_no;
+                            $data['supplier_data'][intval($collection->sup_no)]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
                         }                    
                     }
                 }
                 if(isset($data['supplier_data'])) {
                     ksort($data['supplier_data']);
-
                     $data['is_month_end'] = 0;
-                        
                     // dd($data);
                     return view('Admin.Loadings.audit-trail-table')->with('data',$data);
                 }
@@ -161,9 +158,9 @@ class ReportController extends Controller {
                 foreach ($period as $dt) {                    
                     foreach ($daily_colection as $collection) {
                         if($collection->date == $dt->format("Y-m-d")) {
-                            $data['supplier_data'][$collection->supplier_id]['supplier_name'] = $collection->sup_name;
-                            $data['supplier_data'][$collection->supplier_id]['supplier_no'] = $collection->sup_no;
-                            $data['supplier_data'][$collection->supplier_id]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
+                            $data['supplier_data'][intval($collection->sup_no)]['supplier_name'] = $collection->sup_name;
+                            $data['supplier_data'][intval($collection->sup_no)]['supplier_no'] = $collection->sup_no;
+                            $data['supplier_data'][intval($collection->sup_no)]['daily_data'][intval($dt->format("d"))] = $collection->number_of_units;
                         }                    
                     }
                 }

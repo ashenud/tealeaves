@@ -10,7 +10,42 @@
     <link rel="stylesheet" href="{{asset('css/custom-table-style.css')}}">
 
     <link rel="stylesheet" href="{{ asset('css/audit-trail-style.css') }}">
-
+    {{-- <style>
+        .header-fixed thead {
+            display: block;
+        }
+        .header-fixed tbody {
+            display: block;
+            overflow: auto;
+            height: 400px;
+        }
+        .header-fixed th,
+        .header-fixed td {
+            width: 118px;
+        }
+        
+        /* width */
+        .header-fixed tbody::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        /* Track */
+        .header-fixed tbody::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+    
+        /* Handle */
+        .header-fixed tbody::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 10px;
+        }
+    
+        /* Handle on hover */
+        .header-fixed tbody::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+    
+    </style> --}}
 @endsection
 
 @section('navbar')
